@@ -335,12 +335,15 @@ class SpatialOrientation extends Page {
                 e.preventDefault();
                 destroyElements();
                 svgcontainer.removeEventListener('touchstart', down);
+                svgcontainer.removeEventListener('mousedown', down);
                 [x, y] = this.getRelativeCoordinates(svgcontainer, e);
                 [x, y] = this.projectPointOnCircle(center.x, center.y, radius, x, y);
                 createElements(x, y);
                 svg.appendChild(p1);
                 svgcontainer.addEventListener('touchmove', move);
+                svgcontainer.addEventListener('mousemove', move);
                 svgcontainer.addEventListener('touchend', up);
+                svgcontainer.addEventListener('mouseup', up);
             };
 
             const move = (e) => {
@@ -356,7 +359,9 @@ class SpatialOrientation extends Page {
             const up = (e) => {
                 e.preventDefault();
                 svgcontainer.removeEventListener('touchmove', move);
+                svgcontainer.removeEventListener('mousemove', move);
                 svgcontainer.removeEventListener('touchend', up);
+                svgcontainer.removeEventListener('mouseup', up);
                 addClass(this.continue, 'pop');
                 removeClass(this.bottomtext, 'nobutton');
                 if (this.tutorial) {
@@ -369,8 +374,10 @@ class SpatialOrientation extends Page {
                     };
                 }
                 svgcontainer.addEventListener('touchstart', down);
+                svgcontainer.addEventListener('mousedown', down);
             };
             svgcontainer.addEventListener('touchstart', down);
+            svgcontainer.addEventListener('mousedown', down);
         }
 
         svg.append(line, p1, p2);
