@@ -409,8 +409,122 @@ class ExperiencePanel extends Panel {
 }
 
 class TutorialPanel extends Panel {
-    constructor(options) {
-        super(options);
+    constructor(options, callback) {
+        super(options, callback);
+        this.type = 'tutorial';
+        this.update = this.options.update ?? false;
+        this.number = this.options.number;
+        this.level = this.options.level;
+
+        const level = this.page.getTierContent();
+        const prognumber = this.page.getProgression().tier;
+
+        this.minimapcontainer = makeDiv(null, 'levels-minimap-container tutorial');
+        if (!this.animate) { addClass(this.minimapcontainer, 'pop'); }
+
+        this.minimap = makeDiv(null, 'levels-minimap tutorial');
+        this.state = makeDiv(null, 'levels-state');
+
+        this.minimap.append(this.state);
+        this.minimapcontainer.append(this.minimap);
+        this.container.append(this.minimapcontainer);
+
+        if (this.animate) {
+            this.minimapcontainer.offsetHeight;
+            addClass(this.minimapcontainer, 'pop');
+        }
+
+        const startTutorial = () => {
+            if (this.page.listening()) {
+                this.minimapcontainer.removeEventListener('click', startTutorial);
+                this.page.listen = false;
+                this.page.hide(() => {
+                    wait(100, () => {
+                        this.page.destroy();
+                        this.page.app.page = new Level({
+                            app: this.page.app,
+                            levels: this.page,
+                            position: 'current',
+                            tutorial: true,
+                            tier: this.page.getPosition()
+                        });
+                    });
+                });
+            }
+        }
+
+        if (this.page.app.debug) {
+            addClass(this.minimapcontainer, 'active-debug');
+            this.minimapcontainer.addEventListener('click', startTutorial);
+        }
+
+        this.map = new Basemap({
+            app: this.page.app,
+            parent: this.minimap,
+            class: 'minimap',
+            center: level.target,
+            zoom: this.basemap.getZoom() + 1,
+            interactive: false
+        });
+
+        if (this.page.app.debug) {
+            addClass(this.minimapcontainer, 'active-debug');
+            this.minimapcontainer.addEventListener('click', startTutorial);
+            this.callback(this);
+        } else {
+            if (this.number === prognumber) {
+                addClass(this.minimapcontainer, 'active');
+                this.minimapcontainer.addEventListener('click', startTutorial);
+            }
+            else if (this.number < prognumber) {
+                addClass(this.minimapcontainer, 'finished');
+                this.state.innerHTML = this.page.app.options.svgs.check;
+            }
+            else if (this.number > prognumber) {
+                addClass(this.minimapcontainer, 'remaining');
+                this.state.innerHTML = this.page.app.options.svgs.lock;
+            }
+
+            if (this.update) {
+                this.progress(() => {
+                    this.callback(this);
+                });
+            } else {
+                this.callback(this);
+            }
+        }
+    }
+
+    hide(callback) {
+        removeClass(this.minimapcontainer, 'pop');
+        wait(500, callback);
+    }
+
+    destroy() {
+        this.container.remove();
+    }
+
+    slideOut(direction, callback) {
+        removeClass(this.container, 'current');
+        addClass(this.container, direction);
+        wait(500, callback);
+    }
+
+    slideIn(callback) {
+        removeClass(this.container, 'next');
+        removeClass(this.container, 'previous');
+        addClass(this.container, 'current');
+        wait(500, callback);
+    }
+
+    progress(callback) {
+        callback = callback || function () { };
+        removeClass(this.minimapcontainer, 'active');
+        wait(500, () => {
+            this.state.innerHTML = this.page.app.options.svgs.check;
+            addClass(this.minimapcontainer, 'finished');
+            wait(300, callback);
+        });
     }
 }
 

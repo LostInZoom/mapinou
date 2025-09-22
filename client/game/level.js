@@ -17,10 +17,16 @@ class Level extends Page {
         super(options, callback);
         this.params = this.options.app.options;
         this.levels = this.options.levels;
+        this.tutorial = this.options.tutorial ?? false;
 
         this.tier = this.options.tier;
         this.level = this.options.level;
-        this.parameters = this.app.options.levels[this.tier].content[this.level];
+
+        if (this.tutorial) {
+            this.parameters = this.app.options.levels[this.tier];
+        } else {
+            this.parameters = this.app.options.levels[this.tier].content[this.level];
+        }
 
         this.options.app.forbidRabbits();
         this.score = new Score({
@@ -40,24 +46,24 @@ class Level extends Page {
             if (this.listening) {
                 this.listening = false;
                 this.clear(() => {
-                    this.toLevels();
+                    this.toLevels(false);
                 });
             }
         });
 
-        this.phase1(() => {
-            this.phase2(() => {
-                wait(300, () => {
-                    this.ending();
-                });
-            });
-        });
-
-        // this.phase2(() => {
-        //     wait(300, () => {
-        //         this.ending();
+        // this.phase1(() => {
+        //     this.phase2(() => {
+        //         wait(300, () => {
+        //             this.ending();
+        //         });
         //     });
         // });
+
+        this.phase2(() => {
+            wait(300, () => {
+                this.ending();
+            });
+        });
     }
 
     phase1(callback) {
@@ -257,7 +263,7 @@ class Level extends Page {
                             hsRabbits.despawnCharacters(() => {
                                 hsRabbits.destroy();
                                 hsmap.remove();
-                                this.toLevels();
+                                this.toLevels(true);
                             });
                         }, { once: true })
                     });
@@ -347,7 +353,7 @@ class Level extends Page {
         tasks.forEach(task => task(checkDone));
     }
 
-    toLevels() {
+    toLevels(update) {
         this.basemap.unsetMinZoom();
         this.destroy();
 
@@ -357,7 +363,7 @@ class Level extends Page {
             this.app.page = new Levels({
                 app: this.app,
                 position: 'current',
-                update: true
+                update: update
             });
         });
     }

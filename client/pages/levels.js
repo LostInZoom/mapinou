@@ -3,7 +3,7 @@ import Title from "./title";
 
 import { addClass, makeDiv, addClass, removeClass, wait, hasClass } from "../utils/dom";
 import { easeInOutSine } from '../utils/math.js';
-import { ExperiencePanel, NavigationBar, TierPanel } from "./tiers.js";
+import { ExperiencePanel, NavigationBar, TierPanel, TutorialPanel } from "./tiers.js";
 
 class Levels extends Page {
     constructor(options, callback) {
@@ -219,7 +219,15 @@ class Levels extends Page {
             return experience;
         }
         else if (options.type === 'tutorial') {
-
+            let experience = new TutorialPanel({
+                page: this,
+                number: this.position,
+                content: this.level,
+                animate: options.animate,
+                position: options.position,
+                update: options.update
+            }, (e) => { callback(e); });
+            return experience;
         }
     }
 }
