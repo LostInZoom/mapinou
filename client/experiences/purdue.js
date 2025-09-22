@@ -57,7 +57,7 @@ class Purdue extends Page {
             this.listen = true;
 
             back.addEventListener('click', () => {
-                this.toLevels();
+                this.toLevels(false);
             }, { once: true });
 
             pursue.addEventListener('click', () => {
@@ -211,7 +211,8 @@ class Purdue extends Page {
                     this.answers.push(this.answer);
                 }
                 if (this.index >= this.elements.tests.length) {
-                    this.toLevels();
+                    this.app.progress();
+                    this.toLevels(true);
                 } else {
                     let o = this.options;
                     o.stage = 'test';
@@ -225,7 +226,7 @@ class Purdue extends Page {
         });
     }
 
-    toLevels() {
+    toLevels(update) {
         this.listen = false;
         this.index = undefined;
         if (this.topcontent) { removeClass(this.topcontent, 'pop'); }
@@ -236,7 +237,7 @@ class Purdue extends Page {
             this.basemap.fit(this.params.interface.map.levels, {
                 easing: easeInOutSine
             }, () => {
-                this.app.page = new Levels({ app: this.app, position: 'current', update: true });
+                this.app.page = new Levels({ app: this.app, position: 'current', update: update });
             });
         });
     }

@@ -71,7 +71,7 @@ class Piaget extends Page {
             this.listen = true;
 
             back.addEventListener('click', () => {
-                this.toLevels();
+                this.toLevels(false);
             }, { once: true });
 
             pursue.addEventListener('click', () => {
@@ -95,7 +95,6 @@ class Piaget extends Page {
         let bottombottle = makeDiv(null, 'piaget-bottle draw', this.app.options.svgs['piaget' + index]);
         let title = makeDiv(null, 'piaget-title', `${index}/${this.testnumber}`);
         this.bottomtext.append(title, bottomlabel, bottombottle);
-
 
         let namespace = 'http://www.w3.org/2000/svg';
         let svgcontainer = makeDiv(null, 'piaget-svg-container');
@@ -162,10 +161,13 @@ class Piaget extends Page {
             e.preventDefault();
             destroyElements();
             bottombottle.removeEventListener('touchstart', down);
+            bottombottle.removeEventListener('mousedown', down);
             const [x, y] = this.getRelativeCoordinates(bottombottle, e);
             createElements(x, y);
             bottombottle.addEventListener('touchmove', move);
+            bottombottle.addEventListener('mousemove', move);
             bottombottle.addEventListener('touchend', up);
+            bottombottle.addEventListener('mouseup', up);
         }
 
         const move = (e) => {
@@ -180,7 +182,9 @@ class Piaget extends Page {
         const up = (e) => {
             e.preventDefault();
             bottombottle.removeEventListener('touchmove', move);
+            bottombottle.removeEventListener('mousemove', move);
             bottombottle.removeEventListener('touchend', up);
+            bottombottle.removeEventListener('mouseup', up);
             // Remove the lines and points if the length is lower than 10% of the svg width
             const length = Math.hypot(lines[0].x2.baseVal.value - lines[0].x1.baseVal.value, lines[0].y2.baseVal.value - lines[0].y1.baseVal.value);
             if (length < 10 * vb.width / 100) {
@@ -201,15 +205,18 @@ class Piaget extends Page {
                 };
             }
             bottombottle.addEventListener('touchstart', down);
+            bottombottle.addEventListener('mousedown', down);
         }
 
         this.answer = {};
         bottombottle.addEventListener('touchstart', down);
+        bottombottle.addEventListener('mousedown', down);
 
         pursue.addEventListener('click', () => {
             this.answers.push(this.answer);
             if (index >= this.testnumber) {
-                this.toLevels();
+                this.app.progress();
+                this.toLevels(true);
             } else {
                 removeClass(this.bottomcontent, 'pop');
                 wait(500, () => {
@@ -231,7 +238,7 @@ class Piaget extends Page {
         return [x, y];
     }
 
-    toLevels() {
+    toLevels(update) {
         this.listen = false;
         if (this.topcontent) { removeClass(this.topcontent, 'pop'); }
         if (this.bottomcontent) { removeClass(this.bottomcontent, 'pop'); }
@@ -241,7 +248,7 @@ class Piaget extends Page {
             this.basemap.fit(this.params.interface.map.levels, {
                 easing: easeInOutSine
             }, () => {
-                this.app.page = new Levels({ app: this.app, position: 'current', update: true });
+                this.app.page = new Levels({ app: this.app, position: 'current', update: update });
             });
         });
     }

@@ -75,7 +75,7 @@ class SpatialOrientation extends Page {
             this.listen = true;
 
             back.addEventListener('click', () => {
-                this.toLevels();
+                this.toLevels(false);
             }, { once: true });
 
             pursue.addEventListener('click', () => {
@@ -139,7 +139,8 @@ class SpatialOrientation extends Page {
                     }
                     this.back.removeEventListener('click', backListener);
                     if (this.index === elements.length - 1) {
-                        this.toLevels();
+                        this.app.progress();
+                        this.toLevels(true);
                     } else {
                         ++this.index;
                         this.navigateBottom();
@@ -190,7 +191,8 @@ class SpatialOrientation extends Page {
                         this.tutorial = false;
                         this.navigateBottom();
                     } else {
-                        this.toLevels();
+                        this.app.progress();
+                        this.toLevels(true);
                     }
                 } else {
                     ++this.index;
@@ -419,7 +421,7 @@ class SpatialOrientation extends Page {
         });
     }
 
-    toLevels() {
+    toLevels(update) {
         this.listen = false;
         this.index = undefined;
         if (this.topcontent) { removeClass(this.topcontent, 'pop'); }
@@ -430,7 +432,7 @@ class SpatialOrientation extends Page {
             this.basemap.fit(this.params.interface.map.levels, {
                 easing: easeInOutSine
             }, () => {
-                this.app.page = new Levels({ app: this.app, position: 'current', update: true });
+                this.app.page = new Levels({ app: this.app, position: 'current', update: update });
             });
         });
     }
