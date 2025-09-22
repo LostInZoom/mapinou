@@ -11,6 +11,7 @@ import { addClass, easingIncrement, makeDiv, removeClass, wait } from "../utils/
 import { ajaxPost } from '../utils/ajax';
 import { easeInOutSine, easeOutExpo } from '../utils/math';
 import Hint from './hint';
+import Woodpigeon from './woodpigeon';
 
 class Level extends Page {
     constructor(options, callback) {
@@ -51,32 +52,24 @@ class Level extends Page {
             }
         });
 
-        // this.phase1(() => {
-        //     this.phase2(() => {
-        //         wait(300, () => {
-        //             this.ending();
-        //         });
-        //     });
-        // });
-
-        this.phase2(() => {
-            wait(300, () => {
-                this.ending();
+        this.phase1(() => {
+            this.phase2(() => {
+                wait(300, () => {
+                    this.ending();
+                });
             });
         });
+
+        // this.phase2(() => {
+        //     wait(300, () => {
+        //         this.ending();
+        //     });
+        // });
     }
 
     phase1(callback) {
         callback = callback || function () { };
         this.phase = 1;
-
-        this.score.pop();
-        this.score.setState('default');
-        this.score.start();
-
-        this.basemap.enableInteractions();
-
-        this.hint = new Hint({ level: this });
 
         let activeWrong = false;
         const selectionListener = (e) => {
@@ -96,9 +89,29 @@ class Level extends Page {
                 }
             }
         }
-        this.basemap.addListener('click', selectionListener);
 
-        this.listening = true;
+        if (this.tutorial) {
+            this.tutorialcontainer = makeDiv(null, 'tutorial-container');
+            this.tutorialmask = makeDiv(null, 'tutorial-mask hidden');
+            this.tutorialcontainer.append(this.tutorialmask);
+            this.app.container.append(this.tutorialcontainer);
+            this.tutorialcontainer.offsetWidth;
+            this.woodpigeon = new Woodpigeon({ level: this });
+            removeClass(this.tutorialmask, 'hidden');
+
+            wait(300, () => {
+
+            });
+        } else {
+            this.score.pop();
+            this.score.setState('default');
+            this.score.start();
+
+            this.basemap.enableInteractions();
+            this.hint = new Hint({ level: this });
+            this.basemap.addListener('click', selectionListener);
+            this.listening = true;
+        }
     }
 
     phase2(callback) {
