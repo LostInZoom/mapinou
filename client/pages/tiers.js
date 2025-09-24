@@ -4,6 +4,7 @@ import SpatialOrientation from "../experiences/ptsot";
 import Purdue from "../experiences/purdue";
 import SantaBarbara from "../experiences/sbsod";
 import Level from "../game/level";
+import Tutorial from "../game/tutorial";
 
 import { addClass, makeDiv, removeClass, wait, waitPromise } from "../utils/dom";
 import { LevelEdges } from "../utils/svg";
@@ -441,11 +442,10 @@ class TutorialPanel extends Panel {
                 this.page.hide(() => {
                     wait(100, () => {
                         this.page.destroy();
-                        this.page.app.page = new Level({
+                        this.page.app.page = new Tutorial({
                             app: this.page.app,
                             levels: this.page,
                             position: 'current',
-                            tutorial: true,
                             tier: this.page.getPosition()
                         });
                     });

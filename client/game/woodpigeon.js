@@ -1,5 +1,4 @@
-import { addClass, makeDiv, removeClass, wait } from "../utils/dom";
-import { generateRandomInteger } from "../utils/math";
+import { addClass, makeDiv, removeClass, wait, waitPromise } from "../utils/dom";
 
 class Woodpigeon {
     constructor(options) {
@@ -25,33 +24,44 @@ class Woodpigeon {
         this.charimage.alt = 'woody';
         this.character.append(this.charimage);
 
+        this.bubblecontainer = makeDiv(null, 'woodpigeon-bubble-container');
         this.bubble = makeDiv(null, 'woodpigeon-bubble');
+        this.bubblecontainer.append(this.bubble);
         this.information = makeDiv(null, 'woodpigeon-infos hidden', 'Cliquez pour continuer.');
-        this.container.append(this.bubble, this.character, this.information);
+        this.container.append(this.bubblecontainer, this.character, this.information);
 
         this.parent.append(this.container);
         this.animateFrame();
         this.container.offsetWidth;
         removeClass(this.character, 'hidden');
+    }
 
-        wait(3000, () => {
-            this.frame = 0;
-            this.framenumber = 2;
-            this.framerate = 500;
-            this.setState('idle');
+    async walkIn() {
+        await waitPromise(2000);
+        this.frame = 0;
+        this.framenumber = 2;
+        this.framerate = 500;
+        this.setState('idle');
+    }
 
-            this.setText("Bonjour, je suis Paloma<br>C'est moi qui vais vous guider pendant ce tutoriel !");
+    async displayBubble() {
+        addClass(this.bubblecontainer, 'pop');
+        await waitPromise(300);
+    }
 
-            addClass(this.bubble, 'pop');
-            removeClass(this.information, 'hidden');
+    async hideBubble() {
+        removeClass(this.bubblecontainer, 'pop');
+        await waitPromise(300);
+    }
 
-            this.parent.addEventListener('click', () => {
-                this.setText('Je suis un petit pigeon mignon.');
+    async displayInformation() {
+        removeClass(this.information, 'hidden');
+        await waitPromise(300);
+    }
 
-                let i = generateRandomInteger(0, 3);
-                this.setOrientation(['north', 'south', 'west', 'east'][i]);
-            });
-        });
+    async hideInformation() {
+        addClass(this.information, 'hidden');
+        await waitPromise(300);
     }
 
     reload() {

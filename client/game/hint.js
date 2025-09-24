@@ -1,4 +1,4 @@
-import { addClass, makeDiv, removeClass, wait } from "../utils/dom";
+import { addClass, makeDiv, removeClass, wait, waitPromise } from "../utils/dom";
 import { generateRandomInteger, weightedRandom } from "../utils/math";
 
 class Hint {
@@ -10,8 +10,7 @@ class Hint {
         this.hints = this.level.parameters.hints;
 
         this.alive = true;
-        this.state = 'move';
-        this.idle = false;
+        this.state = 'idle';
         this.color = this.params.game.color;
         this.orientation = 'east';
         this.frame = 0;
@@ -37,15 +36,36 @@ class Hint {
         this.animateFrame();
 
         this.container.offsetWidth;
+    }
+
+    async walkIn() {
+        this.setState('move');
         removeClass(this.character, 'hidden');
-        wait(600, () => {
-            this.setState('idle');
-            this.idle = true;
-            addClass(this.bubble, 'pop');
-            this.activateUpdate();
-            this.listen = true;
-            this.basemap.render();
-        });
+        await waitPromise(600);
+        this.setState('idle');
+        this.listen = true;
+        this.basemap.render();
+    }
+
+    async displayBubble() {
+        addClass(this.bubble, 'pop');
+        await waitPromise(this.transition);
+    }
+
+    async hideBubble() {
+        removeClass(this.bubble, 'pop');
+        await waitPromise(this.transition);
+    }
+
+    async focusBubble() {
+        addClass(this.bubble, 'focus');
+        await waitPromise(200);
+        removeClass(this.bubble, 'focus');
+        await waitPromise(200);
+    }
+
+    setText(text) {
+        this.bubble.innerHTML = text;
     }
 
     reload() {
@@ -72,11 +92,8 @@ class Hint {
         this.reload();
     }
 
-    createBubble(type, text) {
-        this.bubble = makeDiv(null, 'level-hint-bubble ' + type);
-        this.vector = makeDiv(null, 'level-hint-vector', this.params.svgs[`bubble${type}`]);
-        this.text = makeDiv(null, 'level-hint-text', text);
-        this.bubble.append(this.vector, this.text);
+    createBubble(text) {
+        this.bubble = makeDiv(null, 'level-hint-bubble', text);
         this.container.append(this.bubble);
         this.container.offsetWidth;
     }
@@ -96,7 +113,7 @@ class Hint {
             });
         } else {
             if (this.type === 'thought') {
-                this.text.innerHTML = text;
+                this.setText(text);
                 callback();
             }
         }
@@ -180,7 +197,7 @@ class Hint {
             wait(200, () => {
                 if (start === this.startFrameAnimation) {
                     this.frame = (this.frame + 1) % 4;
-                    if (this.frame === 0 && this.idle) { this.state = weightedRandom(statespool, weights.slice()); }
+                    if (this.frame === 0 && statespool.includes(this.state)) { this.state = weightedRandom(statespool, weights.slice()); }
                     this.reload();
                     requestAnimationFrame(animation);
                 }

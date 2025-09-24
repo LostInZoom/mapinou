@@ -32,7 +32,7 @@
     }
 
     &.hidden {
-        transform: translateX(-100%);
+        transform: translateX(calc(-100% - 2rem));
         transition: transform .6s ease-in;
     }
 }
@@ -40,29 +40,61 @@
 .level-hint-bubble {
     position: relative;
 
-    height: min(25vw, 25vh);
-    max-height: 10rem;
-    width: 100%;
-    margin: 1rem 1rem 1rem 0;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
 
-    &.thought {
-        opacity: 0;
-        transition: opacity .2s linear;
+    background-color: colors.$main-color-dark;
+    color: colors.$main-color-light;
+    border-radius: .4rem;
 
-        &.pop {
-            opacity: 1;
-        }
+    // height: min(25vw, 25vh);
+    // max-height: 10rem;
+    margin: auto 1rem auto 1rem;
+    padding: .6rem .8rem;
+
+    transform: scale(0);
+    transition: transform .2s cubic-bezier(0.36, 0, 0.66, -0.56);
+
+    &.pop {
+        transform: scale(1);
+        transition: transform .2s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    &.lost,
-    &.wrong {
-        transform: scale(0);
-        transition: transform .2s cubic-bezier(0.36, 0, 0.66, -0.56);
+    &.focus {
+        transform: scale(1.1);
+    }
 
-        &.pop {
-            transform: scale(1);
-            transition: transform .2s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
+    // &.thought {
+    //     opacity: 0;
+    //     transition: opacity .2s linear;
+
+    //     &.pop {
+    //         opacity: 1;
+    //     }
+    // }
+
+    // &.lost,
+    // &.wrong {
+    //     transform: scale(0);
+    //     transition: transform .2s cubic-bezier(0.36, 0, 0.66, -0.56);
+
+    //     &.pop {
+    //         transform: scale(1);
+    //         transition: transform .2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    //     }
+    // }
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: calc(50% - .3rem);
+        left: -1rem;
+        height: 1rem;
+        width: 1.1rem;
+        clip-path: polygon(0 50%, 100% 100%, 100% 0);
+        background-color: colors.$main-color-dark;
     }
 }
 
