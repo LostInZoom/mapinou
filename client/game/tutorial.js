@@ -1,6 +1,7 @@
+import { within } from "../cartography/analysis";
 import Score from "../cartography/score";
 import Page from "../pages/page";
-import { addClass, makeDiv, removeClass, waitPromise } from "../utils/dom";
+import { addClass, makeDiv, removeClass, wait, waitPromise } from "../utils/dom";
 import { TutorialMask } from "../utils/svg";
 import Hint from "./hint";
 import Woodpigeon from "./woodpigeon";
@@ -57,78 +58,206 @@ class Tutorial extends Page {
         this.paloma = new Woodpigeon({ level: this });
         this.hint = new Hint({ level: this });
 
+        let activeWrong = false;
+        const selectionListener = (e) => {
+            let target = e.lngLat.toArray();
+            let player = this.parameters.player;
+            if (within(target, player, this.params.game.tolerance.target)) {
+                this.hint.end(callback);
+            } else {
+                if (!activeWrong) {
+                    activeWrong = true;
+                    addClass(this.basemap.getContainer(), 'wrong');
+                    this.score.addModifier('position');
+                    wait(500, () => { removeClass(this.basemap.getContainer(), 'wrong'); });
+                    this.hint.injure(300, () => {
+                        activeWrong = false;
+                    });
+                }
+            }
+        }
+
+        // await this.hint.walkIn();
+        // this.hint.displayBubble();
+        // this.hint.activateUpdate();
+        // this.basemap.enableInteractions();
+        // this.basemap.addListener('click', selectionListener);
+
         await this.paloma.walkIn();
-        this.paloma.setText("Bonjour, je suis Paloma.<br>C'est moi qui vais vous guider pendant ce tutoriel !");
+        this.paloma.setText("Bonjour, je suis Paloma.<br>Je vais vous guider pendant ce tutoriel !");
         await waitPromise(300);
         this.paloma.displayBubble();
         await this.paloma.displayInformation();
 
-        const tuto8 = async () => {
-            this.tutorialcontainer.removeEventListener('click', tuto8);
+        const tuto19 = async () => {
+            this.tutorialcontainer.removeEventListener('click', tuto19);
+            this.paloma.hideInformation();
+            await this.paloma.hideBubble();
+            await this.paloma.flyOut();
+            addClass(this.tutorialcontainer, 'hidden');
+            await waitPromise(300);
+            this.hint.activateUpdate();
+            this.basemap.enableInteractions();
+            this.basemap.addListener('click', selectionListener);
+            this.basemap.render();
+            this.hint.displayBubble();
+        }
+
+        const tuto18 = async () => {
+            this.tutorialcontainer.removeEventListener('click', tuto18);
+            await this.mask.unset();
+            this.paloma.setText("Bon courage !");
+            await this.paloma.focusBubble();
+            this.tutorialcontainer.addEventListener('click', tuto19);
+        }
+
+        const tuto17 = async () => {
+            this.tutorialcontainer.removeEventListener('click', tuto17);
+            this.paloma.setText("Si vous cliquez au mauvais endroit, vous aurez un malus de 5 points.");
+            await this.paloma.focusBubble();
+            this.tutorialcontainer.addEventListener('click', tuto18);
+        }
+
+        const tuto16 = async () => {
+            this.tutorialcontainer.removeEventListener('click', tuto16);
+            await this.paloma.hideBubble();
+            await this.mask.set({ cx: this.score.getLeftPosition(), cy: 0, rx: '5rem', ry: '5rem' })
+            this.score.pop();
+            this.score.setState('default');
+            this.score.start();
+            await waitPromise(300);
+            this.paloma.setText("Voici votre score, il augmente petit à petit, vous devez le garder au plus bas.");
+            await this.paloma.displayBubble();
+            this.tutorialcontainer.addEventListener('click', tuto17);
+        }
+
+        const tuto15 = async () => {
+            this.tutorialcontainer.removeEventListener('click', tuto15);
+            this.paloma.setText("Quand vous pensez avoir trouvé sa position, cliquez dessus.");
+            await this.paloma.focusBubble();
+            this.tutorialcontainer.addEventListener('click', tuto16);
+        }
+
+        const tuto14 = async () => {
+            this.tutorialcontainer.removeEventListener('click', tuto14);
+            this.paloma.setText("Il vous dira également si vous vous perdez.");
+            await this.paloma.focusBubble();
+            this.tutorialcontainer.addEventListener('click', tuto15);
+        }
+
+        const tuto13 = async () => {
+            this.tutorialcontainer.removeEventListener('click', tuto13);
+            this.paloma.setText("Il vous indiquera sa position de plus en plus précisémment.");
+            await this.paloma.focusBubble();
+            this.tutorialcontainer.addEventListener('click', tuto14);
+        }
+
+        const tuto12 = async () => {
+            this.tutorialcontainer.removeEventListener('click', tuto12);
+            await this.hint.hideBubble();
+            await this.mask.unset();
+            this.paloma.setText("Naviguez dans la carte pour trouver Lapinou.");
+            await this.paloma.displayBubble();
+            this.tutorialcontainer.addEventListener('click', tuto13);
+        };
+
+        const tuto11 = async () => {
+            this.tutorialcontainer.removeEventListener('click', tuto11);
             this.hint.setText("Ça va me revenir, j'en suis sûr !");
             await this.hint.focusBubble();
-        }
+            this.tutorialcontainer.addEventListener('click', tuto12);
+        };
+
+        const tuto10 = async () => {
+            this.tutorialcontainer.removeEventListener('click', tuto10);
+            this.hint.setText("Je vous donnerai des indications au fur et à mesure.");
+            await this.hint.focusBubble();
+            this.tutorialcontainer.addEventListener('click', tuto11);
+        };
+
+        const tuto9 = async () => {
+            this.tutorialcontainer.removeEventListener('click', tuto9);
+            await this.paloma.hideBubble();
+            this.hint.setText("Oui, s'il vous plait !");
+            await this.hint.displayBubble();
+            this.tutorialcontainer.addEventListener('click', tuto10);
+        };
+
+        const tuto8 = async () => {
+            this.tutorialcontainer.removeEventListener('click', tuto8);
+            await this.paloma.hideBubble();
+            await waitPromise(300);
+            this.paloma.setOrientation('east');
+            await waitPromise(300);
+            this.paloma.setText("Pourriez-vous l'aider à retrouver sa position sur la carte ?");
+            await this.paloma.displayBubble();
+            this.tutorialcontainer.addEventListener('click', tuto9);
+        };
 
         const tuto7 = async () => {
             this.tutorialcontainer.removeEventListener('click', tuto7);
-            this.hint.setText("Je vous donnerai des indications au fur et à mesure.");
-            await this.hint.focusBubble();
+            await this.hint.hideBubble();
+            this.paloma.setText("Mon pauvre ! Attends, je vais demander de l'aide.");
+            await this.paloma.displayBubble();
             this.tutorialcontainer.addEventListener('click', tuto8);
-        }
+        };
 
         const tuto6 = async () => {
             this.tutorialcontainer.removeEventListener('click', tuto6);
-            await this.paloma.hideBubble();
-            this.hint.setText("Oui, s'il vous plait !");
-            this.hint.displayBubble();
+            this.hint.setText("Et je ne sais même pas où je suis !");
+            await this.hint.focusBubble();
             this.tutorialcontainer.addEventListener('click', tuto7);
-        }
+        };
 
         const tuto5 = async () => {
             this.tutorialcontainer.removeEventListener('click', tuto5);
-            await this.hint.hideBubble();
-            this.paloma.setText("Pourriez-vous l'aider à retrouver sa position sur la carte ?");
-            this.paloma.displayBubble();
-            this.tutorialcontainer.addEventListener('click', tuto6);
-        }
-
-        const tuto4 = async () => {
-            this.tutorialcontainer.removeEventListener('click', tuto4);
-            this.hint.setText("...et je ne sais même pas où je suis !");
-            await this.hint.focusBubble();
-            this.tutorialcontainer.addEventListener('click', tuto5);
-        }
-
-        const tuto3 = async () => {
-            this.tutorialcontainer.removeEventListener('click', tuto3)
             await this.paloma.hideBubble();
             this.hint.setText("Non, je n'arrive plus à retrouver mon ami...");
-            this.hint.displayBubble();
-            this.tutorialcontainer.addEventListener('click', tuto4);
-        }
+            await this.hint.displayBubble();
+            this.tutorialcontainer.addEventListener('click', tuto6);
+        };
 
-        const tuto2 = async () => {
-            this.tutorialcontainer.removeEventListener('click', tuto2)
+        const tuto4 = async () => {
+            this.tutorialcontainer.removeEventListener('click', tuto4)
             await this.hint.hideBubble();
             this.paloma.setText("Tu n'as pas l'air en forme dis-donc, ça va ?");
+            await this.paloma.displayBubble();
+            this.tutorialcontainer.addEventListener('click', tuto5);
+        };
+
+        const tuto3 = async () => {
+            this.tutorialcontainer.removeEventListener('click', tuto3);
+            this.paloma.hideBubble();
+            await this.mask.unset();
+            await this.mask.set({ cx: '50%', cy: '100%', rx: 'max(100%, calc(35rem + 20%))', ry: 'calc(min(25vw, 25vh, 10rem) + 2rem)' });
+            await this.hint.walkIn();
+            this.hint.setText("Salut.");
+            await this.hint.displayBubble();
+            this.paloma.displayInformation();
+            this.tutorialcontainer.addEventListener('click', tuto4);
+        };
+
+        const tuto2 = async () => {
+            this.tutorialcontainer.removeEventListener('click', tuto2);
+            this.paloma.hideBubble();
+            await this.mask.unset();
+            await waitPromise(200);
+            this.paloma.setOrientation('west');
+            await waitPromise(300);
+            this.paloma.setText('Vous pouvez annuler la partie en cours en haut à gauche.');
+            await this.mask.set({ cx: 0, cy: 0, r: '6rem' });
             this.paloma.displayBubble();
             this.tutorialcontainer.addEventListener('click', tuto3);
-        }
+        };
 
         const tuto1 = async () => {
             this.tutorialcontainer.removeEventListener('click', tuto1)
-            this.paloma.hideBubble();
-            await this.paloma.hideInformation();
-            await waitPromise(200);
-            this.paloma.setOrientation('east');
-            await waitPromise(300);
-            await this.mask.hint();
-            await this.hint.walkIn();
-            this.hint.setText("Salut.");
-            this.hint.displayBubble();
-            this.paloma.displayInformation();
+            await this.paloma.hideBubble();
+            await this.mask.set({ cx: '100%', cy: 0, rx: '10rem', ry: '6rem' });
+            this.paloma.setText('Vous pouvez activer ou désactiver la musique et les effets sonores en haut à droite.');
+            await this.paloma.displayBubble();
             this.tutorialcontainer.addEventListener('click', tuto2);
-        }
+        };
 
         this.tutorialcontainer.addEventListener('click', tuto1);
     }

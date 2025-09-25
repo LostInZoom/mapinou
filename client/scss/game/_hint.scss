@@ -1,5 +1,9 @@
 @use '../colors';
 
+$color-thought : colors.$main-color-dark;
+$color-lost : #a77822;
+$color-wrong : #c44343;
+
 .level-hint-container {
     position: absolute;
     bottom: 0;
@@ -9,7 +13,7 @@
 
     display: flex;
 
-    pointer-events: all;
+    pointer-events: none;
     user-select: none;
 }
 
@@ -45,35 +49,52 @@
     justify-content: center;
     align-items: center;
 
-    background-color: colors.$main-color-dark;
+    background-color: $color-thought;
     color: colors.$main-color-light;
     border-radius: .4rem;
 
-    // height: min(25vw, 25vh);
-    // max-height: 10rem;
-    margin: auto 1rem auto 1rem;
+    margin: auto 2rem auto 1rem;
     padding: .6rem .8rem;
 
     transform: scale(0);
-    transition: transform .2s cubic-bezier(0.36, 0, 0.66, -0.56);
+    transition: transform .2s cubic-bezier(0.36, 0, 0.66, -0.56), background .2s linear;
 
     &.pop {
         transform: scale(1);
-        transition: transform .2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        transition: transform .2s cubic-bezier(0.34, 1.56, 0.64, 1), background .2s linear;
     }
 
     &.focus {
         transform: scale(1.1);
     }
 
-    // &.thought {
-    //     opacity: 0;
-    //     transition: opacity .2s linear;
+    &::before {
+        content: '';
+        position: absolute;
+        top: calc(50% - .3rem);
+        left: -1rem;
+        height: 1rem;
+        width: 1.1rem;
+        clip-path: polygon(0 50%, 100% 100%, 100% 0);
+        background-color: $color-thought;
+        transition: background .2s linear;
+    }
 
-    //     &.pop {
-    //         opacity: 1;
-    //     }
-    // }
+    &.lost {
+        background-color: $color-lost;
+
+        &::before {
+            background-color: $color-lost;
+        }
+    }
+
+    &.wrong {
+        background-color: colors.$score-enemies-dark;
+
+        &::before {
+            background-color: colors.$score-enemies-dark;
+        }
+    }
 
     // &.lost,
     // &.wrong {
@@ -86,16 +107,7 @@
     //     }
     // }
 
-    &::before {
-        content: '';
-        position: absolute;
-        top: calc(50% - .3rem);
-        left: -1rem;
-        height: 1rem;
-        width: 1.1rem;
-        clip-path: polygon(0 50%, 100% 100%, 100% 0);
-        background-color: colors.$main-color-dark;
-    }
+
 }
 
 .level-hint-vector {

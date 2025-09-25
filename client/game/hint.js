@@ -15,7 +15,7 @@ class Hint {
         this.orientation = 'east';
         this.frame = 0;
         this.injured = false;
-        this.transition = 200;
+        this.transition = 300;
 
         this.container = makeDiv(null, 'level-hint-container');
         this.character = makeDiv(null, 'level-hint-character hidden');
@@ -59,9 +59,9 @@ class Hint {
 
     async focusBubble() {
         addClass(this.bubble, 'focus');
-        await waitPromise(200);
+        await waitPromise(this.transition);
         removeClass(this.bubble, 'focus');
-        await waitPromise(200);
+        await waitPromise(this.transition);
     }
 
     setText(text) {
@@ -98,21 +98,22 @@ class Hint {
         this.container.offsetWidth;
     }
 
-    update(type, text, callback) {
+    setType(type) {
+        ['thought', 'lost', 'wrong'].forEach(c => removeClass(this.bubble, c));
+        addClass(this.bubble, type);
+        this.type = type;
+    }
+
+    async update(type, text, callback) {
         callback = callback || function () { };
         if (type !== this.type) {
-            this.type = type;
-            removeClass(this.bubble, 'pop');
-            wait(this.transition, () => {
-                this.bubble.remove();
-                this.createBubble(type, text);
-                addClass(this.bubble, 'pop');
-                wait(this.transition, () => {
-                    callback();
-                });
-            });
+            this.setType(type);
+            this.setText(text);
+            await this.focusBubble();
+            callback();
         } else {
             if (this.type === 'thought') {
+                this.setType(type);
                 this.setText(text);
                 callback();
             }

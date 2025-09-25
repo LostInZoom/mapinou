@@ -153,75 +153,30 @@ class TutorialMask {
         removeClass(this.container, 'hidden');
     }
 
-    async hint() {
-        addClass(this.ellipse, 'hint');
-    }
-
-    async setClass(className) {
-        this.maskClass = className;
-        addClass(this.ellipse, className);
+    async set(options) {
+        if (options.cx !== undefined) {
+            this.ellipse.setAttribute('cx', options.cx);
+        }
+        if (options.cy !== undefined) {
+            this.ellipse.setAttribute('cy', options.cy);
+        }
+        if (options.rx !== undefined) {
+            this.ellipse.setAttribute('rx', options.rx);
+        }
+        if (options.ry !== undefined) {
+            this.ellipse.setAttribute('ry', options.ry);
+        }
+        if (options.r !== undefined) {
+            this.ellipse.setAttribute('rx', options.r);
+            this.ellipse.setAttribute('ry', options.r);
+        }
         await waitPromise(300);
     }
 
-    async unsetClass() {
-        removeClass(this.ellipse, this.maskClass);
-        this.maskClass = undefined;
+    async unset() {
+        this.ellipse.setAttribute('rx', '0');
+        this.ellipse.setAttribute('ry', '0');
         await waitPromise(300);
-    }
-
-    async hideMask() {
-        addClass(this.ellipse, 'collapse');
-    }
-
-    async displayMask() {
-        removeClass(this.ellipse, 'collapse');
-    }
-
-
-
-    // prepareEllipse(position) {
-    //     let [top, left] = [undefined, undefined];
-    //     if ('left' in position) {
-    //         left = this.getPixelValue(position.left);
-    //     }
-    //     else if ('right' in position) {
-    //         left = this.getWidth() - this.getPixelValue(position.right);
-    //     }
-    //     if ('top' in position) {
-    //         top = this.getPixelValue(position.top);
-    //     }
-    //     else if ('bottom' in position) {
-    //         top = this.getHeight() - this.getPixelValue(position.bottom);
-    //     }
-    //     if (top || left) {
-    //         this.ellipse.setAttribute('cx', left);
-    //         this.ellipse.setAttribute('cy', top);
-    //     }
-    // }
-
-    // async animateEllipse(options) {
-    //     if (options.rx) {
-    //         this.ellipse.setAttribute('rx', this.getPixelValue(options.rx));
-    //     }
-    //     if (options.ry) {
-    //         this.ellipse.setAttribute('ry', this.getPixelValue(options.ry));
-    //     }
-    //     await waitPromise(300);
-    // }
-
-    // async hideEllipse() {
-    //     this.ellipse.setAttribute('rx', '0');
-    //     this.ellipse.setAttribute('ry', '0');
-    //     await waitPromise(300);
-    // }
-
-    getPixelValue(value) {
-        if (value.includes('rem')) {
-            return remToPx(parseFloat(value.replace('rem', '')));
-        }
-        if (value.includes('%')) {
-            return this.getWidth() * parseFloat(value.replace('%', '')) / 100;
-        }
     }
 }
 

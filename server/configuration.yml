@@ -166,12 +166,12 @@ levels:
     player: [3.5607160720497193,45.504232060218484]
     target: [3.741964538569108,45.55022042474076]
     hints:
-      0: À l'ouest de la ville de Lyon
-      6: Entre St-Étienne et Clermont-Ferrand
-      8: Au sud-ouest de la ville d'Ambert
-      10: Entre St-Amant-Roche-Savine et St-Germain-l'Herm
-      11: Au sud-ouest de Fournols
-      13: Au hameau de La Colombière, double-cliquez sur votre position
+      0: Je crois que je suis à l'ouest de la ville de Lyon.
+      6: Entre St-Étienne et Clermont-Ferrand il me semble.
+      8: Ah oui, au sud-ouest de la ville d'Ambert.
+      10: Entre St-Amant-Roche-Savine et St-Germain-l'Herm.
+      11: C'est bien ça ! Au sud-ouest de Fournols !
+      13: Enfin, je suis dans le hameau de La Colombière !
     enemies:
       - [3.5891028350278966,45.491286197997574]
       - [3.588019736289834,45.515975273288184]

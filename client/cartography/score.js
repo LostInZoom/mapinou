@@ -58,6 +58,10 @@ class Score {
         }
     }
 
+    getLeftPosition() {
+        return this.container.getBoundingClientRect().left;
+    }
+
     start() {
         if (this.state === 'stopped') { this.setState('default'); }
         this.stop();

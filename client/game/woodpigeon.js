@@ -11,14 +11,14 @@ class Woodpigeon {
 
         this.alive = true;
         this.state = 'walk';
-        this.orientation = 'west';
+        this.orientation = 'east';
         this.frame = 0;
         this.framenumber = 3;
         this.framerate = 200;
 
         this.container = makeDiv(null, 'woodpigeon-container');
 
-        this.character = makeDiv(null, 'woodpigeon-character hidden');
+        this.character = makeDiv(null, 'woodpigeon-character out-left');
         this.charimage = document.createElement('img');
         this.reload();
         this.charimage.alt = 'woody';
@@ -33,15 +33,24 @@ class Woodpigeon {
         this.parent.append(this.container);
         this.animateFrame();
         this.container.offsetWidth;
-        removeClass(this.character, 'hidden');
     }
 
     async walkIn() {
+        removeClass(this.character, 'out-left');
         await waitPromise(2000);
         this.frame = 0;
         this.framenumber = 2;
         this.framerate = 500;
         this.setState('idle');
+    }
+
+    async flyOut() {
+        addClass(this.character, 'out-right');
+        this.setState('fly');
+        await waitPromise(1000);
+        this.frame = 0;
+        this.framenumber = 2;
+        this.framerate = 500;
     }
 
     async displayBubble() {
@@ -62,6 +71,13 @@ class Woodpigeon {
     async hideInformation() {
         addClass(this.information, 'hidden');
         await waitPromise(300);
+    }
+
+    async focusBubble() {
+        addClass(this.bubblecontainer, 'focus');
+        await waitPromise(200);
+        removeClass(this.bubblecontainer, 'focus');
+        await waitPromise(200);
     }
 
     reload() {
