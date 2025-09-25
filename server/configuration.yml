@@ -74,17 +74,15 @@ game:
   invulnerability: 3000
   routing: 12.5
   wrong:
-    - Aïe, non, pas là !
-    - Non non, pas ici !
-    - Ouch, Tu veux ma mort ?!
-    - Prends ton temps avant de cliquer n'importe où !
-    - Eh, tu veux que je te morde ?!
+    - Aïe aïe aïe, pas par là !
+    - Et non, c'est pas ici !
+    - Pas par là.
+    - Je ne suis pas ici.
   lost:
-    - Hé ho ! Tu t'égares...
-    - Non, c'est pas par là !
-    - Mais écoute-moi, tu vas te perdres !
-    - Mes indications sont pas assez claires ?
-    - Où tu vas comme ça ?
+    - Tu t'égares...
+    - Ce n'est pas par là...
+    - Mauvaise direction.
+    - Tu refroidis !
 ###########################
 #### FORM DEFINITION ######
 ###########################
@@ -163,38 +161,51 @@ consent:
 levels:
   - type: tutorial
     name: "Tutoriel"
-    player: [3.5607160720497193,45.504232060218484]
-    target: [3.741964538569108,45.55022042474076]
+    player:
+      - 3.5606535069060783
+      - 45.50418210896211
+    target:
+      - 3.631482150631996
+      - 45.575270134996
     hints:
-      0: Je crois que je suis à l'ouest de la ville de Lyon.
-      6: Entre St-Étienne et Clermont-Ferrand il me semble.
-      8: Ah oui, au sud-ouest de la ville d'Ambert.
-      10: Entre St-Amant-Roche-Savine et St-Germain-l'Herm.
-      11: C'est bien ça ! Au sud-ouest de Fournols !
-      13: Enfin, je suis dans le hameau de La Colombière !
+      '0': Je suis à l'ouest de la ville de Lyon... Zoome sur la carte.
+      '5.69': Entre St-Étienne et Clermont-Ferrand.
+      '6.69': Tu chauffes ! Je suis au sud-ouest d'Ambert !
+      '8.70': Entre St-Amant-Roche-Savine et St-Germain-l'Herm.
+      '9.70': Tu approches ! Au sud-ouest de Fournols !
+      '11.70': Bravo, je suis dans le hameau de La Colombière ! Clique sur ma position pour terminer.
     enemies:
-      - [3.5891028350278966,45.491286197997574]
-      - [3.588019736289834,45.515975273288184]
-      - [3.6127788326561507,45.497240656813894]
-      - [3.6318083843088247,45.49725362798065]
-      - [3.663120421178209,45.51831989564912]
-      - [3.694075467553683,45.51860817504424]
-      - [3.7282743304201134,45.54380236684891]
-      - [3.6190975823646476,45.542915891045745]
-      - [3.636248217769057,45.56781305524764]
-      - [3.644740890465124,45.53639115011499]
-      - [3.6992120343482786,45.546318900483904]
-      - [3.6764900475517597,45.553593565608566]
+      - type: eagle
+        coordinates:
+          - 3.6053695686278218
+          - 45.52148087560539
+      - type: hunter
+        coordinates:
+          - 3.5935070032788303
+          - 45.55193744042495
+      - type: snake
+        coordinates:
+          - 3.575856864403079
+          - 45.51925468662327
     helpers:
-      - [3.576301842229193,45.519260260104765]
-      - [3.600610253817467,45.48481341036346]
-      - [3.613377110635374,45.53048865898132]
-      - [3.651153064963168,45.50359554095096]
-      - [3.682939951291738,45.51360147101689]
-      - [3.654087860996387,45.551191847563416]
-      - [3.7180748586842203,45.52810168682577]
-      - [3.7297718219987406,45.55675942421688]
-      - [3.7423176932567546,45.51605641047329]
+      - - 3.5881618639436965
+        - 45.51602999170174
+      - - 3.5872467631944005
+        - 45.529751478222664
+      - - 3.589145701014104
+        - 45.49152372525788
+      - - 3.5563246035877114
+        - 45.54099074940416
+      - - 3.626570946237024
+        - 45.54944045068723
+      - - 3.6361556387163034
+        - 45.56781330845115
+      - - 3.6000759733532846
+        - 45.5759845617043
+      - - 3.573961397747439
+        - 45.56027460434609
+      - - 3.63195626603391
+        - 45.5208564147226
   - type: experience
     name: "Niveau 1"
     index: "piaget"

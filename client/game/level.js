@@ -96,12 +96,8 @@ class Level extends Page {
 
     phase2(callback) {
         callback = callback || function () { };
-
-        this.score.pop();
-        this.score.setState('default');
-        this.score.start();
-
         this.phase = 2;
+
         this.basemap.disableInteractions();
         this.basemap.createCharacters(this, this.parameters);
 

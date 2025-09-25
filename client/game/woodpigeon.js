@@ -37,20 +37,38 @@ class Woodpigeon {
 
     async walkIn() {
         removeClass(this.character, 'out-left');
+        this.setState('walk');
+        this.setOrientation('east');
         await waitPromise(2000);
         this.frame = 0;
-        this.framenumber = 2;
-        this.framerate = 500;
+        this.setState('idle');
+    }
+
+    async walkOut() {
+        addClass(this.character, 'out-left');
+        this.setState('walk');
+        this.setOrientation('west');
+        await waitPromise(2000);
+        this.frame = 0;
         this.setState('idle');
     }
 
     async flyOut() {
         addClass(this.character, 'out-right');
         this.setState('fly');
+        this.setOrientation('east');
         await waitPromise(1000);
         this.frame = 0;
-        this.framenumber = 2;
-        this.framerate = 500;
+        this.setState('idle');
+    }
+
+    async flyIn() {
+        removeClass(this.character, 'out-right');
+        this.setState('fly');
+        this.setOrientation('west');
+        await waitPromise(1000);
+        this.frame = 0;
+        this.setState('idle');
     }
 
     async displayBubble() {
@@ -75,9 +93,13 @@ class Woodpigeon {
 
     async focusBubble() {
         addClass(this.bubblecontainer, 'focus');
-        await waitPromise(200);
+        await waitPromise(100);
         removeClass(this.bubblecontainer, 'focus');
         await waitPromise(200);
+    }
+
+    async setTransparent() {
+        addClass(this.bubble, 'transparent');
     }
 
     reload() {
@@ -85,6 +107,8 @@ class Woodpigeon {
     }
 
     setState(state) {
+        if (state === 'idle') { this.framenumber = 2; this.framerate = 500; }
+        else { this.framenumber = 3; this.framerate = 200; }
         this.state = state;
         this.reload();
     }

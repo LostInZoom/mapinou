@@ -87,7 +87,7 @@ class TutorialMask {
     constructor(options) {
         this.parent = options.parent;
 
-        this.container = makeDiv(null, 'tutorial-mask hidden');
+        this.container = makeDiv(null, 'tutorial-mask');
         this.parent.append(this.container);
 
         this.svgns = "http://www.w3.org/2000/svg";
@@ -145,12 +145,14 @@ class TutorialMask {
         return this.container.offsetHeight;
     }
 
-    hide() {
+    async hide() {
         addClass(this.container, 'hidden');
+        await waitPromise(300);
     }
 
-    reveal() {
+    async reveal() {
         removeClass(this.container, 'hidden');
+        await waitPromise(300);
     }
 
     async set(options) {

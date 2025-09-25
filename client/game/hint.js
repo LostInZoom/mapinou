@@ -17,6 +17,8 @@ class Hint {
         this.injured = false;
         this.transition = 300;
 
+        this.currentText = '';
+
         this.container = makeDiv(null, 'level-hint-container');
         this.character = makeDiv(null, 'level-hint-character hidden');
         this.charimage = document.createElement('img');
@@ -59,12 +61,13 @@ class Hint {
 
     async focusBubble() {
         addClass(this.bubble, 'focus');
-        await waitPromise(this.transition);
+        await waitPromise(100);
         removeClass(this.bubble, 'focus');
         await waitPromise(this.transition);
     }
 
     setText(text) {
+        this.currentText = text;
         this.bubble.innerHTML = text;
     }
 
@@ -114,8 +117,14 @@ class Hint {
         } else {
             if (this.type === 'thought') {
                 this.setType(type);
-                this.setText(text);
-                callback();
+                if (text !== this.currentText) {
+                    this.setText(text);
+                    await this.focusBubble();
+                    callback();
+                } else {
+                    this.setText(text);
+                    callback();
+                }
             }
         }
     }
