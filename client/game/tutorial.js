@@ -106,6 +106,10 @@ class Tutorial extends Page {
             this.hideTutorial();
             await waitPromise(300);
             this.paloma.flyIn();
+
+
+
+
             this.basemap.enableInteractions();
             this.basemap.addListener('click', selectionListener);
             this.hint.activateUpdate();
@@ -119,40 +123,6 @@ class Tutorial extends Page {
             await this.paloma.focusBubble();
             this.tutorialcontainer.addEventListener('click', tuto11);
         }
-
-        // const tuto17 = async () => {
-        //     this.tutorialcontainer.removeEventListener('click', tuto17);
-        //     this.paloma.setText("Attention, si vous cliquez au mauvais endroit, vous aurez un malus de 5 points.");
-        //     await this.paloma.focusBubble();
-        //     this.tutorialcontainer.addEventListener('click', tuto18);
-        // }
-
-        // const tuto16 = async () => {
-        //     this.tutorialcontainer.removeEventListener('click', tuto16);
-        //     await this.paloma.hideBubble();
-        //     await this.mask.set({ cx: this.score.getLeftPosition(), cy: 0, rx: '5rem', ry: '5rem' })
-        //     this.score.pop();
-        //     this.score.setState('default');
-        //     this.score.start();
-        //     await waitPromise(300);
-        //     this.paloma.setText("Voici votre score, il augmente petit à petit, vous devez le garder au plus bas.");
-        //     await this.paloma.displayBubble();
-        //     this.tutorialcontainer.addEventListener('click', tuto17);
-        // }
-
-        // const tuto10 = async () => {
-        //     this.tutorialcontainer.removeEventListener('click', tuto15);
-        //     this.paloma.setText("Cliquez sur la carte à l'endroit où vous pensez avoir trouvé Lapinou. CEST LE LAPION QUI DIT CA A LA FIN ");
-        //     await this.paloma.focusBubble();
-        //     this.tutorialcontainer.addEventListener('click', tuto16);
-        // }
-
-        // const tuto14 = async () => {
-        //     this.tutorialcontainer.removeEventListener('click', tuto14);
-        //     this.paloma.setText("Il vous dira également si vous vous perdez.");
-        //     await this.paloma.focusBubble();
-        //     this.tutorialcontainer.addEventListener('click', tuto15);
-        // }
 
         const tuto9 = async () => {
             this.tutorialcontainer.removeEventListener('click', tuto9);
@@ -496,6 +466,18 @@ class Tutorial extends Page {
     async hideTutorial() {
         addClass(this.tutorialcontainer, 'hidden');
         await waitPromise(300);
+    }
+
+    async displayPhase(number) {
+        let phasecontainer = makeDiv(null, 'level-phase-container');
+        let title = makeDiv(null, 'level-phase-title', 'Phase ' + number);
+        let text;
+        if (number === 1) { text = "Retrouvez la position de Lapinou en navigant sur la carte" }
+        else { text = "Rejoignez votre ami lapin en vous déplaçant sur la carte" }
+        let subtitle = makeDiv(null, 'level-phase-subtitle', text);
+        phasecontainer.append(title, subtitle);
+        this.container.append(phasecontainer);
+        this.container.offsetWidth;
     }
 
     routing() {

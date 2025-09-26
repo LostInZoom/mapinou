@@ -7,7 +7,7 @@ import Score from "../cartography/score";
 import Target from '../characters/target';
 
 import { pointExtent, randomPointInCircle, within } from "../cartography/analysis";
-import { addClass, easingIncrement, makeDiv, removeClass, wait } from "../utils/dom";
+import { addClass, easingIncrement, makeDiv, removeClass, wait, waitPromise } from "../utils/dom";
 import { ajaxPost } from '../utils/ajax';
 import { easeInOutSine, easeOutExpo } from '../utils/math';
 import Hint from './hint';
@@ -61,40 +61,41 @@ class Level extends Page {
         // });
     }
 
-    phase1(callback) {
+    async phase1(callback) {
         callback = callback || function () { };
         this.phase = 1;
-
-        let activeWrong = false;
-        const selectionListener = (e) => {
-            let target = e.lngLat.toArray();
-            let player = this.parameters.player;
-            if (within(target, player, this.params.game.tolerance.target)) {
-                this.hint.end(callback);
-            } else {
-                if (!activeWrong) {
-                    activeWrong = true;
-                    addClass(this.basemap.getContainer(), 'wrong');
-                    this.score.addModifier('position');
-                    wait(500, () => { removeClass(this.basemap.getContainer(), 'wrong'); });
-                    this.hint.injure(300, () => {
-                        activeWrong = false;
-                    });
+        this.displayPhase(1, () => {
+            let activeWrong = false;
+            const selectionListener = (e) => {
+                let target = e.lngLat.toArray();
+                let player = this.parameters.player;
+                if (within(target, player, this.params.game.tolerance.target)) {
+                    this.hint.end(callback);
+                } else {
+                    if (!activeWrong) {
+                        activeWrong = true;
+                        addClass(this.basemap.getContainer(), 'wrong');
+                        this.score.addModifier('position');
+                        wait(500, () => { removeClass(this.basemap.getContainer(), 'wrong'); });
+                        this.hint.injure(300, () => {
+                            activeWrong = false;
+                        });
+                    }
                 }
             }
-        }
 
-        this.score.pop();
-        this.score.setState('default');
-        this.score.start();
+            this.score.pop();
+            this.score.setState('default');
+            this.score.start();
 
-        this.basemap.enableInteractions();
-        this.hint = new Hint({ level: this });
-        this.basemap.addListener('click', selectionListener);
-        this.listening = true;
+            this.basemap.enableInteractions();
+            this.hint = new Hint({ level: this });
+            this.basemap.addListener('click', selectionListener);
+            this.listening = true;
+        });
     }
 
-    phase2(callback) {
+    async phase2(callback) {
         callback = callback || function () { };
         this.phase = 2;
 
@@ -282,6 +283,40 @@ class Level extends Page {
                 }
             });
         });
+    }
+
+    async displayPhase(number, callback) {
+        callback = callback || function () { };
+
+        let phasecontainer = makeDiv(null, 'level-phase-container');
+        let textcontainer = makeDiv(null, 'level-phase-text');
+        let title = makeDiv(null, 'level-phase-title', 'Phase ' + number);
+        let text;
+        if (number === 1) { text = "Retrouvez la position de Lapinou en navigant sur la carte" }
+        else { text = "Rejoignez votre ami lapin en vous déplaçant sur la carte" }
+        let subtitle = makeDiv(null, 'level-phase-subtitle', text);
+        let clicktocontinue = makeDiv(null, 'level-phase-continue', 'Cliquez pour continuer');
+        textcontainer.append(title, subtitle);
+        phasecontainer.append(textcontainer, clicktocontinue);
+        this.container.append(phasecontainer);
+        this.container.offsetWidth;
+
+        addClass(textcontainer, 'reveal');
+        await waitPromise(1000);
+        addClass(subtitle, 'reveal');
+        addClass(clicktocontinue, 'reveal');
+
+        const listener = () => {
+            phasecontainer.removeEventListener('click', listener);
+            removeClass(clicktocontinue, 'reveal');
+            addClass(textcontainer, 'hide');
+            wait(1000, () => {
+                phasecontainer.remove();
+                callback();
+            });
+        }
+
+        phasecontainer.addEventListener('click', listener);
     }
 
     routing() {
