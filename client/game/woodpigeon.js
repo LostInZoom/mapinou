@@ -102,6 +102,10 @@ class Woodpigeon {
         addClass(this.bubble, 'transparent');
     }
 
+    async unsetTransparent() {
+        removeClass(this.bubble, 'transparent');
+    }
+
     reload() {
         this.charimage.src = this.params.sprites[`woodpigeon:${this.state}_${this.orientation}_${this.frame}`];
     }

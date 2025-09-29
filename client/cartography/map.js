@@ -328,6 +328,17 @@ class Basemap {
         });
     }
 
+    removeListener(type, listener) {
+        this.map.off(type, listener);
+        let index = this.listeners.indexOf({
+            type: type,
+            listener: listener
+        });
+        if (index !== -1) {
+            this.listeners.splice(index, 1);
+        }
+    }
+
     removeListeners() {
         for (let i = 0; i < this.listeners.length; i++) {
             const l = this.listeners[i];

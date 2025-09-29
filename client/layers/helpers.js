@@ -33,6 +33,16 @@ class Helpers extends Characters {
         this.characters.forEach(c => { c.hide(); });
     }
 
+    getVisibleHelpers() {
+        let visible = [];
+        this.characters.forEach(c => {
+            if (c.isVisible()) {
+                visible.push(c);
+            }
+        });
+        return visible;
+    }
+
     handle(player) {
         const position = player.getCoordinates();
         for (let i = 0; i < this.characters.length; i++) {

@@ -61,6 +61,10 @@ class Characters extends Layer {
         }
     }
 
+    getCharacters() {
+        return this.characters;
+    }
+
     getActiveCharacters() {
         let actives = [];
         this.characters.forEach(c => {

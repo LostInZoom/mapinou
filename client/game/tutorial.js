@@ -1,5 +1,6 @@
-import { within } from "../cartography/analysis";
+import { centroid, within } from "../cartography/analysis";
 import Score from "../cartography/score";
+import Levels from "../pages/levels";
 import Page from "../pages/page";
 import { addClass, makeDiv, removeClass, wait, waitPromise } from "../utils/dom";
 import { easeInOutSine } from "../utils/math";
@@ -43,20 +44,20 @@ class Tutorial extends Page {
             if (this.listening) {
                 this.listening = false;
                 this.clear(() => {
-                    this.toLevels(false);
+                    this.toLevels();
                 });
             }
         });
 
-        this.phase1(() => {
-            this.phase2(() => {
+        // this.phase1(() => {
+        //     this.phase2(() => {
 
-            });
-        });
-
-        // this.phase2(() => {
-
+        //     });
         // });
+
+        this.ending(() => {
+
+        });
     }
 
     async phase1(callback) {
@@ -69,7 +70,12 @@ class Tutorial extends Page {
             let target = e.lngLat.toArray();
             let player = this.parameters.player;
             if (within(target, player, this.params.game.tolerance.target)) {
-                this.hint.end(callback);
+                this.score.unpop();
+                this.score.stop();
+
+                this.mask.reveal().then(() => {
+                    this.hint.end(callback);
+                });
             } else {
                 if (!activeWrong) {
                     activeWrong = true;
@@ -107,14 +113,18 @@ class Tutorial extends Page {
             await waitPromise(300);
             this.paloma.flyIn();
 
+            this.displayPhase(1, () => {
+                this.score.reset();
+                this.score.pop();
+                this.score.setState('default');
+                this.score.start();
 
-
-
-            this.basemap.enableInteractions();
-            this.basemap.addListener('click', selectionListener);
-            this.hint.activateUpdate();
-            this.basemap.render();
-            this.hint.displayBubble();
+                this.basemap.enableInteractions();
+                this.basemap.addListener('click', selectionListener);
+                this.hint.activateUpdate();
+                this.basemap.render();
+                this.hint.displayBubble();
+            });
         }
 
         const tuto10 = async () => {
@@ -186,6 +196,8 @@ class Tutorial extends Page {
 
         const tuto3 = async () => {
             this.tutorialcontainer.removeEventListener('click', tuto3);
+            this.score.stop();
+            this.score.unpop();
             this.paloma.hideBubble();
             await this.mask.unset();
             this.paloma.setText('Maintenant, commençons !');
@@ -196,20 +208,33 @@ class Tutorial extends Page {
             this.tutorialcontainer.addEventListener('click', tuto4);
         };
 
+        const tuto2bis = async () => {
+            this.tutorialcontainer.removeEventListener('click', tuto2bis);
+            await this.paloma.hideBubble();
+            await this.mask.unset();
+            await this.mask.set({ cx: this.score.getLeftPosition(), cy: "2.25rem", rx: "4rem", ry: "3rem" });
+            this.score.pop();
+            this.score.setState('default');
+            this.score.start();
+            this.paloma.setText('Voici votre score, vous devez le garder le plus bas possible.');
+            await this.paloma.displayBubble();
+            this.tutorialcontainer.addEventListener('click', tuto3);
+        };
+
         const tuto2 = async () => {
             this.tutorialcontainer.removeEventListener('click', tuto2);
             this.paloma.hideBubble();
             await this.mask.unset();
             this.paloma.setText('Vous pouvez annuler la partie en cours en haut à gauche.');
-            await this.mask.set({ cx: 0, cy: 0, r: '6rem' });
+            await this.mask.set({ cx: "2.25rem", cy: "2.25rem", r: '3rem' });
             this.paloma.displayBubble();
-            this.tutorialcontainer.addEventListener('click', tuto3);
+            this.tutorialcontainer.addEventListener('click', tuto2bis);
         };
 
         const tuto1 = async () => {
-            this.tutorialcontainer.removeEventListener('click', tuto1)
+            this.tutorialcontainer.removeEventListener('click', tuto1);
             await this.paloma.hideBubble();
-            await this.mask.set({ cx: '100%', cy: 0, rx: '10rem', ry: '6rem' });
+            await this.mask.set({ cx: 'calc(100% - 4rem)', cy: "2.25rem", rx: '4rem', ry: '3rem' });
             this.paloma.setText('Vous pouvez activer ou désactiver la musique et les effets sonores en haut à droite.');
             await this.paloma.displayBubble();
             this.tutorialcontainer.addEventListener('click', tuto2);
@@ -222,12 +247,12 @@ class Tutorial extends Page {
         callback = callback || function () { };
         this.phase = 2;
 
+        //REMOVE
+        // this.mask.hide();
+        this.paloma.unsetTransparent();
+
         this.paloma.walkIn();
         this.paloma.setOrientation('west');
-
-        this.score.pop();
-        this.score.setState('default');
-        this.score.start();
 
         this.basemap.disableInteractions();
         this.basemap.createCharacters(this, this.parameters);
@@ -239,7 +264,26 @@ class Tutorial extends Page {
         });
 
         let visible = false;
-        this.basemap.addListener('render', () => {
+        this.listening = true;
+        let helperTutorial = false;
+
+        const vege2 = async () => {
+            this.tutorialcontainer.removeEventListener('click', vege2);
+            await this.paloma.hideBubble();
+            this.hideTutorial();
+
+            helperTutorial = true;
+            this.basemap.addListener('render', mapListener);
+        };
+
+        const vege1 = async () => {
+            this.tutorialcontainer.removeEventListener('click', vege1);
+            this.paloma.setText(`Les manger fera baisser votre score de ${Math.abs(this.params.game.score.modifier['helpers'])} points.`);
+            await this.paloma.focusBubble();
+            this.tutorialcontainer.addEventListener('click', vege2);
+        };
+
+        const mapListener = async () => {
             let threshold = this.params.game.routing;
             let zoom = this.basemap.getZoom();
             if (zoom >= threshold && !visible) {
@@ -252,23 +296,142 @@ class Tutorial extends Page {
                 this.basemap.helpers.hide();
                 this.basemap.enemies.hideAreas();
             }
-        });
 
-        const tuto3 = async () => {
-            this.tutorialcontainer.removeEventListener('click', tuto3);
-            this.paloma.hideInformation();
+            if (!helperTutorial) {
+                let visible = this.basemap.helpers.getVisibleHelpers();
+                if (visible.length > 0) {
+                    let h = visible[0];
+                    if (this.basemap.isVisible(h.getCoordinates(), 50)) {
+                        this.basemap.player.stop();
+                        this.paloma.unsetTransparent();
+
+                        this.mask.reveal();
+                        let px = this.basemap.getPixelAtCoordinates(h.getCoordinates());
+                        if (px[0] < this.mask.getWidth() / 2) { this.paloma.setOrientation('west'); }
+                        else { this.paloma.setOrientation('east'); }
+
+                        await this.displayTutorial();
+                        await this.mask.set({ cx: px[0], cy: px[1], rx: '3rem', ry: '3rem' });
+                        this.basemap.removeListener('render', mapListener);
+
+                        this.paloma.setText("Vous pouvez trouver des légumes sur votre chemin.");
+                        await this.paloma.displayBubble();
+                        this.paloma.displayInformation();
+                        this.tutorialcontainer.addEventListener('click', vege1);
+                    }
+                }
+            }
+        }
+
+        this.basemap.addListener('render', mapListener);
+
+        const endtuto = async () => {
+            this.tutorialcontainer.removeEventListener('click', endtuto);
             await this.paloma.hideBubble();
             await this.hideTutorial();
 
-            this.basemap.enemies.spawn(1000, () => {
-                this.listening = true;
+            this.displayPhase(2, () => {
                 this.basemap.enableInteractions();
+            });
+        }
+
+        const tuto9 = async () => {
+            this.tutorialcontainer.removeEventListener('click', tuto9);
+            this.paloma.setText("Allez-y, essayez !");
+            await this.paloma.focusBubble();
+            this.tutorialcontainer.addEventListener('click', endtuto);
+
+        }
+
+        const tuto8 = async () => {
+            this.tutorialcontainer.removeEventListener('click', tuto8);
+            this.paloma.setText("Lorsque de vos déplacements, votre score augmente plus rapidement.");
+            await this.paloma.focusBubble();
+            this.tutorialcontainer.addEventListener('click', tuto9);
+
+        }
+
+        const tuto7 = async () => {
+            this.tutorialcontainer.removeEventListener('click', tuto7);
+            this.score.pop();
+            this.score.start();
+            this.paloma.setText("Lorsque vous ne bougez pas, votre score augmente d'un point par seconde.");
+            await this.paloma.focusBubble();
+            this.tutorialcontainer.addEventListener('click', tuto8);
+        }
+
+        const tuto6 = async () => {
+            this.tutorialcontainer.removeEventListener('click', tuto6);
+            await this.paloma.hideBubble();
+
+            this.basemap.ease({
+                center: this.basemap.player.getCoordinates(),
+                duration: 1000
+            }, async () => {
                 this.basemap.enableMovement(win => {
                     if (win) {
                         this.basemap.disableInteractions();
                         this.clear(callback);
                     }
                 });
+                this.paloma.setText("Lorsque des bordures sont visibles autour de l'écran, cela signifie que vous pouvez vous déplacer sur la carte.");
+                await this.paloma.displayBubble();
+                this.tutorialcontainer.addEventListener('click', tuto7);
+            });
+        }
+
+        const tuto5bis = async () => {
+            this.tutorialcontainer.removeEventListener('click', tuto5bis);
+            this.paloma.setText(`Traverser cette zone fera augmenter votre score de ${this.params.game.score.modifier['enemies']} points.`);
+            await this.paloma.focusBubble();
+            this.tutorialcontainer.addEventListener('click', tuto6);
+        };
+
+        const tuto5 = async () => {
+            this.tutorialcontainer.removeEventListener('click', tuto5);
+            this.paloma.setText("Cette zone n'est visible qu'à partir d'un certain niveau de zoom.");
+            await this.paloma.focusBubble();
+            this.tutorialcontainer.addEventListener('click', tuto5bis);
+        }
+
+        const tuto4 = async () => {
+            this.tutorialcontainer.removeEventListener('click', tuto4);
+            let centers = [];
+            let enemies = this.basemap.enemies.getCharacters();
+            enemies.forEach(e => { centers.push(e.getCoordinates()) });
+
+            await this.paloma.hideBubble();
+            this.paloma.setOrientation('north');
+            await waitPromise(300);
+
+            this.basemap.ease({
+                center: centroid(centers),
+                zoom: this.params.game.routing,
+                duration: 1000
+            }, async () => {
+                this.paloma.setText("Chacun possède une zone de chasse de taille différente.");
+                await this.paloma.displayBubble();
+                this.paloma.setOrientation('south');
+                this.tutorialcontainer.addEventListener('click', tuto5);
+            });
+        }
+
+        const tuto3 = async () => {
+            this.tutorialcontainer.removeEventListener('click', tuto3);
+            this.paloma.hideInformation();
+            await this.paloma.hideBubble();
+            await this.mask.unset();
+            await this.hideTutorial();
+            this.mask.hide();
+
+            this.basemap.enemies.spawn(1000, async () => {
+                this.endWoodpigeon();
+                this.paloma.setOrientation('south');
+                this.paloma.setTransparent();
+                await this.displayTutorial();
+                this.paloma.setText("Attention, il y a des prédateurs sur votre chemin : des serpents, des aigles et des chasseurs.");
+                await this.paloma.displayBubble();
+                this.tutorialcontainer.addEventListener('click', tuto4);
             });
         }
 
@@ -282,7 +445,7 @@ class Tutorial extends Page {
             else { this.paloma.setOrientation('east'); }
             await this.mask.set({ cx: px[0], cy: px[1], rx: '3rem', ry: '3rem' });
             this.basemap.target.spawn(async () => {
-                this.paloma.setText('Et voilà son ami. Il va falloir que tu cours le retrouver !');
+                this.paloma.setText('Et voilà son ami. Maintenant, Vous devez aller le retrouver !');
                 await this.paloma.displayBubble();
                 this.paloma.displayInformation();
                 this.tutorialcontainer.addEventListener('click', tuto3);
@@ -295,22 +458,11 @@ class Tutorial extends Page {
             if (px[0] < this.mask.getWidth() / 2) { this.paloma.setOrientation('west'); }
             else { this.paloma.setOrientation('east'); }
             await this.mask.set({ cx: px[0], cy: px[1], rx: '3rem', ry: '3rem' });
-            this.paloma.setText('Bravo ! Tu as trouvé Lapinou !');
+            this.paloma.setText('Bravo ! Vous avez trouvé Lapinou !');
             this.paloma.displayInformation();
             await this.paloma.displayBubble();
             this.tutorialcontainer.addEventListener('click', tuto2);
         };
-
-        //     this.basemap.enemies.spawn(1000, () => {
-        //         this.listening = true;
-        //         this.basemap.enableInteractions();
-        //         this.basemap.enableMovement(win => {
-        //             if (win) {
-        //                 this.basemap.disableInteractions();
-        //                 this.clear(callback);
-        //             }
-        //         });
-        //     });
 
         this.basemap.player.spawn(() => {
             this.dataExtent = this.basemap.getExtentForData();
@@ -321,141 +473,50 @@ class Tutorial extends Page {
         });
     }
 
-    ending() {
-        this.score.stop()
-        this.endScore = this.score.get();
-        this.score.unpop(() => { this.score.destroy(); });
+    async ending() {
+        const tuto4 = async () => {
+            this.tutorialcontainer.removeEventListener('click', tuto4);
+            this.paloma.hideInformation();
+            await this.paloma.hideBubble();
+            this.paloma.setState('fly');
+            await waitPromise(1000);
+            await this.paloma.flyOut();
+            await this.hideTutorial();
 
-        let results = {
-            session: this.params.session.index,
-            tier: this.tier,
-            level: this.level,
-            score: this.endScore,
+            this.toLevels();
         }
 
-        const clearing = 2;
-        let cleared = 0;
-        const toLeaderBoard = () => {
-            if (++cleared === clearing) { this.leaderboard(); }
-        };
+        const tuto3 = async () => {
+            this.tutorialcontainer.removeEventListener('click', tuto3);
+            this.paloma.setText("Amusez-vous bien !");
+            await this.paloma.focusBubble();
+            this.tutorialcontainer.addEventListener('click', tuto4);
+        }
 
-        ajaxPost('results', results, hs => {
-            this.highscores = hs.highscores;
-            toLeaderBoard();
-        });
+        const tuto2 = async () => {
+            this.tutorialcontainer.removeEventListener('click', tuto2);
+            this.paloma.setText("Par contre, vous ne pouvez faire chaque niveau qu'une fois.");
+            await this.paloma.focusBubble();
+            this.tutorialcontainer.addEventListener('click', tuto3);
+        }
 
-        this.basemap.fit(this.dataExtent, {
-            easing: easeInOutSine,
-            padding: { top: 100, bottom: 50, left: 50, right: 50 },
-            curve: 1.42,
-            speed: 1.2
-        }, toLeaderBoard);
-    }
+        const tuto1 = async () => {
+            this.tutorialcontainer.removeEventListener('click', tuto1);
+            this.paloma.setText("Vous pouvez refaire ce tutoriel avec moi quand vous voulez.");
+            await this.paloma.focusBubble();
+            this.tutorialcontainer.addEventListener('click', tuto2);
+        }
 
-    leaderboard() {
-        this.app.progress();
-        this.canceler.remove();
+        this.paloma.walkIn();
 
-        this.highscoreContainer = makeDiv(null, 'highscore-container');
-        this.highscoreMap = makeDiv(null, 'highscore-map');
-        this.highscoreScore = makeDiv(null, 'highscore-score', 0);
-        this.highscoreLeaderboardContainer = makeDiv(null, 'highscore-leaderboard-container');
-        this.highscoreLeaderboard = makeDiv(null, 'highscore-leaderboard no-scrollbar');
-        this.continue = makeDiv(null, 'highscore-continue-button', "Continuer")
+        this.centerWoodpigeon();
+        this.paloma.setOrientation('south');
+        await this.displayTutorial();
+        this.paloma.setText("Bravo, vous avez retrouvé l'ami de Lapinou !");
+        await this.paloma.displayBubble();
+        this.paloma.displayInformation();
 
-        this.highscoreLeaderboardContainer.append(this.highscoreScore, this.highscoreLeaderboard)
-        this.highscoreContainer.append(this.highscoreMap, this.highscoreLeaderboardContainer, this.continue);
-        this.container.append(this.highscoreContainer);
-
-        this.highscoreContainer.offsetWidth;
-        addClass(this.highscoreContainer, 'pop');
-
-        let c = this.parameters.target;
-        let r = this.params.game.tolerance.target;
-        let hsmap = new Basemap({
-            app: this.app,
-            parent: this.highscoreMap,
-            class: 'minimap',
-            interactive: false,
-            extent: pointExtent(c, r * 2)
-        }, () => {
-            hsmap.loadSprites().then(() => {
-                let hsRabbits = new Rabbits({
-                    id: 'leaderboard-rabbits',
-                    basemap: hsmap,
-                    level: this
-                });
-                let hsTarget = new Target({
-                    layer: hsRabbits,
-                    colors: ['brown', 'sand', 'grey'],
-                    color: 'random',
-                    coordinates: randomPointInCircle(c, r)
-                });
-                let hsPlayer = new Target({
-                    layer: hsRabbits,
-                    colors: ['brown', 'sand', 'grey'],
-                    color: 'random',
-                    coordinates: randomPointInCircle(c, r)
-                });
-
-                let delay = 300;
-                wait(delay, () => {
-                    hsTarget.spawn();
-                    hsPlayer.spawn();
-                });
-
-                delay += 200;
-                wait(delay, () => {
-                    addClass(this.highscoreScore, 'pop');
-                    addClass(this.continue, 'pop');
-                });
-
-                delay += 500;
-                wait(delay, () => {
-                    addClass(this.highscoreScore, 'incrementing');
-                    easingIncrement({
-                        element: this.highscoreScore,
-                        maximum: this.endScore,
-                        duration: 1000,
-                        easing: easeOutExpo
-                    }, () => {
-                        removeClass(this.highscoreScore, 'incrementing');
-                        addClass(this.highscoreScore, 'stop');
-                        this.continue.addEventListener('click', () => {
-                            removeClass(this.highscoreContainer, 'pop');
-                            hsRabbits.despawnCharacters(() => {
-                                hsRabbits.destroy();
-                                hsmap.remove();
-                                this.toLevels(true);
-                            });
-                        }, { once: true })
-                    });
-                })
-
-                this.highscores.sort((a, b) => a.score - b.score);
-                let personal;
-                for (let e = 1; e < this.highscores.length; e++) {
-                    let entry = this.highscores[e];
-                    let boardEntry = makeDiv(null, 'highscore-leaderboard-entry');
-                    let html = `${e}.`;
-                    if (this.params.session.index === entry.session) {
-                        html += ' Vous';
-                        addClass(boardEntry, 'active');
-                        personal = boardEntry;
-                    }
-                    let boardPlace = makeDiv(null, 'highscore-leaderboard-place', html);
-                    let boardScore = makeDiv(null, 'highscore-leaderboard-score', entry.score);
-                    boardEntry.append(boardPlace, boardScore);
-                    this.highscoreLeaderboard.append(boardEntry);
-                }
-
-                // Scroll to the user result
-                if (personal) {
-                    let topScroll = personal.offsetTop;
-                    this.highscoreLeaderboard.scrollTop = topScroll - this.highscoreLeaderboard.offsetHeight / 2;
-                }
-            });
-        });
+        this.tutorialcontainer.addEventListener('click', tuto1);
     }
 
     async displayTutorial() {
@@ -538,7 +599,15 @@ class Tutorial extends Page {
         tasks.forEach(task => task(checkDone));
     }
 
-    toLevels(update) {
+    endWoodpigeon() {
+        addClass(this.tutorialcontainer, 'end');
+    }
+
+    centerWoodpigeon() {
+        removeClass(this.tutorialcontainer, 'end');
+    }
+
+    toLevels() {
         this.basemap.unsetMinZoom();
         this.destroy();
 
@@ -548,9 +617,43 @@ class Tutorial extends Page {
             this.app.page = new Levels({
                 app: this.app,
                 position: 'current',
-                update: update
+                update: true
             });
         });
+    }
+
+    async displayPhase(number, callback) {
+        callback = callback || function () { };
+
+        let phasecontainer = makeDiv(null, 'level-phase-container');
+        let textcontainer = makeDiv(null, 'level-phase-text');
+        let title = makeDiv(null, 'level-phase-title', 'Phase ' + number);
+        let text;
+        if (number === 1) { text = "Retrouvez la position de Lapinou en navigant sur la carte" }
+        else { text = "Rejoignez votre ami lapin en vous déplaçant sur la carte" }
+        let subtitle = makeDiv(null, 'level-phase-subtitle', text);
+        let clicktocontinue = makeDiv(null, 'level-phase-continue', 'Cliquez pour continuer');
+        textcontainer.append(title, subtitle);
+        phasecontainer.append(textcontainer, clicktocontinue);
+        this.container.append(phasecontainer);
+        this.container.offsetWidth;
+
+        addClass(textcontainer, 'reveal');
+        await waitPromise(1000);
+        addClass(subtitle, 'reveal');
+        addClass(clicktocontinue, 'reveal');
+
+        const listener = () => {
+            phasecontainer.removeEventListener('click', listener);
+            removeClass(clicktocontinue, 'reveal');
+            addClass(textcontainer, 'hide');
+            wait(1000, () => {
+                phasecontainer.remove();
+                callback();
+            });
+        }
+
+        phasecontainer.addEventListener('click', listener);
     }
 }
 

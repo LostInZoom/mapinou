@@ -25,6 +25,10 @@
             pointer-events: none;
         }
     }
+
+    &.end {
+        align-items: end;
+    }
 }
 
 .tutorial-mask {

@@ -144,9 +144,16 @@ function pointExtent(coordinates, radius) {
     return [minX, minY, maxX, maxY];
 }
 
+function centroid(array) {
+    let points = [];
+    array.forEach(c => { points.push(turf.point(c)); })
+    let fc = turf.featureCollection(points);
+    return turf.centroid(fc).geometry.coordinates;
+}
+
 export {
     buffer, flatten, bufferAroundPolygon,
     middle, within, project, angle,
     randomPointInCircle, toLongLat, mergeExtents,
-    pointExtent
+    pointExtent, centroid
 }

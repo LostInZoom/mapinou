@@ -168,12 +168,12 @@ levels:
       - 3.631482150631996
       - 45.575270134996
     hints:
-      '0': Je suis à l'ouest de la ville de Lyon... Zoome sur la carte.
+      '0': Je suis à l'ouest de la ville de Lyon.
       '5.69': Entre St-Étienne et Clermont-Ferrand.
       '6.69': Tu chauffes ! Je suis au sud-ouest d'Ambert !
       '8.70': Entre St-Amant-Roche-Savine et St-Germain-l'Herm.
       '9.70': Tu approches ! Au sud-ouest de Fournols !
-      '11.70': Bravo, je suis dans le hameau de La Colombière ! Clique sur ma position pour terminer.
+      '11.70': Bravo, je suis dans le hameau de La Colombière ! Clique sur ma position pour continuer.
     enemies:
       - type: eagle
         coordinates:
@@ -188,24 +188,16 @@ levels:
           - 3.575856864403079
           - 45.51925468662327
     helpers:
-      - - 3.5881618639436965
-        - 45.51602999170174
-      - - 3.5872467631944005
-        - 45.529751478222664
-      - - 3.589145701014104
-        - 45.49152372525788
-      - - 3.5563246035877114
-        - 45.54099074940416
-      - - 3.626570946237024
-        - 45.54944045068723
-      - - 3.6361556387163034
-        - 45.56781330845115
-      - - 3.6000759733532846
-        - 45.5759845617043
       - - 3.573961397747439
         - 45.56027460434609
+      - - 3.6000759733532846
+        - 45.5759845617043
+      - - 3.626570946237024
+        - 45.54944045068723
       - - 3.63195626603391
         - 45.5208564147226
+      - - 3.6361556387163034
+        - 45.56781330845115
   - type: experience
     name: "Niveau 1"
     index: "piaget"

@@ -79,6 +79,10 @@ class Score {
         this.running = false;
     }
 
+    reset() {
+        this.value = 0;
+    }
+
     update(value) {
         if (this.value + value > 0) { this.value += value; }
         else { this.value = 0 }

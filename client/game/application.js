@@ -163,7 +163,7 @@ class Application {
     }
 
     getProgression(previous) {
-        if (this.debug) { return { tier: 2, level: 0 }; }
+        if (this.debug) { return { tier: 0, level: 0 }; }
         if (previous) {
             if (this.progression.level === 0) {
                 return { tier: this.progression.tier - 1, level: 0 }
