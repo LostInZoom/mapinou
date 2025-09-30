@@ -1,16 +1,51 @@
 {
     "name": "Mapinou",
-    "short_name": "mapinou",
+    "short_name": "Mapinou",
     "description": "A game about cartogaphic navigation.",
     "icons": [
         {
-        "src": "./img/mapinou-512x512.png",
-        "sizes": "512x512",
-        "type": "image/png"
+            "src": "./img/mapinou-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "./img/mapinou-384x384.png",
+            "sizes": "384x384",
+            "type": "image/png"
+        },
+        {
+            "src": "./img/mapinou-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "./img/mapinou-152x152.png",
+            "sizes": "152x152",
+            "type": "image/png"
+        },
+        {
+            "src": "./img/mapinou-144x144.png",
+            "sizes": "144x144",
+            "type": "image/png"
+        },
+        {
+            "src": "./img/mapinou-128x128.png",
+            "sizes": "128x128",
+            "type": "image/png"
+        },
+        {
+            "src": "./img/mapinou-96x96.png",
+            "sizes": "96x96",
+            "type": "image/png"
+        },
+        {
+            "src": "./img/mapinou-72x72.png",
+            "sizes": "72x72",
+            "type": "image/png"
         }
     ],
     "start_url": "/mapinou",
     "display": "fullscreen",
-    "theme_color": "#764ABC",
-    "background_color": "#764ABC"
+    "theme_color": "#F7F2DA",
+    "background_color": "#F7F2DA"
 }
