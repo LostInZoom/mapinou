@@ -206,7 +206,7 @@
         border-radius: 50%;
     }
 
-    &::before {
+    &.level::before {
         content: "Continuer";
         position: absolute;
         z-index: 500;
@@ -216,12 +216,13 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
+        font-family: 'Vincendo';
         font-size: .9rem;
         border-radius: .4rem;
 
         padding: .4rem .6rem;
-        background-color: colors.$main-color-dark;
-        color: colors.$main-color-light;
+        background-color: colors.$main-color-light;
+        color: colors.$main-color-dark;
 
         opacity: 0;
         transition: opacity .3s linear;

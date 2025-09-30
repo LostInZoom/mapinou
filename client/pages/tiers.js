@@ -85,7 +85,7 @@ class TierPanel extends Panel {
             minimapcontainer.setAttribute('x', level.target[0]);
             minimapcontainer.setAttribute('y', level.target[1]);
 
-            let minimap = makeDiv(null, 'levels-minimap');
+            let minimap = makeDiv(null, 'levels-minimap level');
             let state = makeDiv(null, 'levels-state');
 
             minimap.append(state);
@@ -470,7 +470,7 @@ class TutorialPanel extends Panel {
             parent: this.minimap,
             class: 'minimap',
             center: level.target,
-            zoom: this.basemap.getZoom() + 1,
+            zoom: this.basemap.getZoom(),
             interactive: false
         });
 
