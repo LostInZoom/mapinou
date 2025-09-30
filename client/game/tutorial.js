@@ -17,6 +17,7 @@ class Tutorial extends Page {
         this.tier = this.options.tier;
         this.level = this.options.level;
         this.parameters = this.app.options.levels[this.tier];
+        this.first = this.options.first;
 
         this.options.app.forbidRabbits();
         this.score = new Score({
@@ -49,14 +50,8 @@ class Tutorial extends Page {
             }
         });
 
-        // this.phase1(() => {
-        //     this.phase2(() => {
-
-        //     });
-        // });
-
-        this.ending(() => {
-
+        this.phase1(() => {
+            this.phase2(() => { this.ending() });
         });
     }
 
@@ -89,12 +84,6 @@ class Tutorial extends Page {
             }
         }
 
-        // await this.hint.walkIn();
-        // this.hint.activateUpdate();
-        // this.basemap.addListener('click', selectionListener);
-        // await this.hint.displayBubble();
-        // this.basemap.enableInteractions();
-
         await this.paloma.walkIn();
         this.paloma.setText("Bonjour, je suis Paloma.<br>Je vais vous guider pendant ce tutoriel !");
         await waitPromise(300);
@@ -109,8 +98,7 @@ class Tutorial extends Page {
             this.paloma.setState('fly');
             await waitPromise(1000);
             await this.paloma.flyOut();
-            this.hideTutorial();
-            await waitPromise(300);
+            await this.hideTutorial();
             this.paloma.flyIn();
 
             this.displayPhase(1, () => {
@@ -180,8 +168,6 @@ class Tutorial extends Page {
             this.tutorialcontainer.addEventListener('click', tuto6);
         };
 
-        // await this.mask.set({ cx: '50%', cy: '100%', rx: 'max(100%, calc(35rem + 20%))', ry: 'calc(min(25vw, 25vh, 10rem) + 2rem)' });
-
         const tuto4 = async () => {
             this.tutorialcontainer.removeEventListener('click', tuto4);
             this.paloma.hideBubble();
@@ -216,7 +202,7 @@ class Tutorial extends Page {
             this.score.pop();
             this.score.setState('default');
             this.score.start();
-            this.paloma.setText('Voici votre score, vous devez le garder le plus bas possible.');
+            this.paloma.setText('Votre score apparaît ici. Gardez-le le plus bas possible.');
             await this.paloma.displayBubble();
             this.tutorialcontainer.addEventListener('click', tuto3);
         };
@@ -247,10 +233,7 @@ class Tutorial extends Page {
         callback = callback || function () { };
         this.phase = 2;
 
-        //REMOVE
-        // this.mask.hide();
         this.paloma.unsetTransparent();
-
         this.paloma.walkIn();
         this.paloma.setOrientation('west');
 
@@ -269,9 +252,9 @@ class Tutorial extends Page {
 
         const vege2 = async () => {
             this.tutorialcontainer.removeEventListener('click', vege2);
+            this.mask.unset();
             await this.paloma.hideBubble();
             this.hideTutorial();
-
             helperTutorial = true;
             this.basemap.addListener('render', mapListener);
         };
@@ -327,25 +310,52 @@ class Tutorial extends Page {
 
         const endtuto = async () => {
             this.tutorialcontainer.removeEventListener('click', endtuto);
+            this.paloma.hideInformation();
             await this.paloma.hideBubble();
+            this.paloma.setState('fly');
+            await waitPromise(1000);
+            await this.paloma.flyOut();
             await this.hideTutorial();
+            this.paloma.flyIn();
 
             this.displayPhase(2, () => {
+                this.score.start();
+                this.score.pop();
                 this.basemap.enableInteractions();
+                this.basemap.enableMovement(win => {
+                    if (win) { this.clear(callback); }
+                });
             });
         }
 
         const tuto9 = async () => {
             this.tutorialcontainer.removeEventListener('click', tuto9);
-            this.paloma.setText("Allez-y, essayez !");
-            await this.paloma.focusBubble();
-            this.tutorialcontainer.addEventListener('click', endtuto);
+            this.score.setState('default');
+            this.score.unpop(this.score.stop);
+            removeClass(this.basemap.maskcontainer, 'routable');
+            await this.paloma.hideBubble();
+            await this.hideTutorial();
 
+            this.basemap.fit(this.dataExtent, {
+                easing: easeInOutSine,
+                duration: 1000,
+                padding: { top: 100, bottom: 50, left: 50, right: 50 }
+            }, async () => {
+                this.centerWoodpigeon();
+                this.paloma.unsetTransparent();
+                this.mask.reveal();
+                await this.displayTutorial();
+                this.paloma.setText("Bonne route !");
+                await this.paloma.displayBubble();
+                this.paloma.displayInformation();
+                this.tutorialcontainer.addEventListener('click', endtuto);
+            });
         }
 
         const tuto8 = async () => {
             this.tutorialcontainer.removeEventListener('click', tuto8);
-            this.paloma.setText("Lorsque de vos déplacements, votre score augmente plus rapidement.");
+            this.score.setState('movement');
+            this.paloma.setText("Lors de vos déplacements, votre score augmente plus rapidement.");
             await this.paloma.focusBubble();
             this.tutorialcontainer.addEventListener('click', tuto9);
 
@@ -355,7 +365,7 @@ class Tutorial extends Page {
             this.tutorialcontainer.removeEventListener('click', tuto7);
             this.score.pop();
             this.score.start();
-            this.paloma.setText("Lorsque vous ne bougez pas, votre score augmente d'un point par seconde.");
+            this.paloma.setText("Quand vous êtes immobile, votre score augmente d'un point par seconde.");
             await this.paloma.focusBubble();
             this.tutorialcontainer.addEventListener('click', tuto8);
         }
@@ -368,13 +378,8 @@ class Tutorial extends Page {
                 center: this.basemap.player.getCoordinates(),
                 duration: 1000
             }, async () => {
-                this.basemap.enableMovement(win => {
-                    if (win) {
-                        this.basemap.disableInteractions();
-                        this.clear(callback);
-                    }
-                });
-                this.paloma.setText("Lorsque des bordures sont visibles autour de l'écran, cela signifie que vous pouvez vous déplacer sur la carte.");
+                addClass(this.basemap.maskcontainer, 'routable');
+                this.paloma.setText("Lorsque des bordures sont visibles autour de l'écran, vous pouvez vous déplacer sur la carte.");
                 await this.paloma.displayBubble();
                 this.tutorialcontainer.addEventListener('click', tuto7);
             });
@@ -389,13 +394,6 @@ class Tutorial extends Page {
 
         const tuto5 = async () => {
             this.tutorialcontainer.removeEventListener('click', tuto5);
-            this.paloma.setText("Cette zone n'est visible qu'à partir d'un certain niveau de zoom.");
-            await this.paloma.focusBubble();
-            this.tutorialcontainer.addEventListener('click', tuto5bis);
-        }
-
-        const tuto4 = async () => {
-            this.tutorialcontainer.removeEventListener('click', tuto4);
             let centers = [];
             let enemies = this.basemap.enemies.getCharacters();
             enemies.forEach(e => { centers.push(e.getCoordinates()) });
@@ -407,13 +405,21 @@ class Tutorial extends Page {
             this.basemap.ease({
                 center: centroid(centers),
                 zoom: this.params.game.routing,
-                duration: 1000
+                duration: 1000,
+                padding: { top: 0, bottom: 50, left: 0, right: 0 }
             }, async () => {
-                this.paloma.setText("Chacun possède une zone de chasse de taille différente.");
+                this.paloma.setText("Cette zone n'est visible qu'à partir d'un certain niveau de zoom.");
                 await this.paloma.displayBubble();
                 this.paloma.setOrientation('south');
-                this.tutorialcontainer.addEventListener('click', tuto5);
+                this.tutorialcontainer.addEventListener('click', tuto5bis);
             });
+        }
+
+        const tuto4 = async () => {
+            this.tutorialcontainer.removeEventListener('click', tuto4);
+            this.paloma.setText("Chacun possède une zone de chasse de taille différente.");
+            await this.paloma.focusBubble();
+            this.tutorialcontainer.addEventListener('click', tuto5);
         }
 
         const tuto3 = async () => {
@@ -445,7 +451,7 @@ class Tutorial extends Page {
             else { this.paloma.setOrientation('east'); }
             await this.mask.set({ cx: px[0], cy: px[1], rx: '3rem', ry: '3rem' });
             this.basemap.target.spawn(async () => {
-                this.paloma.setText('Et voilà son ami. Maintenant, Vous devez aller le retrouver !');
+                this.paloma.setText('Et voilà son ami. Allez le retrouver !');
                 await this.paloma.displayBubble();
                 this.paloma.displayInformation();
                 this.tutorialcontainer.addEventListener('click', tuto3);
@@ -468,7 +474,7 @@ class Tutorial extends Page {
             this.dataExtent = this.basemap.getExtentForData();
             this.basemap.fit(this.dataExtent, {
                 easing: easeInOutSine,
-                padding: { top: 100, bottom: 50, left: 50, right: 50 }
+                padding: { top: 100, bottom: 150, left: 50, right: 50 }
             }, tuto1);
         });
     }
@@ -614,10 +620,11 @@ class Tutorial extends Page {
         this.basemap.fit(this.params.interface.map.levels, {
             easing: easeInOutSine
         }, () => {
+            if (this.first) { this.app.progress(); }
             this.app.page = new Levels({
                 app: this.app,
                 position: 'current',
-                update: true
+                update: this.first
             });
         });
     }

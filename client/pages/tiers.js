@@ -340,6 +340,12 @@ class ExperiencePanel extends Panel {
             if (this.number === prognumber) {
                 addClass(this.expcontainer, 'active');
                 this.svg.innerHTML = this.page.app.options.svgs.flask;
+                let pursue = makeDiv(null, 'levels-continue-indicator bottom', 'Continuer');
+                wait(500, () => {
+                    this.experience.append(pursue);
+                    this.experience.offsetHeight;
+                    addClass(pursue, 'pop');
+                });
             }
             else if (this.number < prognumber) {
                 addClass(this.expcontainer, 'finished');
@@ -446,7 +452,8 @@ class TutorialPanel extends Panel {
                             app: this.page.app,
                             levels: this.page,
                             position: 'current',
-                            tier: this.page.getPosition()
+                            tier: this.page.getPosition(),
+                            first: this.number === prognumber ? true : false
                         });
                     });
                 });
@@ -467,22 +474,20 @@ class TutorialPanel extends Panel {
             interactive: false
         });
 
+        this.minimapcontainer.addEventListener('click', startTutorial);
+
         if (this.page.app.debug) {
             addClass(this.minimapcontainer, 'active-debug');
-            this.minimapcontainer.addEventListener('click', startTutorial);
             this.callback(this);
         } else {
             if (this.number === prognumber) {
                 addClass(this.minimapcontainer, 'active');
-                this.minimapcontainer.addEventListener('click', startTutorial);
-            }
-            else if (this.number < prognumber) {
-                addClass(this.minimapcontainer, 'finished');
-                this.state.innerHTML = this.page.app.options.svgs.check;
-            }
-            else if (this.number > prognumber) {
-                addClass(this.minimapcontainer, 'remaining');
-                this.state.innerHTML = this.page.app.options.svgs.lock;
+                let pursue = makeDiv(null, 'levels-continue-indicator bottom', 'Continuer');
+                wait(500, () => {
+                    this.minimap.append(pursue);
+                    this.minimap.offsetHeight;
+                    addClass(pursue, 'pop');
+                });
             }
 
             if (this.update) {
@@ -521,8 +526,6 @@ class TutorialPanel extends Panel {
         callback = callback || function () { };
         removeClass(this.minimapcontainer, 'active');
         wait(500, () => {
-            this.state.innerHTML = this.page.app.options.svgs.check;
-            addClass(this.minimapcontainer, 'finished');
             wait(300, callback);
         });
     }

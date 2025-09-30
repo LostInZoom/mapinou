@@ -14,8 +14,8 @@ class Application {
         this.options = options;
         this.progression = options.progression;
 
-        this.debug = true;
-        // this.progression = { tier: 1, level: 0 };
+        this.debug = false;
+        this.progression = { tier: 4, level: 3 };
 
         // Create the DOM Element
         this.container = makeDiv('application', null);
@@ -176,22 +176,24 @@ class Application {
     }
 
     progress() {
-        let t = this.progression.tier;
-        let l = this.progression.level;
-        const tier = this.options.levels[t];
-        if (tier.type === 'tier') {
-            if (l >= tier.content.length - 1) {
+        if (!this.debug) {
+            let t = this.progression.tier;
+            let l = this.progression.level;
+            const tier = this.options.levels[t];
+            if (tier.type === 'tier') {
+                if (l >= tier.content.length - 1) {
+                    this.progression.tier = t + 1;
+                    this.progression.level = 0;
+                } else {
+                    this.progression.level = l + 1;
+                }
+            } else {
                 this.progression.tier = t + 1;
                 this.progression.level = 0;
-            } else {
-                this.progression.level = l + 1;
             }
-        } else {
-            this.progression.tier = t + 1;
-            this.progression.level = 0;
+            localStorage.setItem('tier', this.progression.tier);
+            localStorage.setItem('level', this.progression.level);
         }
-        localStorage.setItem('tier', this.progression.tier);
-        localStorage.setItem('level', this.progression.level);
     }
 }
 

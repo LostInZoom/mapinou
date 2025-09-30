@@ -16,7 +16,7 @@ class Score {
         this.running = false;
 
         this.interval;
-        this.container = makeDiv(null, 'score-container');
+        this.container = makeDiv(null, 'score-container stop');
         this.text = makeDiv(null, 'score-text');
         this.textcontainer = makeDiv(null, 'score-text-container');
         this.textcontainer.append(this.text);
@@ -65,6 +65,7 @@ class Score {
     start() {
         if (this.state === 'stopped') { this.setState('default'); }
         this.stop();
+        removeClass(this.container, 'stop');
         this.running = true;
         this.increment = this.params.game.score.increment[this.state];
         this.refresh = this.params.game.score.refresh[this.state];
@@ -77,6 +78,7 @@ class Score {
     stop() {
         if (this.interval !== undefined) { clearInterval(this.interval); }
         this.running = false;
+        addClass(this.container, 'stop');
     }
 
     reset() {

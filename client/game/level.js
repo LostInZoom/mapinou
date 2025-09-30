@@ -64,12 +64,13 @@ class Level extends Page {
     async phase1(callback) {
         callback = callback || function () { };
         this.phase = 1;
-        this.displayPhase(1, () => {
+        this.displayPhase(1, async () => {
             let activeWrong = false;
             const selectionListener = (e) => {
                 let target = e.lngLat.toArray();
                 let player = this.parameters.player;
                 if (within(target, player, this.params.game.tolerance.target)) {
+                    this.score.stop();
                     this.hint.end(callback);
                 } else {
                     if (!activeWrong) {
@@ -84,13 +85,16 @@ class Level extends Page {
                 }
             }
 
+            this.hint = new Hint({ level: this });
+            await this.hint.walkIn();
+            this.basemap.addListener('click', selectionListener);
+            this.hint.activateUpdate();
+            await this.hint.displayBubble();
             this.score.pop();
             this.score.setState('default');
             this.score.start();
 
             this.basemap.enableInteractions();
-            this.hint = new Hint({ level: this });
-            this.basemap.addListener('click', selectionListener);
             this.listening = true;
         });
     }
@@ -105,7 +109,10 @@ class Level extends Page {
         this.canceler = makeDiv(null, 'level-cancel-button', this.params.svgs.helm);
         this.container.append(this.canceler);
         this.canceler.addEventListener('click', () => {
-            if (this.basemap.player.traveling) { this.basemap.player.stop(); }
+            if (this.basemap.player.traveling) {
+                this.basemap.player.stop();
+                this.score.start();
+            }
         });
 
         let visible = false;
@@ -134,13 +141,16 @@ class Level extends Page {
 
                 this.basemap.target.spawn(() => {
                     this.basemap.enemies.spawn(1000, () => {
-                        this.listening = true;
-                        this.basemap.enableInteractions();
-                        this.basemap.enableMovement(win => {
-                            if (win) {
-                                this.basemap.disableInteractions();
-                                this.clear(callback);
-                            }
+                        this.displayPhase(2, () => {
+                            this.score.start();
+                            this.listening = true;
+                            this.basemap.enableInteractions();
+                            this.basemap.enableMovement(win => {
+                                if (win) {
+                                    this.basemap.disableInteractions();
+                                    this.clear(callback);
+                                }
+                            });
                         });
                     });
                 });

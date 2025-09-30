@@ -98,90 +98,95 @@ class Player extends Rabbit {
 
         callback = callback || function () { };
 
-        // Set routing button to moving mode
-        this.level.moving();
-        // Set the sprite to moving state
-        this.setState('move');
-        this.router.stopFadeJourney();
+        if (this.start === start) {
+            // Change the score increment
+            this.level.score.setState('movement');
+            // Set routing button to moving mode
+            this.level.moving();
+            // Set the sprite to moving state
+            this.setState('move');
+            this.level.score.start();
+            this.router.stopFadeJourney();
 
-        // Retrieve the vertexes composing the calculated route
-        let vertexes = route.geometry.coordinates;
-        const destination = vertexes[vertexes.length - 1];
+            // Retrieve the vertexes composing the calculated route
+            let vertexes = route.geometry.coordinates;
+            const destination = vertexes[vertexes.length - 1];
 
-        let flower = new Flower({
-            level: this.level,
-            layer: this.layer.basemap.flowers,
-            coordinates: destination
-        });
-        this.flowers.push(flower);
+            let flower = new Flower({
+                level: this.level,
+                layer: this.layer.basemap.flowers,
+                coordinates: destination
+            });
+            this.flowers.push(flower);
 
-        // Create the path line and calculate its length
-        const line = turf.lineString(vertexes);
-        const simplified = turf.simplify(line, { tolerance: 0.0002 });
-        const svertexes = simplified.geometry.coordinates;
-        const length = turf.length(line, { units: 'meters' });
+            // Create the path line and calculate its length
+            const line = turf.lineString(vertexes);
+            const simplified = turf.simplify(line, { tolerance: 0.0002 });
+            const svertexes = simplified.geometry.coordinates;
+            const length = turf.length(line, { units: 'meters' });
 
-        // Retrieve the time
-        let lastTime = performance.now();
+            // Retrieve the time
+            let lastTime = performance.now();
 
-        // Get the speed in meters/second
-        const speed = this.params.game.speed.travel / 3.6;
+            // Get the speed in meters/second
+            const speed = this.params.game.speed.travel / 3.6;
 
-        // Start the distance counter
-        this.distance = 0;
+            // Start the distance counter
+            this.distance = 0;
 
-        // orientation fixe pour ce segment
-        this.setOrientationFromAngle(angle(svertexes[0], svertexes[1]));
-        let journey = [svertexes[0]];
+            // orientation fixe pour ce segment
+            this.setOrientationFromAngle(angle(svertexes[0], svertexes[1]));
+            let journey = [svertexes[0]];
 
-        const animation = (time) => {
-            if (this.start === start) {
-                // Calculate the elapsed time in seconds
-                const elapsed = (time - lastTime) / 1000;
-                // Calculate the distance traveled depending on the elapsed time and the speed
-                this.distance = this.distance + (elapsed * speed);
-                // Set the previous time as the current one
-                lastTime = time;
+            const animation = (time) => {
+                if (this.start === start) {
+                    // Calculate the elapsed time in seconds
+                    const elapsed = (time - lastTime) / 1000;
+                    // Calculate the distance traveled depending on the elapsed time and the speed
+                    this.distance = this.distance + (elapsed * speed);
+                    // Set the previous time as the current one
+                    lastTime = time;
 
-                // If the travelled distance is below the length of the route, continue the animation
-                if (this.distance <= length) {
-                    if (this.distance > 0) {
-                        // Calculate the position of the point along the route line
-                        let along = turf.along(line, this.distance, { units: 'meters' });
-                        this.position = along.geometry.coordinates;
+                    // If the travelled distance is below the length of the route, continue the animation
+                    if (this.distance <= length) {
+                        if (this.distance > 0) {
+                            // Calculate the position of the point along the route line
+                            let along = turf.along(line, this.distance, { units: 'meters' });
+                            this.position = along.geometry.coordinates;
 
-                        let projected = turf.nearestPointOnLine(simplified, along);
-                        let i = projected.properties.index;
-                        const before = svertexes[i];
-                        const after = svertexes[i + 1];
+                            let projected = turf.nearestPointOnLine(simplified, along);
+                            let i = projected.properties.index;
+                            const before = svertexes[i];
+                            const after = svertexes[i + 1];
 
-                        if (!journey.includes(before)) {
-                            this.setOrientationFromAngle(angle(before, after));
-                            journey.push(before);
+                            if (!journey.includes(before)) {
+                                this.setOrientationFromAngle(angle(before, after));
+                                journey.push(before);
+                            }
+
+                            this.router.updateJourney(this.position);
+                            this.setCoordinates(this.position);
+
+                            this.layer.basemap.helpers.handle(this);
+                            this.layer.basemap.enemies.handle(this);
+
+                            // If target is in range, win the level
+                            if (within(this.position, this.layer.basemap.target.getCoordinates(), this.params.game.tolerance.target)) {
+                                this.stop();
+                                callback(true);
+                            }
                         }
-
-                        this.router.updateJourney(this.position);
-                        this.setCoordinates(this.position);
-
-                        this.layer.basemap.helpers.handle(this);
-                        this.layer.basemap.enemies.handle(this);
-
-                        // If target is in range, win the level
-                        if (within(this.position, this.layer.basemap.target.getCoordinates(), this.params.game.tolerance.target)) {
-                            this.stop();
-                            callback(true);
-                        }
+                        requestAnimationFrame(animation);
                     }
-                    requestAnimationFrame(animation);
+                    else {
+                        this.setCoordinates(vertexes[vertexes.length - 1]);
+                        this.stop();
+                        callback();
+                    }
                 }
-                else {
-                    this.setCoordinates(vertexes[vertexes.length - 1]);
-                    this.stop();
-                    callback();
-                }
-            }
-        };
-        requestAnimationFrame(animation);
+            };
+            requestAnimationFrame(animation);
+        }
     }
 
     travel(destination, callback) {
@@ -197,13 +202,12 @@ class Player extends Rabbit {
         // Show the routing button and set it to routing mode
         this.level.activateMovementButton();
         this.level.routing();
+        this.level.score.stop();
 
         // Calculate the route using the router (AJAX)
         this.router.calculateRoute(destination, (route) => {
             // Make sure the map hasn't been clicked while fetching the route
             if (destination === this.destination) {
-                // Change the score increment
-                this.level.score.setState('movement');
                 this.move(route, start, callback);
             }
         });
