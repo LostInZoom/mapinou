@@ -512,7 +512,12 @@ class TutorialPanel extends Panel {
     slideOut(direction, callback) {
         removeClass(this.container, 'current');
         addClass(this.container, direction);
-        wait(500, callback);
+        wait(500, () => {
+            if (this.map) {
+                this.map.remove();
+                callback();
+            }
+        });
     }
 
     slideIn(callback) {

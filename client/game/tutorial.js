@@ -331,7 +331,7 @@ class Tutorial extends Page {
         const tuto9 = async () => {
             this.tutorialcontainer.removeEventListener('click', tuto9);
             this.score.setState('default');
-            this.score.unpop(this.score.stop);
+            this.score.unpop(() => { this.score.stop(); });
             removeClass(this.basemap.maskcontainer, 'routable');
             await this.paloma.hideBubble();
             await this.hideTutorial();
