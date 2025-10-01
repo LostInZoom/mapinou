@@ -23,6 +23,7 @@ class Player extends Rabbit {
         this.distance = 0;
         this.position = this.coordinates;
         this.start = 0;
+        this.journey = [this.coordinates];
 
         this.flowers = [];
 
@@ -76,6 +77,17 @@ class Player extends Rabbit {
     stop() {
         this.start = 0;
 
+        if (this.clic) {
+            if (this.layer.basemap.recorder.isActive()) {
+                const end = Date.now();
+                this.clic.duration = end - this.clic.start;
+                this.clic.start = new Date(this.clic.start).toISOString();
+                this.clic.end = new Date(end).toISOString();
+                console.log(this.clic)
+                this.layer.basemap.recorder.insertCustomClic(this.clic);
+            }
+        }
+
         if (this.flowers.length > 0) {
             this.flowers.shift().decay();
         }
@@ -94,8 +106,6 @@ class Player extends Rabbit {
     }
 
     move(route, start, callback) {
-        // TODO: OPTIMIZE THE MOVEMENT -> PRECALCULATE THE POSITIONS AND REDUCE THE FPS
-
         callback = callback || function () { };
 
         if (this.start === start) {
@@ -166,12 +176,14 @@ class Player extends Rabbit {
 
                             this.router.updateJourney(this.position);
                             this.setCoordinates(this.position);
+                            this.journey.push(this.position);
 
                             this.layer.basemap.helpers.handle(this);
                             this.layer.basemap.enemies.handle(this);
 
                             // If target is in range, win the level
                             if (within(this.position, this.layer.basemap.target.getCoordinates(), this.params.game.tolerance.target)) {
+                                if (this.clic) { this.clic.state = 'won'; }
                                 this.stop();
                                 callback(true);
                             }
@@ -180,6 +192,7 @@ class Player extends Rabbit {
                     }
                     else {
                         this.setCoordinates(vertexes[vertexes.length - 1]);
+                        if (this.clic) { this.clic.state = 'reached'; }
                         this.stop();
                         callback();
                     }
@@ -195,6 +208,14 @@ class Player extends Rabbit {
         if (this.traveling) { this.stop(); }
         this.traveling = true;
 
+        this.clic = {
+            start: Date.now(),
+            pixel: this.layer.basemap.getPixelAtCoordinates(destination),
+            coordinates: destination,
+            destination: null,
+            state: 'initial'
+        }
+
         this.start = performance.now();
         let start = this.start;
         this.destination = destination;
@@ -208,6 +229,10 @@ class Player extends Rabbit {
         this.router.calculateRoute(destination, (route) => {
             // Make sure the map hasn't been clicked while fetching the route
             if (destination === this.destination) {
+                this.clic.state = 'computed';
+                let vertexes = route.geometry.coordinates;
+                this.clic.destination = vertexes[vertexes.length - 1];
+
                 this.move(route, start, callback);
             }
         });

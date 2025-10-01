@@ -17,11 +17,28 @@ class Position {
         this.container.addEventListener('click', () => {
             if (this.listen) {
                 this.listen = false;
+                const start = Date.now();
+                const zoom1 = this.basemap.getZoom();
+                const center1 = this.basemap.getCenter();
                 this.basemap.ease({
                     center: this.player.getCoordinates(),
                     duration: 500,
                     easing: easeInOutSine,
                 }, () => {
+                    if (this.basemap.recorder.isActive()) {
+                        const end = Date.now();
+                        this.basemap.recorder.insertCustomInteraction({
+                            type: 'position',
+                            subtype: null,
+                            start: new Date(start).toISOString(),
+                            end: new Date(end).toISOString(),
+                            duration: end - start,
+                            center1: center1.toArray(),
+                            center2: this.basemap.getCenter().toArray(),
+                            zoom1: zoom1.toFixed(2),
+                            zoom2: this.basemap.getZoom().toFixed(2)
+                        });
+                    }
                     this.listen = true;
                 });
             }

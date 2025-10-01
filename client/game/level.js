@@ -11,6 +11,7 @@ import { addClass, easingIncrement, makeDiv, removeClass, wait, waitPromise } fr
 import { ajaxPost } from '../utils/ajax';
 import { easeInOutSine, easeOutExpo } from '../utils/math';
 import Hint from './hint';
+import Recorder from '../cartography/recorder';
 
 class Level extends Page {
     constructor(options, callback) {
@@ -29,6 +30,9 @@ class Level extends Page {
             parent: this.options.app.header,
             state: 'stopped'
         });
+        this.recorder = new Recorder({ basemap: this.basemap });
+
+        this.records = {};
 
         this.back = makeDiv(null, 'header-button left', this.params.svgs.cross);
         this.options.app.header.insert(this.back);
@@ -64,17 +68,32 @@ class Level extends Page {
     async phase1(callback) {
         callback = callback || function () { };
         this.phase = 1;
+
         this.displayPhase(1, async () => {
             let activeWrong = false;
             const selectionListener = (e) => {
                 let target = e.lngLat.toArray();
                 let player = this.parameters.player;
+                let clic = {
+                    time: new Date(Date.now()).toISOString(),
+                    pixel: [e.point.x, e.point.y],
+                    coordinates: target
+                }
+
                 if (within(target, player, this.params.game.tolerance.target)) {
                     this.score.stop();
+                    clic.correct = true;
+                    this.basemap.recorder.insertCustomClic(clic);
+                    this.basemap.recorder.off();
+                    this.records.phase1 = this.basemap.recorder.get();
+                    this.basemap.recorder.reset();
                     this.hint.end(callback);
                 } else {
                     if (!activeWrong) {
                         activeWrong = true;
+                        clic.correct = false;
+                        this.basemap.recorder.insertCustomClic(clic);
+
                         addClass(this.basemap.getContainer(), 'wrong');
                         this.score.addModifier('position');
                         wait(500, () => { removeClass(this.basemap.getContainer(), 'wrong'); });
@@ -94,6 +113,7 @@ class Level extends Page {
             this.score.setState('default');
             this.score.start();
 
+            this.basemap.recorder.on();
             this.basemap.enableInteractions();
             this.listening = true;
         });
@@ -102,6 +122,7 @@ class Level extends Page {
     async phase2(callback) {
         callback = callback || function () { };
         this.phase = 2;
+        this.basemap.recorder.reset();
 
         this.basemap.disableInteractions();
         this.basemap.createCharacters(this, this.parameters);
@@ -145,9 +166,14 @@ class Level extends Page {
                             this.score.start();
                             this.listening = true;
                             this.basemap.enableInteractions();
+                            this.basemap.recorder.on();
                             this.basemap.enableMovement(win => {
                                 if (win) {
+                                    this.basemap.recorder.off();
+                                    this.records.phase2 = this.basemap.recorder.get();
+                                    this.basemap.recorder.reset();
                                     this.basemap.disableInteractions();
+                                    console.log(this.records);
                                     this.clear(callback);
                                 }
                             });
@@ -368,6 +394,7 @@ class Level extends Page {
             (cb) => this.score.destroy(cb),
         ];
 
+        this.basemap.recorder.off();
         if (this.phase === 1) {
             tasks.push((cb) => this.hint.end(cb));
         }

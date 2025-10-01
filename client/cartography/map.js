@@ -10,6 +10,7 @@ import Rabbits from '../layers/rabbits.js';
 import { mergeExtents, project } from './analysis.js';
 import { easeInOutCubic, easeInQuint, easeOutCirc, easeOutQuint, remap } from '../utils/math.js';
 import Flowers from '../layers/flowers.js';
+import Recorder from './recorder.js';
 
 class Basemap {
     constructor(options, callback) {
@@ -90,6 +91,7 @@ class Basemap {
                 zoom: zoom,
                 canvasContextAttributes: { antialias: true },
                 style: style,
+                attributionControl: false
             });
         }
 
@@ -112,6 +114,8 @@ class Basemap {
             this.loaded();
             callback();
         });
+
+        this.recorder = new Recorder({ basemap: this });
 
         this.listeners = [];
         this.routable = false;

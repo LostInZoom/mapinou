@@ -135,7 +135,8 @@
             3s scale-breathing ease-in-out infinite .3s;
 
         &::before {
-            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            transition: transform .3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
     }
 
@@ -215,7 +216,7 @@
 
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%) scale(0);
         font-family: 'Vincendo';
         font-size: .9rem;
         border-radius: .4rem;
@@ -224,8 +225,7 @@
         background-color: colors.$main-color-light;
         color: colors.$main-color-dark;
 
-        opacity: 0;
-        transition: opacity .3s linear;
+        transition: transform .3s cubic-bezier(0.36, 0, 0.66, -0.56);
     }
 }
 
@@ -489,4 +489,25 @@
 
     border-bottom-left-radius: .4rem;
     border-bottom-right-radius: .4rem;
+}
+
+.testdiv {
+    position: absolute;
+    pointer-events: none;
+    z-index: 500;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    background-color: colors.$secondary-color-dark;
+    color: colors.$main-color-light;
+    padding: .4rem .6rem;
+    border-radius: .4rem;
+
+    opacity: .8;
 }
