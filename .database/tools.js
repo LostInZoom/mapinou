@@ -143,6 +143,7 @@ async function createTables() {
             duration integer,
             computing_duration integer,
             provider character varying(50),
+            destination geometry(Point, 4326),
             route geometry(LineString, 4326),
             CONSTRAINT navigation_pkey PRIMARY KEY (id),
             CONSTRAINT navigation_phases_key FOREIGN KEY (phase) REFERENCES data.phases(id) ON DELETE CASCADE

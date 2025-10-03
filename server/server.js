@@ -22,6 +22,9 @@ const port = 8001;
 
 const jsonParser = bodyParser.json();
 
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
+
 // app.use('/mapinou', express.static(path.join(__dirname, 'dist/mapinou')));
 app.use('/', express.static('dist'));
 
@@ -249,19 +252,43 @@ async function insertResults(data) {
 		// Navigation phase 2
 		values = [];
 		inserts = [];
+
 		phase2.clics.forEach(c => {
-			const route = 'LINESTRING(' + c.route.map(p => `${p[0]} ${p[1]}`).join(', ') + ')';
-			values.push(phase2Index, c.state, parseInt(c.pixel[0]), parseInt(c.pixel[1]), c.start, c.end, parseInt(c.duration), parseInt(c.computing), c.provider, route);
-			const base = values.length - 10;
-			inserts.push(`
-				($${base + 1}, $${base + 2}, $${base + 3}, $${base + 4}, $${base + 5}, $${base + 6}, $${base + 7}, $${base + 8}, $${base + 9},
-				ST_SetSRID(ST_GeomFromText($${base + 10}), 4326))
-			`);
+			let route = null;
+			if (c.route !== undefined && c.route.length > 0) {
+				route = 'LINESTRING(' + c.route.map(p => `${p[0]} ${p[1]}`).join(', ') + ')';
+			}
+
+			const destination = `POINT(${c.coordinates[0]} ${c.coordinates[1]})`;
+
+			values.push(
+				phase2Index,
+				c.state,
+				parseInt(c.pixel[0]),
+				parseInt(c.pixel[1]),
+				c.start,
+				c.end,
+				parseInt(c.duration),
+				parseInt(c.computing),
+				c.provider,
+				destination,
+				route
+			);
+
+			const base = values.length - 11;
+
+			inserts.push(`(
+				$${base + 1}, $${base + 2}, $${base + 3}, $${base + 4}, $${base + 5}, $${base + 6}, $${base + 7}, $${base + 8}, $${base + 9},
+				ST_SetSRID(ST_GeomFromText($${base + 10}), 4326),
+				${route ? `ST_SetSRID(ST_GeomFromText($${base + 11}), 4326)` : 'NULL'}
+			)`);
 		});
+
 		query = `
-			INSERT INTO data.navigation (phase, state, pixel_x, pixel_y, start_time, end_time, duration, computing_duration, provider, route)
-			VALUES ${inserts};
-		`
+			INSERT INTO data.navigation 
+			(phase, state, pixel_x, pixel_y, start_time, end_time, duration, computing_duration, provider, destination, route)
+			VALUES ${inserts.join(', ')}
+		`;
 		await db.query(query, values);
 
 		let highscoresQuery = `

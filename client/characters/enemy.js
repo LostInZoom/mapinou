@@ -140,7 +140,7 @@ class Eagle extends Enemy {
         this.framenumber = 3;
         this.framescale = 1;
 
-        this.feature.properties.type = 'bird';
+        this.feature.properties.type = 'eagle';
         this.feature.properties.offset = this.offset;
 
         this.layer.addCharacter(this);
