@@ -48,8 +48,8 @@ async function createTables() {
             id serial,
             tier int,
             level int,
-            player geometry(Point, 3857),
-            target geometry(Point, 3857),
+            player geometry(Point, 4326),
+            target geometry(Point, 4326),
             CONSTRAINT levels_pkey PRIMARY KEY (id)
         );
 
@@ -64,8 +64,9 @@ async function createTables() {
 
         CREATE TABLE IF NOT EXISTS data.enemies (
             id serial,
+            type character varying(20),
             level integer,
-            geom geometry(Point, 3857),
+            geom geometry(Point, 4326),
             CONSTRAINT enemies_pkey PRIMARY KEY (id),
             CONSTRAINT enemies_levels_key FOREIGN KEY (level) REFERENCES data.levels(id)
         );
@@ -73,7 +74,7 @@ async function createTables() {
         CREATE TABLE IF NOT EXISTS data.helpers (
             id serial,
             level integer,
-            geom geometry(Point, 3857),
+            geom geometry(Point, 4326),
             CONSTRAINT helpers_pkey PRIMARY KEY (id),
             CONSTRAINT helpers_levels_key FOREIGN KEY (level) REFERENCES data.levels(id)
         );
@@ -83,20 +84,69 @@ async function createTables() {
             session integer,
             level integer,
             score integer,
+            enemies integer,
+            helpers integer,
+            journey geometry(LineString, 4326),
             CONSTRAINT games_pkey PRIMARY KEY (id),
             CONSTRAINT games_sessions_key FOREIGN KEY (session) REFERENCES data.sessions(id),
             CONSTRAINT games_levels_key FOREIGN KEY (level) REFERENCES data.levels(id)
         );
 
+        CREATE TABLE IF NOT EXISTS data.phases (
+            id serial,
+            game integer,
+            number integer,
+            start_time timestamptz,
+            end_time timestamptz,
+            duration integer,
+            score integer,
+            CONSTRAINT phases_pkey PRIMARY KEY (id),
+            CONSTRAINT phases_games_key FOREIGN KEY (game) REFERENCES data.games(id) ON DELETE CASCADE
+        );
+
         CREATE TABLE IF NOT EXISTS data.interactions (
             id serial,
-            session integer,
-            level integer,
-            type character varying (100),
+            phase integer,
+            type character varying (50),
+            subtype character varying (50),
+            start_time timestamptz,
+            end_time timestamptz,
+            duration integer,
+            start_zoom numeric(4,2),
+            end_zoom numeric(4,2),
+            start_center geometry(Point, 4326),
+            end_center geometry(Point, 4326),
             CONSTRAINT interactions_pkey PRIMARY KEY (id),
-            CONSTRAINT interactions_sessions_key FOREIGN KEY (session) REFERENCES data.sessions(id),
-            CONSTRAINT interactions_levels_key FOREIGN KEY (level) REFERENCES data.levels(id)
+            CONSTRAINT interactions_phases_key FOREIGN KEY (phase) REFERENCES data.phases(id) ON DELETE CASCADE
         );
+
+        CREATE TABLE IF NOT EXISTS data.investigation (
+            id serial,
+            phase integer,
+            pixel_x integer,
+            pixel_y integer,
+            time timestamptz,
+            correct boolean,
+            geom geometry(Point, 4326),
+            CONSTRAINT investigation_pkey PRIMARY KEY (id),
+            CONSTRAINT investigation_phases_key FOREIGN KEY (phase) REFERENCES data.phases(id) ON DELETE CASCADE
+        );
+
+        CREATE TABLE IF NOT EXISTS data.navigation (
+            id serial,
+            phase integer,
+            state character varying(20),
+            pixel_x integer,
+            pixel_y integer,
+            start_time timestamptz,
+            end_time timestamptz,
+            duration integer,
+            computing_duration integer,
+            provider character varying(50),
+            route geometry(LineString, 4326),
+            CONSTRAINT navigation_pkey PRIMARY KEY (id),
+            CONSTRAINT navigation_phases_key FOREIGN KEY (phase) REFERENCES data.phases(id) ON DELETE CASCADE
+        );    
     `
     await db.query(TABLES);
 }
@@ -127,41 +177,44 @@ async function insertLevels() {
                 let level = levels[l];
 
                 if (level.player) {
-                    let insertion = `
+                    const insertion = `
                         INSERT INTO data.levels (tier, level, player, target)
                         VALUES (
-                            ${t},
-                            ${l},
-                            ST_SetSRID(ST_POINT(${level.player[0]}, ${level.player[1]}), 3857),
-                            ST_SetSRID(ST_POINT(${level.target[0]}, ${level.target[1]}), 3857)
+                            $1, $2,
+                            ST_SetSRID(ST_POINT($3, $4), 4326),
+                            ST_SetSRID(ST_POINT($5, $6), 4326)
                         )
                         RETURNING id;
                     `
-                    let result = await db.query(insertion);
-                    let index = result.rows[0].id;
+                    const values = [t, l, level.player[0], level.player[1], level.target[0], level.target[1]]
+                    let result = await db.query(insertion, values);
 
+                    let index = result.rows[0].id;
                     for (let zoom in level.hints) {
-                        let hint = `
+                        const hint = `
                             INSERT INTO data.hints (level, zoom, hint)
-                            VALUES (${index}, ${zoom}, '${level.hints[zoom]}')
-                        `
-                        await db.query(hint);
+                            VALUES ($1, $2, $3)
+                        `;
+                        const values = [index, zoom, level.hints[zoom]];
+                        await db.query(hint, values);
                     }
 
                     for (let j = 0; j < level.enemies.length; j++) {
-                        let p = level.enemies[j];
-                        let enemies = `
-                            INSERT INTO data.enemies (level, geom)
-                            VALUES (${index}, ST_SetSRID(ST_POINT(${p[0]}, ${p[1]}), 3857))
-                        `
-                        await db.query(enemies);
+                        const enemies = `
+                            INSERT INTO data.enemies (type, level, geom)
+                            VALUES ($1, $2, ST_SetSRID(ST_Point($3, $4), 4326))
+                        `;
+                        const e = level.enemies[j];
+                        const p = e.coordinates;
+                        const values = [e.type, index, p[0], p[1]];
+                        await db.query(enemies, values);
                     }
 
                     for (let j = 0; j < level.helpers.length; j++) {
                         let b = level.helpers[j];
                         let helpers = `
                             INSERT INTO data.helpers (level, geom)
-                            VALUES (${index}, ST_SetSRID(ST_POINT(${b[0]}, ${b[1]}), 3857))
+                            VALUES (${index}, ST_SetSRID(ST_POINT(${b[0]}, ${b[1]}), 4326))
                         `
                         await db.query(helpers);
                     }
@@ -169,44 +222,6 @@ async function insertLevels() {
             }
         }
     }
-
-    let s = `
-        INSERT INTO data.sessions (consent, form)
-        VALUES
-            (True, True),
-            (True, True),
-            (True, True),
-            (True, True),
-            (True, True),
-            (True, True),
-            (True, True),
-            (True, True),
-            (True, True),
-            (True, True),
-            (True, True),
-            (True, True);
-    `
-
-    await db.query(s);
-
-    // INSERT FAKE SESSIONS RESULTS
-    let helpers = `
-        INSERT INTO data.games (session, level, score)
-        VALUES
-            (1, 2, 584),
-            (2, 2, 1204),
-            (3, 2, 103),
-            (4, 2, 84),
-            (5, 2, 852),
-            (6, 2, 1),
-            (7, 2, 17),
-            (8, 2, 21),
-            (9, 2, 152),
-            (10, 2, 62),
-            (11, 2, 30),
-            (12, 2, 74);
-    `
-    await db.query(helpers);
 }
 
 async function populateResults() {

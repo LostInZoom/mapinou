@@ -445,12 +445,8 @@ class Basemap {
         const routing = () => {
             const isClose = this.getZoom() >= this.params.game.routing;
             const isVisible = this.isVisible(this.player.getCoordinates(), 0);
-            if (isClose && isVisible) {
-                this.makeRoutable();
-            }
-            else {
-                this.makeUnroutable();
-            }
+            if (isClose && isVisible) { this.makeRoutable(); }
+            else { this.makeUnroutable(); }
             this.position.update();
         }
         this.addListener('render', routing);

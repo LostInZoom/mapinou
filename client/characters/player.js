@@ -24,11 +24,33 @@ class Player extends Rabbit {
         this.position = this.coordinates;
         this.start = 0;
         this.journey = [this.coordinates];
+        this.enemies = 0;
+        this.helpers = 0;
 
         this.flowers = [];
 
         this.invulnerable = false;
         this.originColor = this.getColor();
+    }
+
+    incrementEnemies() {
+        ++this.enemies;
+    }
+
+    incrementHelpers() {
+        ++this.helpers;
+    }
+
+    getEnemiesNumber() {
+        return this.enemies;
+    }
+
+    getHelpersNumber() {
+        return this.helpers;
+    }
+
+    getJourney() {
+        return this.journey;
     }
 
     despawnRouter() {
@@ -75,18 +97,18 @@ class Player extends Rabbit {
     }
 
     stop() {
-        this.start = 0;
-
         if (this.clic) {
             if (this.layer.basemap.recorder.isActive()) {
                 const end = Date.now();
                 this.clic.duration = end - this.clic.start;
                 this.clic.start = new Date(this.clic.start).toISOString();
                 this.clic.end = new Date(end).toISOString();
-                console.log(this.clic)
+                if (this.clic.computing === undefined) { this.clic.computing = performance.now() - this.start }
                 this.layer.basemap.recorder.insertCustomClic(this.clic);
             }
         }
+
+        this.start = 0;
 
         if (this.flowers.length > 0) {
             this.flowers.shift().decay();
@@ -212,7 +234,6 @@ class Player extends Rabbit {
             start: Date.now(),
             pixel: this.layer.basemap.getPixelAtCoordinates(destination),
             coordinates: destination,
-            destination: null,
             state: 'initial'
         }
 
@@ -226,16 +247,19 @@ class Player extends Rabbit {
         this.level.score.stop();
 
         // Calculate the route using the router (AJAX)
-        this.router.calculateRoute(destination, (route) => {
-            // Make sure the map hasn't been clicked while fetching the route
-            if (destination === this.destination) {
-                this.clic.state = 'computed';
-                let vertexes = route.geometry.coordinates;
-                this.clic.destination = vertexes[vertexes.length - 1];
-
-                this.move(route, start, callback);
-            }
-        });
+        this.router.calculateRoute(destination,
+            (route) => {
+                // Make sure the map hasn't been clicked while fetching the route
+                if (destination === this.destination) {
+                    this.clic.state = 'computed';
+                    this.clic.route = route.geometry.coordinates;
+                    this.clic.computing = performance.now() - start;
+                    this.clic.provider = this.router.getProvider();
+                    this.move(route, start, callback);
+                }
+            },
+            () => { this.stop(); }
+        );
     }
 }
 

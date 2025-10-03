@@ -136,6 +136,7 @@ class Enemies extends Characters {
                     if (!player.isInvulnerable()) {
                         this.level.score.addModifier('enemies');
                         player.makeInvulnerable(this.params.game.invulnerability, 300);
+                        player.incrementEnemies();
                     }
                 }
             } else {

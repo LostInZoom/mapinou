@@ -32,7 +32,11 @@ class Level extends Page {
         });
         this.recorder = new Recorder({ basemap: this.basemap });
 
-        this.records = {};
+        this.results = {
+            session: this.params.session.index,
+            tier: this.tier,
+            level: this.level
+        };
 
         this.back = makeDiv(null, 'header-button left', this.params.svgs.cross);
         this.options.app.header.insert(this.back);
@@ -57,17 +61,12 @@ class Level extends Page {
                 });
             });
         });
-
-        // this.phase2(() => {
-        //     wait(300, () => {
-        //         this.ending();
-        //     });
-        // });
     }
 
     async phase1(callback) {
         callback = callback || function () { };
         this.phase = 1;
+        const start = Date.now();
 
         this.displayPhase(1, async () => {
             let activeWrong = false;
@@ -85,7 +84,14 @@ class Level extends Page {
                     clic.correct = true;
                     this.basemap.recorder.insertCustomClic(clic);
                     this.basemap.recorder.off();
-                    this.records.phase1 = this.basemap.recorder.get();
+                    this.results.phase1 = this.basemap.recorder.get();
+
+                    const end = Date.now();
+                    this.results.phase1.duration = end - start;
+                    this.results.phase1.start = new Date(start).toISOString();
+                    this.results.phase1.end = new Date(end).toISOString();
+                    this.results.phase1.score = this.score.get();
+
                     this.basemap.recorder.reset();
                     this.hint.end(callback);
                 } else {
@@ -122,6 +128,7 @@ class Level extends Page {
     async phase2(callback) {
         callback = callback || function () { };
         this.phase = 2;
+        const start = Date.now();
         this.basemap.recorder.reset();
 
         this.basemap.disableInteractions();
@@ -169,11 +176,23 @@ class Level extends Page {
                             this.basemap.recorder.on();
                             this.basemap.enableMovement(win => {
                                 if (win) {
+                                    const end = Date.now();
                                     this.basemap.recorder.off();
-                                    this.records.phase2 = this.basemap.recorder.get();
+                                    this.results.phase2 = this.basemap.recorder.get();
+                                    this.results.score = this.score.get();
+                                    this.results.enemies = this.basemap.player.getEnemiesNumber();
+                                    this.results.helpers = this.basemap.player.getHelpersNumber();
+
+                                    this.results.phase2.duration = end - start;
+                                    this.results.phase2.start = new Date(start).toISOString();
+                                    this.results.phase2.end = new Date(end).toISOString();
+                                    this.results.phase2.journey = this.basemap.player.getJourney();
+                                    this.results.phase2.score = this.score.get();
+
                                     this.basemap.recorder.reset();
                                     this.basemap.disableInteractions();
-                                    console.log(this.records);
+                                    this.score.stop();
+                                    this.score.unpop(() => { this.score.destroy(); });
                                     this.clear(callback);
                                 }
                             });
@@ -185,24 +204,13 @@ class Level extends Page {
     }
 
     ending() {
-        this.score.stop()
-        this.endScore = this.score.get();
-        this.score.unpop(() => { this.score.destroy(); });
-
-        let results = {
-            session: this.params.session.index,
-            tier: this.tier,
-            level: this.level,
-            score: this.endScore,
-        }
-
         const clearing = 2;
         let cleared = 0;
         const toLeaderBoard = () => {
             if (++cleared === clearing) { this.leaderboard(); }
         };
 
-        ajaxPost('results', results, hs => {
+        ajaxPost('results', this.results, hs => {
             this.highscores = hs.highscores;
             toLeaderBoard();
         });
@@ -212,7 +220,7 @@ class Level extends Page {
             padding: { top: 100, bottom: 50, left: 50, right: 50 },
             curve: 1.42,
             speed: 1.2
-        }, toLeaderBoard);
+        }, () => { toLeaderBoard(); });
     }
 
     leaderboard() {
@@ -278,7 +286,7 @@ class Level extends Page {
                     addClass(this.highscoreScore, 'incrementing');
                     easingIncrement({
                         element: this.highscoreScore,
-                        maximum: this.endScore,
+                        maximum: this.results.score,
                         duration: 1000,
                         easing: easeOutExpo
                     }, () => {

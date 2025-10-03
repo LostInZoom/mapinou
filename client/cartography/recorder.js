@@ -1,10 +1,11 @@
-import { makeDiv } from "../utils/dom";
-
 class Recorder {
     constructor(options) {
         this.options = options;
         this.basemap = this.options.basemap;
         this.active = false;
+
+        this.zooming = false;
+        this.currentZoom = undefined;
 
         this.interactions = [];
         this.clics = [];
@@ -38,11 +39,26 @@ class Recorder {
             }
         }
 
-        this.wheel = () => {
-            if (this.start === null) {
+        this.wheel = (e) => {
+            const currentZoom = e.originalEvent.deltaY < 0 ? 'in' : 'out';
+
+            const insert = () => {
+                this.insertZoom('wheel');
+                this.zooming = false;
+            };
+
+            if (!this.zooming) {
+                this.zooming = true;
                 this.startInteraction();
-                this.basemap.map.once('zoomend', () => { this.insertZoom('wheel'); });
+                this.basemap.map.once('zoomend', insert);
+            } else {
+                if (currentZoom !== this.currentZoom) {
+                    this.basemap.map.off('zoomend', insert);
+                    this.insertZoom('wheel');
+                    this.startInteraction();
+                }
             }
+            this.currentZoom = currentZoom;
         }
     }
 
@@ -94,8 +110,7 @@ class Recorder {
 
     insert(type, subtype) {
         const end = Date.now();
-        console.log('insert inter')
-        this.interactions.push({
+        const r = {
             type: type,
             subtype: subtype,
             start: new Date(this.start).toISOString(),
@@ -105,7 +120,9 @@ class Recorder {
             center2: this.basemap.getCenter().toArray(),
             zoom1: this.zoom.toFixed(2),
             zoom2: this.basemap.getZoom().toFixed(2)
-        });
+        };
+
+        this.interactions.push(r);
         this.resetInteraction();
     }
 

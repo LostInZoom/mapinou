@@ -28,21 +28,25 @@ function xhr(type, url, data, options) {
 }
 
 function ajax(method, url, data, callback) {
-    return xhr(method, url, data, { success:callback });
+    return xhr(method, url, data, { success: callback });
 }
 
-function ajaxGet(url, callback) {
-    return xhr("GET", url, undefined, { success:callback });
+function ajaxGet(url, success, error) {
+    success = success || (() => { });
+    error = error || (() => { });
+    return xhr("GET", url, undefined, { success: success, error: error });
 }
 
-function ajaxPost(url, data, callback) {
-    return xhr("POST", url, data, { success:callback });
+function ajaxPost(url, data, success, error) {
+    success = success || (() => { });
+    error = error || (() => { });
+    return xhr("POST", url, data, { success: success, error: error });
 }
 
 function parse(text) {
     try {
         return JSON.parse(text);
-    } catch(e){
+    } catch (e) {
         return text;
     }
 }

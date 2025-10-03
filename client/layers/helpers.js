@@ -57,6 +57,7 @@ class Helpers extends Characters {
                     if (within(position, helper.getCoordinates(), this.params.game.tolerance.helpers)) {
                         helper.consume();
                         this.level.score.addModifier('helpers');
+                        player.incrementHelpers();
                     }
                 }
                 else {

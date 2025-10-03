@@ -5,6 +5,7 @@
 
 import Journeys from "../layers/journeys.js";
 import { ajaxGet } from "../utils/ajax.js";
+import Credentials from "../utils/credentials.js";
 
 class Router {
     constructor(options) {
@@ -12,6 +13,10 @@ class Router {
         this.basemap = this.options.basemap;
         this.player = this.options.player;
         this.params = this.basemap.options.app.options;
+
+        this.credentials = new Credentials();
+        this.providers = ['openrouteservice', 'geoservice'];
+        this.provider = 'openrouteservice';
 
         this.position = this.options.position;
         this.journeys = new Journeys({
@@ -28,19 +33,48 @@ class Router {
         this.position = position;
     }
 
-    calculateRoute(target, callback) {
-        callback = callback || function () { };
-        let url = 'https://data.geopf.fr/navigation/itineraire?'
-            + 'resource=bdtopo-osrm'
-            + '&profile=pedestrian'
-            + '&optimization=shortest'
-            + `&start=${this.position[0]},${this.position[1]}`
-            + `&end=${target[0]},${target[1]}`
-            + '&geometryFormat=geojson'
+    getProvider() {
+        return this.provider;
+    }
 
-        ajaxGet(url, (route) => {
-            callback(route);
-        });
+    setProvider(provider) {
+        if (this.providers.includes(provider)) {
+            this.provider = provider;
+        }
+    }
+
+    calculateRoute(target, success, error) {
+        success = success || (() => { });
+        error = error || (() => { });
+
+        let url = '';
+        if (this.provider === 'geoservice') {
+            url = 'https://data.geopf.fr/navigation/itineraire?'
+                + 'resource=bdtopo-osrm'
+                + '&profile=pedestrian'
+                + '&optimization=shortest'
+                + `&start=${this.position[0]},${this.position[1]}`
+                + `&end=${target[0]},${target[1]}`
+                + '&geometryFormat=geojson'
+        }
+        else if (this.provider === 'openrouteservice') {
+            url = 'https://api.openrouteservice.org/v2/directions/foot-hiking?'
+                + `api_key=${this.credentials.openrouteservice}`
+                + `&start=${this.position[0]},${this.position[1]}`
+                + `&end=${target[0]},${target[1]}`
+        }
+
+        if (url.length > 0) {
+            ajaxGet(url,
+                (route) => {
+                    if (this.provider === 'openrouteservice') { route = route.features[0]; }
+                    success(route);
+                },
+                (e) => { error(e) }
+            );
+        } else {
+            error('wrong provider.');
+        }
     }
 
     despawnJourney() {
