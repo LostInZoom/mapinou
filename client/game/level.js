@@ -165,8 +165,6 @@ class Level extends Page {
                 easing: easeInOutSine,
                 padding: { top: 100, bottom: 50, left: 50, right: 50 }
             }, () => {
-                this.basemap.setMinZoom(this.basemap.getZoom());
-
                 this.basemap.target.spawn(() => {
                     this.basemap.enemies.spawn(1000, () => {
                         this.displayPhase(2, () => {
@@ -423,7 +421,6 @@ class Level extends Page {
     }
 
     toLevels(update) {
-        this.basemap.unsetMinZoom();
         this.destroy();
 
         this.basemap.fit(this.params.interface.map.levels, {

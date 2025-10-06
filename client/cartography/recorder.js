@@ -5,7 +5,8 @@ class Recorder {
         this.active = false;
 
         this.zooming = false;
-        this.currentZoom = undefined;
+        this.currentZoom = this.basemap.getZoom();
+        this.isSet = false;
 
         this.interactions = [];
         this.clics = [];
@@ -26,6 +27,7 @@ class Recorder {
         }
 
         this.touchstart = (e) => {
+            this.zooming = false;
             if (e.points.length === 1) {
                 this.startInteraction();
                 this.basemap.map.once('touchend', this.touchendOne);
@@ -39,26 +41,27 @@ class Recorder {
             }
         }
 
+        this.wheelinsert = () => {
+            this.insertZoom('wheel');
+            this.zooming = false;
+        }
+
         this.wheel = (e) => {
+            this.basemap.map.off('wheel', this.wheel);
             const currentZoom = e.originalEvent.deltaY < 0 ? 'in' : 'out';
-
-            const insert = () => {
-                this.insertZoom('wheel');
-                this.zooming = false;
-            };
-
             if (!this.zooming) {
                 this.zooming = true;
                 this.startInteraction();
-                this.basemap.map.once('zoomend', insert);
+                this.basemap.map.once('zoomend', this.wheelinsert);
             } else {
                 if (currentZoom !== this.currentZoom) {
-                    this.basemap.map.off('zoomend', insert);
+                    this.basemap.map.off('zoomend', this.wheelinsert);
                     this.insertZoom('wheel');
                     this.startInteraction();
                 }
             }
             this.currentZoom = currentZoom;
+            this.basemap.map.on('wheel', this.wheel);
         }
     }
 
@@ -75,6 +78,9 @@ class Recorder {
     off() {
         this.basemap.map.off('touchstart', this.touchstart);
         this.basemap.map.off('wheel', this.wheel);
+        this.basemap.map.off('zoomend', this.wheelinsert);
+        this.basemap.map.off('touchend', this.touchendOne);
+        this.basemap.map.off('touchend', this.touchendTwo);
         this.active = false;
     }
 
@@ -82,12 +88,14 @@ class Recorder {
         this.start = Date.now();
         this.center = this.basemap.getCenter();
         this.zoom = this.basemap.getZoom();
+        this.isSet = true;
     }
 
     resetInteraction() {
         this.center = null;
         this.zoom = null;
         this.start = null;
+        this.isSet = false;
     }
 
     reset() {

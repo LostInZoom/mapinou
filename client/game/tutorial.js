@@ -614,7 +614,6 @@ class Tutorial extends Page {
     }
 
     toLevels() {
-        this.basemap.unsetMinZoom();
         this.destroy();
 
         this.basemap.fit(this.params.interface.map.levels, {
