@@ -56,7 +56,7 @@ async function createTables() {
         CREATE TABLE IF NOT EXISTS data.hints (
             id serial,
             level integer,
-            zoom integer,
+            zoom numeric(4,2),
             hint character varying(1000),
             CONSTRAINT hints_pkey PRIMARY KEY (id),
             CONSTRAINT hints_levels_key FOREIGN KEY (level) REFERENCES data.levels(id)

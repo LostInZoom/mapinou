@@ -289,7 +289,6 @@ async function insertResults(data) {
 			(phase, state, pixel_x, pixel_y, start_time, end_time, duration, computing_duration, provider, destination, route)
 			VALUES ${inserts.join(', ')}
 		`;
-		console.log(query);
 		await db.query(query, values);
 
 		let highscoresQuery = `

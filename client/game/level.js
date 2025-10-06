@@ -335,7 +335,7 @@ class Level extends Page {
         let title = makeDiv(null, 'level-phase-title', 'Phase ' + number);
         let text;
         if (number === 1) { text = "Retrouvez la position de Lapinou en navigant sur la carte" }
-        else { text = "Rejoignez votre ami lapin en vous déplaçant sur la carte" }
+        else { text = "Naviguez sur la carte et guidez Lapinou pour l'aider à rejoindre son ami" }
         let subtitle = makeDiv(null, 'level-phase-subtitle', text);
         let clicktocontinue = makeDiv(null, 'level-phase-continue', 'Cliquez pour continuer');
         textcontainer.append(title, subtitle);

@@ -132,7 +132,7 @@ class Hint {
     activateUpdate() {
         const updateListener = () => {
             if (this.listen) {
-                let visible = this.basemap.isVisible(this.level.parameters.player, 50);
+                let visible = this.basemap.isVisible(this.level.parameters.player, 20);
                 let zoom = this.basemap.getZoom();
                 let [u, t, v] = [false, undefined, ''];
                 for (let [m, h] of Object.entries(this.hints)) {
