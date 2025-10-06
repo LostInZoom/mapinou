@@ -64,12 +64,7 @@ class Helper extends Character {
             easing: easeOutQuint
         }, () => {
             wait(200, () => {
-                this.animateScale({
-                    value: 0,
-                    duration: 300,
-                    overshoot: 1.1,
-                    easing: easeInQuint
-                }, () => {
+                this.despawn(() => {
                     this.destroy();
                 });
             })

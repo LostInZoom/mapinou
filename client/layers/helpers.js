@@ -16,6 +16,7 @@ class Helpers extends Characters {
         if (this.options.coordinates) {
             this.options.coordinates.forEach((coords) => {
                 let o = this.options;
+                if ('id' in o) { delete o['id']; }
                 o.coordinates = coords;
                 o.layer = this;
                 new Helper(o);

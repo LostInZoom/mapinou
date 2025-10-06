@@ -7,7 +7,7 @@ class Flower extends Character {
         this.level = options.level;
         this.orientable = false;
 
-        this.framerate = 50;
+        this.framerate = 100;
         this.framenumber = 5;
         this.state = 'grow';
         this.scale = 1;
@@ -30,8 +30,9 @@ class Flower extends Character {
     }
 
     decay() {
-        this.setState('decay');
         this.framenumber = 4;
+        this.setState('decay');
+        this.setFrame(0);
         this.animateFrame(() => {
             this.destroy();
         });

@@ -55,9 +55,9 @@ class Basemap {
                         "&Request=GetTile" +
                         "&Version=1.0.0" +
                         "&Format=image/png" +
+                        "&TileMatrix={z}" +
                         "&TileCol={x}" +
-                        "&TileRow={y}" +
-                        "&TileMatrix={z}"
+                        "&TileRow={y}"
                     ],
                     'tileSize': 256,
                 }

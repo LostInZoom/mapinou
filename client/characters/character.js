@@ -232,8 +232,6 @@ class Character {
     breathe() {
         this.startScaleAnimation = performance.now();
         let start = this.startScaleAnimation;
-
-        // Sinusoidal function to animate the scale
         const base = 0.95;
         const amplitude = 0.15;
         const period = 1000;

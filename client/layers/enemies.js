@@ -47,6 +47,7 @@ class Enemies extends Characters {
         if (this.options.elements) {
             this.options.elements.forEach(e => {
                 let o = this.options;
+                if ('id' in o) { delete o['id']; }
                 o.coordinates = e.coordinates;
                 o.layer = this;
                 if (e.type === 'hunter') { new Hunter(o); }
