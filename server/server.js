@@ -292,10 +292,10 @@ async function insertResults(data) {
 		await db.query(query, values);
 
 		let highscoresQuery = `
-				SELECT session, score
-				FROM data.games
-				WHERE level = ${level};
-			`
+			SELECT session, enemies, helpers, score
+			FROM data.games
+			WHERE level = ${level};
+		`
 		let hs = await db.query(highscoresQuery);
 		highscores.highscores = hs.rows;
 	}

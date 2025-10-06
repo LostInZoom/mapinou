@@ -303,10 +303,10 @@ class Level extends Page {
 
                 this.highscores.sort((a, b) => a.score - b.score);
                 let personal;
-                for (let e = 1; e < this.highscores.length; e++) {
+                for (let e = 0; e < this.highscores.length; e++) {
                     let entry = this.highscores[e];
                     let boardEntry = makeDiv(null, 'highscore-leaderboard-entry');
-                    let html = `${e}.`;
+                    let html = `${e + 1}.`;
                     if (this.params.session.index === entry.session) {
                         html += ' Vous';
                         addClass(boardEntry, 'active');
