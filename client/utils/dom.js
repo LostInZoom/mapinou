@@ -179,6 +179,8 @@ function easingIncrement(options, callback) {
 }
 
 function createValidation(parent, text, options, callback) {
+    callback = callback || function () { };
+
     let container = makeDiv(null, 'app-validation-container');
     let mask = makeDiv(null, 'app-validation-mask');
     let window = makeDiv(null, 'app-validation-window');

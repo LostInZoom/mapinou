@@ -280,7 +280,7 @@ async function insertResults(data) {
 			inserts.push(`(
 				$${base + 1}, $${base + 2}, $${base + 3}, $${base + 4}, $${base + 5}, $${base + 6}, $${base + 7}, $${base + 8}, $${base + 9},
 				ST_SetSRID(ST_GeomFromText($${base + 10}), 4326),
-				${route ? `ST_SetSRID(ST_GeomFromText($${base + 11}), 4326)` : 'NULL'}
+				${route ? `ST_SetSRID(ST_GeomFromText($${base + 11}), 4326)` : `$${base + 11}`}
 			)`);
 		});
 
@@ -289,6 +289,7 @@ async function insertResults(data) {
 			(phase, state, pixel_x, pixel_y, start_time, end_time, duration, computing_duration, provider, destination, route)
 			VALUES ${inserts.join(', ')}
 		`;
+		console.log(query);
 		await db.query(query, values);
 
 		let highscoresQuery = `

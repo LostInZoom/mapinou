@@ -83,49 +83,42 @@ window.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    const pwa = window.matchMedia('(display-mode: standalone)').matches;
-    if (pwa) { start(); }
-    else {
-        if (device.type === 'desktop') { start(); }
-        else {
-            if (!JSON.parse(getStorage('askInstall') ?? 'true')) { start(); }
-            else {
-                let pursue = true;
-                const firefox = navigator.userAgent.toLowerCase().includes('firefox');
+    start();
 
-                if (firefox) {
-                    pursue = false;
-                    createValidation(document.body, `Vous pouvez créer un raccourcis de Mapinou sur votre écran d'accueil, sélectionnez :<br><i>Menu</i> ▸ <i>Ajouter à l’écran d’accueil</i>."`, ["D'accord"], async () => {
-                        start();
-                    });
-                }
+    if (device.type !== 'desktop') {
+        if (JSON.parse(getStorage('askInstall') ?? 'true')) {
+            let installation = true;
+            const firefox = navigator.userAgent.toLowerCase().includes('firefox');
 
-                if (device.os === 'ios') {
-                    pursue = false;
-                    createValidation(document.body, `Vous pouvez installer Mapinou sur votre appareil, sélectionnez :<br><i>Partager</i> ▸ <i>Sur l’écran d’accueil</i>.`, ["D'accord"], async () => {
-                        start();
-                    });
-                }
+            if (firefox) {
+                installation = false;
+                createValidation(document.body, `Vous pouvez créer un raccourcis de Mapinou sur votre écran d'accueil, sélectionnez :<br><i>Menu</i> ▸ <i>Ajouter à l’écran d’accueil</i>."`, ["D'accord"]);
+            }
 
-                if (pursue) {
-                    let deferredPrompt;
-                    window.addEventListener('beforeinstallprompt', (e) => {
-                        e.preventDefault();
-                        deferredPrompt = e;
-                        createValidation(document.body, 'Voulez-vous installer Mapinou sur votre appareil ?', ['Oui', 'Non'], async (v) => {
-                            const yes = v === 0 ? true : false;
-                            if (yes) {
-                                if (!deferredPrompt) { start(); };
-                                window.addEventListener('appinstalled', () => { start(); });
+            if (device.os === 'ios') {
+                installation = false;
+                createValidation(document.body, `Vous pouvez installer Mapinou sur votre appareil, sélectionnez :<br><i>Partager</i> ▸ <i>Sur l’écran d’accueil</i>.`, ["D'accord"]);
+            }
+
+            if (installation) {
+                let deferredPrompt;
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    e.preventDefault();
+                    deferredPrompt = e;
+                    createValidation(document.body, 'Voulez-vous installer Mapinou sur votre appareil ?', ['Oui', 'Non'], async (v) => {
+                        const yes = v === 0 ? true : false;
+                        if (yes) {
+                            if (deferredPrompt) {
+                                window.addEventListener('appinstalled', () => {
+                                    createValidation(document.body, 'Vous pouvez maintenant quitter ce navigateur et lancer Mapinou depuis votre téléphone !', ["D'accord"]);
+                                });
                                 deferredPrompt.prompt();
                                 yes = await deferredPrompt.userChoice;
                                 deferredPrompt = null;
-                                if (!yes) { start(); }
-                                else { start(); }
-                            } else { start(); }
-                        });
+                            };
+                        }
                     });
-                }
+                });
             }
         }
     }
