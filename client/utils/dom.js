@@ -154,6 +154,14 @@ function isOverflown(element) {
     return element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth;
 }
 
+function setStorage(name, value) {
+    localStorage.setItem(name, value);
+}
+
+function getStorage(name) {
+    return localStorage.getItem(name);
+}
+
 function easingIncrement(options, callback) {
     let element = options.element;
     let maximum = options.maximum;
@@ -170,9 +178,43 @@ function easingIncrement(options, callback) {
     wait(duration, callback);
 }
 
+function createValidation(parent, text, options, callback) {
+    let container = makeDiv(null, 'app-validation-container');
+    let mask = makeDiv(null, 'app-validation-mask');
+    let window = makeDiv(null, 'app-validation-window');
+    let textdiv = makeDiv(null, 'app-validation-text', text);
+    let buttons = makeDiv(null, 'app-validation-buttons');
+
+    const finish = (e) => {
+        const value = parseInt(e.target.getAttribute('value'));
+        barray.forEach(o => { o.removeEventListener('click', finish); })
+        removeClass(window, 'pop');
+        wait(300, () => {
+            container.remove();
+            mask.remove();
+            callback(value);
+        });
+    }
+
+    let barray = [];
+    options.forEach((o, i) => {
+        let button = makeDiv(null, 'app-validation-button', o);
+        button.setAttribute('value', i);
+        button.addEventListener('click', finish);
+        buttons.append(button);
+        barray.push(button);
+    });
+
+    window.append(textdiv, buttons);
+    container.append(window);
+    parent.append(container, mask);
+    container.offsetHeight;
+    addClass(window, 'pop');
+}
+
 export {
     makeDiv, hasClass, addClass, removeClass, addClassList, removeClassList,
     activate, deactivate,
     clearElement, addSVG, getCSSColors, remove, wait, waitPromise, isOverflown,
-    easingIncrement
+    easingIncrement, createValidation, setStorage, getStorage
 }

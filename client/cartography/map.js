@@ -29,11 +29,14 @@ class Basemap {
 
         this.parent = this.options.parent;
 
-        this.mask = makeDiv(null, 'minimap-mask');
-        this.parent.append(this.mask);
-
         this.container = makeDiv(null, 'map');
-        if (options.class) { addClass(this.container, options.class); }
+        if (options.class) {
+            addClass(this.container, options.class);
+            if (options.class === 'minimap') {
+                this.mask = makeDiv(null, 'minimap-mask');
+                this.parent.append(this.mask);
+            }
+        }
         this.parent.append(this.container);
 
         let center = this.options.center || [0, 0];
@@ -130,11 +133,15 @@ class Basemap {
     }
 
     loading() {
-        removeClass(this.mask, 'loaded');
+        if (this.options.class === 'minimap') {
+            removeClass(this.mask, 'loaded');
+        }
     }
 
     loaded() {
-        addClass(this.mask, 'loaded');
+        if (this.options.class === 'minimap') {
+            addClass(this.mask, 'loaded');
+        }
     }
 
     render() {

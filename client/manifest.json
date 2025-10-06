@@ -47,5 +47,8 @@
     "start_url": "/mapinou",
     "display": "fullscreen",
     "theme_color": "#F7F2DA",
-    "background_color": "#F7F2DA"
+    "background_color": "#F7F2DA",
+    "launch_handler": {
+        "client_mode": "navigate-existing"
+    }
 }

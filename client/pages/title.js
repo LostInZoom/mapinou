@@ -117,6 +117,7 @@ class Title extends Page {
             delay += 200;
             // Slide the build button
             wait(delay, () => {
+                removeClass(this.letters, 'horizontal-bounce');
                 addClass(this.buildinfos, 'pop');
                 this.listen = true;
                 this.callback();
