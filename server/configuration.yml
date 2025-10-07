@@ -96,6 +96,8 @@ form:
         unique: false
       - text: Trans
         unique: false
+      - text: Non-binaire
+        unique: false
       - text: Ne se prononce pas
         unique: true
   - question: 'Catégorie d''âge'
@@ -138,7 +140,7 @@ consent:
     title: 'Les données suivantes sont collectées:'
     content:
       - 'Les réponses aux formulaires sociologiques et cognitifs.'
-      - 'Le métriques de jeux, à savoir le temps passé, le score et la distance parcourue par niveau.'
+      - 'Les métriques de jeux, à savoir le temps passé, le score et la distance parcourue par niveau.'
       - 'Les interactions avec la carte pendant un niveau, à savoir les déplacements latéraux,
         les zooms en avant et en arrière.'
       - 'Les informations sur votre appareil, à savoir le type (téléphone mobile ou tablette),
@@ -207,7 +209,7 @@ levels:
     top: 'Voici une bouteille, la ligne bleue indique le niveau d''eau.'
     bottom: 'Dessinez le même niveau dans cette bouteille pivotée.'
   - type: tier
-    name: "Niveau 2"
+    name: "Niveau 1"
     content:
       - player:
           - -4.552246587387344
@@ -285,11 +287,11 @@ levels:
           - 49.182885176943785
         hints:
           '0': Je suis au nord-ouest de Paris
-          '4.65': Ah oui ! Aux alentours de Rouen !
+          '4.65': Ah oui ! Aux alentours de Rouen !
           '5.66': Et plus précisément au sud-est de Rouen.
-          '6.66': Ça me revient, entre Rouen et les Andelys !
+          '6.66': Ça me revient, entre Rouen et les Andelys !
           '8.66': Au niveau de la confluence entre la Seine et l'Andelle.
-          '9.66': Dans le village de Flipou ! Clique sur ma position pour continuer.
+          '9.66': Dans le village de Flipou ! Clique sur ma position pour continuer.
         enemies:
           - type: snake
             coordinates:
@@ -374,11 +376,11 @@ levels:
           - 45.79786557158289
         hints:
           '0': Je suis entre Bordeaux et Lyon.
-          '4.80': Ah oui, entre Limoges et Clermont-Ferrand !
+          '4.80': Ah oui, entre Limoges et Clermont-Ferrand !
           '6.81': Entre Limoges et Aubusson.
           '7.81': Dans la partie nord-ouest du PNR de Millevaches en Limousin.
           '8.81': À l'ouest de Gentioux-Pigerolles.
-          '9.81': Ah c'est ça, le lac de Vassivière est autour de moi !
+          '9.81': Ah c'est ça, le lac de Vassivière est autour de moi !
           '10.82': Sur l'île où il y a Vassivière.
           '11.82': Oui enfin ! Je suis dans Vassivière. Clique sur ma position pour continuer.
         enemies:
@@ -470,9 +472,9 @@ levels:
         hints:
           '0': Je suis dans les environs de Monaco.
           '5.53': Plutôt du côté de Nice-Cannes.
-          '6.53': Ça me revient, je suis au nord de Grasse !
+          '6.53': Ça me revient, je suis au nord de Grasse !
           '8.54': Au nord du Bar-sur-Loup.
-          '9.54': Ah oui ! Vers Caussols, sur le plateau de Calern.
+          '9.54': Ah oui ! Vers Caussols, sur le plateau de Calern.
           '11.54': Je suis sur le sommet de Calern, Clique sur ma position pour continuer.
         enemies:
           - type: snake
@@ -549,7 +551,7 @@ levels:
           - - 6.909234403895681
             - 43.69845636957169
   - type: experience
-    name: "Niveau 3"
+    name: "Niveau 2"
     index: "sbsod"
     title: 'Expérience 2 :<br>Les cartes et vous'
     presentation:
@@ -575,14 +577,14 @@ levels:
       - "Je peux généralement me rappeler un nouveau trajet après ne l’avoir suivi qu’une fois."
       - "Je n’ai pas une très bonne carte mentale de mon environnement."
   - type: tier
-    name: "Niveau 4"
+    name: "Niveau 2"
     content:
       - target: [ 1.2866479982915493,43.885279168322626 ]
       - target: [ 6.089149305028605,45.91959117838756 ]
       - target: [ 1.361450712000182,45.950810067261486 ]
       - target: [ -1.6178715125171268,49.64454227099347 ]
   - type: experience
-    name: "Niveau 5"
+    name: "Niveau 3"
     index: "ptsot"
     timelimit: 30
     title: 'Expérience 3 :<br>Angles et orientation'
@@ -686,14 +688,14 @@ levels:
         name: 'Courgette'
         coordinates: [67.42, 84.01]
   - type: tier
-    name: "Niveau 6"
+    name: "Niveau 3"
     content:
       - target: [1.2866479982915493,43.885279168322626]
       - target: [6.089149305028605,45.91959117838756]
       - target: [1.361450712000182,45.950810067261486]
       - target: [-1.5260220720508781,49.5499857870286]
   - type: experience
-    name: "Niveau 7"
+    name: "Niveau 4"
     index: "purdue"
     timelimit: 30
     title: 'Expérience 4 :<br>Rotation en 3D'
@@ -712,7 +714,7 @@ levels:
       - 0
       - 3
   - type: tier
-    name: "Niveau 8"
+    name: "Niveau 4"
     content:
       - target: [1.2866479982915493,43.885279168322626]
       - target: [6.089149305028605,45.91959117838756]

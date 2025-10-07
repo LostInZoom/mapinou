@@ -46,8 +46,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
 
     const start = async () => {
-        setStorage('askInstall', false);
-
         if (navigator.storage && navigator.storage.persist) {
             await navigator.storage.persist();
         }
@@ -83,43 +81,70 @@ window.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    start();
+    if (getStorage('install') === null) {
+        setStorage('install', true);
+    }
 
     if (device.type !== 'desktop') {
-        if (JSON.parse(getStorage('askInstall') ?? 'true')) {
-            let installation = true;
-            const firefox = navigator.userAgent.toLowerCase().includes('firefox');
+        let installation = true;
+        const firefox = navigator.userAgent.toLowerCase().includes('firefox');
+        const ask = JSON.parse(getStorage('install'));
 
-            if (firefox) {
-                installation = false;
-                createValidation(document.body, `Vous pouvez créer un raccourcis de Mapinou sur votre écran d'accueil, sélectionnez :<br><i>Menu</i> ▸ <i>Ajouter à l’écran d’accueil</i>."`, ["D'accord"]);
-            }
+        if (firefox && ask) {
+            installation = false;
+            createValidation(document.body, `
+                Pour proftier au mieux de Mapinou, vous pouvez créer un raccourcis sur votre écran d'accueil,
+                sélectionnez :<br><i>Menu</i> ▸ <i>Ajouter à l’écran d’accueil</i>."`,
+                ["D'accord", "Ne plus demander"],
+                choice => {
+                    if (choice === 1) { setStorage('install', false); }
+                }
+            );
+        }
 
-            if (device.os === 'ios') {
-                installation = false;
-                createValidation(document.body, `Vous pouvez installer Mapinou sur votre appareil, sélectionnez :<br><i>Partager</i> ▸ <i>Sur l’écran d’accueil</i>.`, ["D'accord"]);
-            }
+        if (device.os === 'ios' && ask) {
+            installation = false;
+            createValidation(document.body, `
+                Pour profiter au mieux de Mapinou, vous pouvez installer le jeu sur votre appareil,
+                sélectionnez :<br><i>Partager</i> ▸ <i>Sur l’écran d’accueil</i>.`,
+                ["D'accord", "Ne plus demander"],
+                choice => {
+                    if (choice === 1) { setStorage('install', false); }
+                }
+            );
+        }
 
-            if (installation) {
-                let deferredPrompt;
-                window.addEventListener('beforeinstallprompt', (e) => {
-                    e.preventDefault();
-                    deferredPrompt = e;
-                    createValidation(document.body, 'Voulez-vous installer Mapinou sur votre appareil ?', ['Oui', 'Non'], async (v) => {
-                        const yes = v === 0 ? true : false;
-                        if (yes) {
+        if (installation && ask) {
+            let deferredPrompt;
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                createValidation(document.body, `
+                    Voulez-vous installer Mapinou sur votre appareil ? Cela vous permettra de pleinement profiter du jeu.`,
+                    ['Oui', 'Pas maintenant', 'Jamais'],
+                    async (v) => {
+                        // YES
+                        if (v === 0) {
                             if (deferredPrompt) {
                                 window.addEventListener('appinstalled', () => {
-                                    createValidation(document.body, 'Vous pouvez maintenant quitter ce navigateur et lancer Mapinou depuis votre téléphone !', ["D'accord"]);
+                                    createValidation(document.body, `
+                                        Quittez ce navigateur et lancez Mapinou depuis votre téléphone.`,
+                                    );
                                 });
                                 deferredPrompt.prompt();
                                 yes = await deferredPrompt.userChoice;
                                 deferredPrompt = null;
                             };
                         }
-                    });
-                });
-            }
+                        // NEVER
+                        else if (v === 2) {
+                            setStorage('install', false);
+                        }
+                    }
+                );
+            });
         }
     }
+
+    start();
 });

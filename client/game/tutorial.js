@@ -106,6 +106,7 @@ class Tutorial extends Page {
                 this.score.pop();
                 this.score.setState('default');
                 this.score.start();
+                this.listening = true;
 
                 this.basemap.enableInteractions();
                 this.basemap.addListener('click', selectionListener);
@@ -234,7 +235,6 @@ class Tutorial extends Page {
         this.phase = 2;
 
         this.paloma.unsetTransparent();
-        this.paloma.walkIn();
         this.paloma.setOrientation('west');
 
         this.basemap.disableInteractions();
@@ -323,7 +323,10 @@ class Tutorial extends Page {
                 this.score.pop();
                 this.basemap.enableInteractions();
                 this.basemap.enableMovement(win => {
-                    if (win) { this.clear(callback); }
+                    if (win) {
+                        this.listening = false;
+                        this.clear(callback);
+                    }
                 });
             });
         }
@@ -512,8 +515,6 @@ class Tutorial extends Page {
             await this.paloma.focusBubble();
             this.tutorialcontainer.addEventListener('click', tuto2);
         }
-
-        this.paloma.walkIn();
 
         this.centerWoodpigeon();
         this.paloma.setOrientation('south');

@@ -107,6 +107,14 @@
     height: 100%;
     z-index: 199;
     pointer-events: all;
+
+    background-color: colors.$grey-medium;
+    opacity: 0;
+    transition: opacity .3s ease-in-out;
+
+    &.reveal {
+        opacity: .7;
+    }
 }
 
 .app-validation-window {
@@ -139,7 +147,8 @@
 .app-validation-buttons {
     width: 100%;
     display: flex;
-    justify-content: space-evenly;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 1rem;
 }
 

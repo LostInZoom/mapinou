@@ -1,14 +1,5 @@
 @use '../colors';
 
-// .page-form {
-//     & > .page-content {
-//         &.unpop {
-//             transform: scale(0);
-//             transition: transform .3s cubic-bezier(0.36, 0, 0.66, -0.56);
-//         }
-//     }
-// }
-
 .form-text {
     width: 100%;
 
@@ -49,7 +40,7 @@
     background-color: colors.$main-color-light;
     color: colors.$main-color-dark;
 
-    transition: background .1s ease-in-out, color .1s ease-in-out;
+    transition: background .2s ease-in-out, color .2s ease-in-out;
 
     &.selected {
         background-color: colors.$main-color-dark;

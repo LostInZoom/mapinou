@@ -191,6 +191,7 @@ function createValidation(parent, text, options, callback) {
         const value = parseInt(e.target.getAttribute('value'));
         barray.forEach(o => { o.removeEventListener('click', finish); })
         removeClass(window, 'pop');
+        removeClass(mask, 'reveal');
         wait(300, () => {
             container.remove();
             mask.remove();
@@ -212,6 +213,7 @@ function createValidation(parent, text, options, callback) {
     parent.append(container, mask);
     container.offsetHeight;
     addClass(window, 'pop');
+    addClass(mask, 'reveal');
 }
 
 export {
