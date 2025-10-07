@@ -34,6 +34,7 @@ class Level extends Page {
 
         this.results = {
             session: this.params.session.index,
+            game: this.params.game,
             tier: this.tier,
             level: this.level
         };

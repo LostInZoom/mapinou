@@ -5,7 +5,7 @@ import Page from "./page";
 
 import { addClass, makeDiv, removeClass, removeClassList, wait } from "../utils/dom";
 import { remap, easeOutCubic, easeInOutSine } from "../utils/math";
-import { pxToRem } from "../utils/parse";
+import { capitalizeFirstLetter, pxToRem } from "../utils/parse";
 
 class Title extends Page {
     constructor(options, callback) {
@@ -27,7 +27,7 @@ class Title extends Page {
         this.title.append(this.letters);
         this.container.append(this.title);
 
-        let delay = this.app.options.interface.transition.page;
+        let delay = this.params.interface.transition.page;
 
         if (init) {
             wait(delay, () => { addClass(this.letters, 'pop'); })
@@ -92,7 +92,9 @@ class Title extends Page {
 
         this.buttons.append(this.start, this.credits);
         this.buildinfos = makeDiv(null, 'title-build');
-        this.buildinfoslabel = makeDiv(null, 'title-build-label', `version alpha - ${new Date().getFullYear()}`);
+        this.buildinfoslabel = makeDiv(null, 'title-build-label', `
+            version ${this.params.game.version} "${capitalizeFirstLetter(this.params.game.codename)}" - ${new Date().getFullYear()}
+        `);
         this.buildinfos.append(this.buildinfoslabel);
 
         this.container.append(this.buttons, this.buildinfos);

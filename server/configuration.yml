@@ -1,3 +1,51 @@
+#########################
+#### GAME PARAMETERS ####
+#########################
+game:
+  version: '1.1'
+  codename: oenas
+  name: Mapinou
+  description: Naviguez dans des cartes et trouvez des lapins.
+  colors:
+    - white
+    - sand
+    - brown
+    - grey
+  score:
+    increment:
+      default: 1
+      movement: 1
+    refresh:
+      default: 1000
+      movement: 200
+    modifier:
+      enemies: 50
+      position: 5
+      helpers: -20
+  tolerance:
+    target: 300
+    enemies:
+      hunter: 1500
+      eagle: 1000
+      snake: 500
+    helpers: 200
+  visibility:
+    helpers: 2500
+  speed:
+    travel: 4000 # in km/h
+    roaming: 20 # in px/s
+  invulnerability: 3000
+  routing: 12.5
+  wrong:
+    - Aïe aïe aïe, pas par là !
+    - Et non, c'est pas ici !
+    - Pas par là.
+    - Je ne suis pas ici.
+  lost:
+    - Reviens en arrière, Tu t'égares...
+    - Ce n'est pas par là, reviens en arrière !
+    - Ce n'est pas la bonne direction, reviens où tu étais.
+    - Tu refroidis, retourne en arrière !
 ##############################
 #### INTERFACE PARAMETERS ####
 ##############################
@@ -31,52 +79,6 @@ interface:
         - [4.035097508972273, 49.2595447181902]
         - [1.9062699486658305, 47.902773351516984]
       zoom: 6
-#########################
-#### GAME PARAMETERS ####
-#########################
-game:
-  colors:
-    - white
-    - sand
-    - brown
-    - grey
-  score:
-    increment:
-      default: 1
-      movement: 1
-    refresh:
-      default: 1000
-      movement: 200
-    modifier:
-      enemies: 50
-      position: 5
-      helpers: -20
-  tolerance:
-    flag: 500
-    target: 300
-    enemies:
-      hunter: 1500
-      eagle: 1000
-      snake: 500
-    helpers: 200
-  visibility:
-    helpers: 2500
-  speed:
-    travel: 4000 # in km/h
-    roaming: 20 # in px/s
-    enemies: 10 # in px/s
-  invulnerability: 3000
-  routing: 12.5
-  wrong:
-    - Aïe aïe aïe, pas par là !
-    - Et non, c'est pas ici !
-    - Pas par là.
-    - Je ne suis pas ici.
-  lost:
-    - Reviens en arrière, Tu t'égares...
-    - Ce n'est pas par là, reviens en arrière !
-    - Ce n'est pas la bonne direction, reviens où tu étais.
-    - Tu refroidis, retourne en arrière !
 ###########################
 #### FORM DEFINITION ######
 ###########################
@@ -574,7 +576,32 @@ levels:
   - type: tier
     name: "Niveau 2"
     content:
-      - target: [ 1.2866479982915493,43.885279168322626 ]
+      - player:
+          - -1.0841512228447812
+          - 45.49483387246127
+        target:
+          - -1.0562394483294213
+          - 45.447233326050906
+        hints:
+          '0': Par là.
+        enemies:
+          - type: hunter
+            coordinates:
+              - -1.0900981074935885
+              - 45.47806352457124
+          - type: eagle
+            coordinates:
+              - -1.0687136911795676
+              - 45.461122889599864
+          - type: snake
+            coordinates:
+              - -1.0612627118651972
+              - 45.47768482151858
+        helpers:
+          - - -1.0783845445498912
+            - 45.467660900766504
+          - - -1.0681742773524263
+            - 45.48407276379422
       - target: [ 6.089149305028605,45.91959117838756 ]
       - target: [ 1.361450712000182,45.950810067261486 ]
       - target: [ -1.6178715125171268,49.64454227099347 ]

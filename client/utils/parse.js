@@ -18,6 +18,10 @@ function getColorsByClassNames(...className) {
     return colors;
 }
 
+function capitalizeFirstLetter(t) {
+    return String(t).charAt(0).toUpperCase() + String(t).slice(1);
+}
+
 function remToPx(rem) {
     return rem * parseInt(window.getComputedStyle(document.body.parentNode).getPropertyValue('font-size'));
 }
@@ -48,4 +52,4 @@ function calculateTextSize(text, style) {
 }
 
 
-export { getColorsByClassNames, remToPx, pxToRem, calculateTextSize };
+export { getColorsByClassNames, remToPx, pxToRem, calculateTextSize, capitalizeFirstLetter };

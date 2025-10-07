@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import { load } from "js-yaml";
 import express from 'express';
 import bodyParser from 'body-parser';
+import { checkVersion } from "../.database/tools.js";
 
 const file = fs.readFileSync('./server/configuration.yml', { encoding: 'utf-8' });
 const params = load(file);
@@ -148,7 +149,13 @@ async function insertForm(data) {
 }
 
 async function insertResults(data) {
-	let levelQuery = `
+	let query = '';
+	let values = [];
+	let returning;
+
+	let version = await checkVersion(data.game);
+
+	query = `
         SELECT id
 		FROM data.levels
 		WHERE tier = ${data.tier} AND level = ${data.level};
@@ -156,25 +163,22 @@ async function insertResults(data) {
 
 	let highscores = { highscores: [] };
 	// try {
-	let result = await db.query(levelQuery);
-	if (result.rows.length > 0) {
-		let level = result.rows[0].id;
+	returning = await db.query(query);
+
+	if (returning.rows.length > 0) {
+		let level = returning.rows[0].id;
 		await db.query(
 			`DELETE FROM data.games WHERE session = $1 AND level = $2`,
 			[data.session, level]
 		);
 
-		let query;
-		let values;
-		let returning;
-
 		query = `
-			INSERT INTO data.games (session, level, score, enemies, helpers, journey)
-			VALUES ($1, $2, $3, $4, $5, ST_SetSRID(ST_GeomFromText($6), 4326))
+			INSERT INTO data.games (session, version, level, score, enemies, helpers, journey)
+			VALUES ($1, $2, $3, $4, $5, $6, ST_SetSRID(ST_GeomFromText($7), 4326))
 			RETURNING id;
 		`
 		const wkt = 'LINESTRING(' + data.phase2.journey.map(p => `${p[0]} ${p[1]}`).join(', ') + ')';
-		values = [data.session, level, data.score, data.enemies, data.helpers, wkt];
+		values = [data.session, version, level, data.score, data.enemies, data.helpers, wkt];
 		returning = await db.query(query, values);
 		const gameIndex = returning.rows[0].id;
 

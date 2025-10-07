@@ -79,9 +79,34 @@ async function createTables() {
             CONSTRAINT helpers_levels_key FOREIGN KEY (level) REFERENCES data.levels(id)
         );
 
+        CREATE TABLE IF NOT EXISTS data.versions (
+            id serial,
+            version character varying(20),
+            codename character varying(20),
+            score_increment_default integer,
+            score_increment_movement integer,
+            score_refresh_default integer,
+            score_refresh_movement integer,
+            score_modifier_position integer,
+            score_modifier_enemies integer,
+            score_modifier_helpers integer,
+            tolerance_target integer,
+            tolerance_enemies_snake integer,
+            tolerance_enemies_eagle integer,
+            tolerance_enemies_hunter integer,
+            tolerance_helpers integer,
+            visibility_helpers integer,
+            speed_travel_kmh integer,
+            speed_roaming_pxs integer,
+            invulnerability_ms integer,
+            routing_zoom numeric(4,2),
+            CONSTRAINT versions_pkey PRIMARY KEY (id)
+        );
+
         CREATE TABLE IF NOT EXISTS data.games (
             id serial,
             session integer,
+            version integer,
             level integer,
             score integer,
             enemies integer,
@@ -89,6 +114,7 @@ async function createTables() {
             journey geometry(LineString, 4326),
             CONSTRAINT games_pkey PRIMARY KEY (id),
             CONSTRAINT games_sessions_key FOREIGN KEY (session) REFERENCES data.sessions(id),
+            CONSTRAINT games_versions_key FOREIGN KEY (version) REFERENCES data.versions(id),
             CONSTRAINT games_levels_key FOREIGN KEY (level) REFERENCES data.levels(id)
         );
 
@@ -156,18 +182,25 @@ async function insertLevels() {
     const file = fs.readFileSync('./server/configuration.yml', { encoding: 'utf-8' });
     const params = load(file);
 
+    let query = '';
+    let values = [];
+    let result = [];
+
     for (let i = 0; i < params.form.length; i++) {
         let q = params.form[i].question;
         // Remove breaks
         q = q.replace('<br>', ' ');
         // Replace single quotes with two single quotes to avoid errors during insertion
         q = q.replace("'", "''");
-        let insertion = `
+        query = `
             INSERT INTO data.questions (value)
             VALUES ('${q}');
         `
-        await db.query(insertion);
+        await db.query(query);
     }
+
+    // Insert version
+    await checkVersion(params.game);
 
     for (let t = 0; t < params.levels.length; t++) {
         let entry = params.levels[t];
@@ -178,7 +211,7 @@ async function insertLevels() {
                 let level = levels[l];
 
                 if (level.player) {
-                    const insertion = `
+                    query = `
                         INSERT INTO data.levels (tier, level, player, target)
                         VALUES (
                             $1, $2,
@@ -187,41 +220,89 @@ async function insertLevels() {
                         )
                         RETURNING id;
                     `
-                    const values = [t, l, level.player[0], level.player[1], level.target[0], level.target[1]]
-                    let result = await db.query(insertion, values);
+                    values = [t, l, level.player[0], level.player[1], level.target[0], level.target[1]]
+                    result = await db.query(query, values);
 
                     let index = result.rows[0].id;
                     for (let zoom in level.hints) {
-                        const hint = `
+                        query = `
                             INSERT INTO data.hints (level, zoom, hint)
-                            VALUES ($1, $2, $3)
+                            VALUES ($1, $2, $3);
                         `;
-                        const values = [index, zoom, level.hints[zoom]];
-                        await db.query(hint, values);
+                        values = [index, zoom, level.hints[zoom]];
+                        await db.query(query, values);
                     }
 
                     for (let j = 0; j < level.enemies.length; j++) {
-                        const enemies = `
+                        query = `
                             INSERT INTO data.enemies (type, level, geom)
-                            VALUES ($1, $2, ST_SetSRID(ST_Point($3, $4), 4326))
+                            VALUES ($1, $2, ST_SetSRID(ST_Point($3, $4), 4326));
                         `;
                         const e = level.enemies[j];
                         const p = e.coordinates;
-                        const values = [e.type, index, p[0], p[1]];
-                        await db.query(enemies, values);
+                        values = [e.type, index, p[0], p[1]];
+                        await db.query(query, values);
                     }
 
                     for (let j = 0; j < level.helpers.length; j++) {
                         let b = level.helpers[j];
-                        let helpers = `
+                        query = `
                             INSERT INTO data.helpers (level, geom)
-                            VALUES (${index}, ST_SetSRID(ST_POINT(${b[0]}, ${b[1]}), 4326))
+                            VALUES ($1, ST_SetSRID(ST_POINT($2, $3), 4326));
                         `
-                        await db.query(helpers);
+                        values = [index, b[0], b[1]];
+                        await db.query(query, values);
                     }
                 }
             }
         }
+    }
+}
+
+async function checkVersion(game) {
+    let query = `
+        SELECT *
+		FROM data.versions
+        WHERE version = $1;
+    `;
+    let values = [String(game.version)];
+    let result = await db.query(query, values);
+
+    if (result.rows.length > 0) {
+        return result.rows[0].id;
+    } else {
+        query = `
+            INSERT INTO data.versions (
+                version, codename,
+                score_increment_default, score_increment_movement,
+                score_refresh_default, score_refresh_movement,
+                score_modifier_position, score_modifier_enemies, score_modifier_helpers,
+                tolerance_target, tolerance_enemies_snake, tolerance_enemies_eagle, tolerance_enemies_hunter, tolerance_helpers,
+                visibility_helpers, speed_travel_kmh, speed_roaming_pxs,
+                invulnerability_ms, routing_zoom
+            )
+            VALUES (
+                $1, $2,
+                $3, $4,
+                $5, $6,
+                $7, $8, $9,
+                $10, $11, $12, $13, $14,
+                $15, $16, $17,
+                $18, $19
+            )
+            RETURNING id;
+        `
+        let values = [
+            game.version, game.codename,
+            game.score.increment.default, game.score.increment.movement,
+            game.score.refresh.default, game.score.refresh.movement,
+            game.score.modifier.enemies, game.score.modifier.position, game.score.modifier.helpers,
+            game.tolerance.target, game.tolerance.enemies.snake, game.tolerance.enemies.eagle, game.tolerance.enemies.hunter, game.tolerance.helpers,
+            game.visibility.helpers, game.speed.travel, game.speed.roaming,
+            game.invulnerability, game.routing
+        ]
+        let returning = await db.query(query, values);
+        return returning.rows[0].id;
     }
 }
 
@@ -254,4 +335,4 @@ async function populateResults() {
     }
 }
 
-export { clearDB, createTables, insertLevels, populateResults }
+export { clearDB, createTables, insertLevels, populateResults, checkVersion }
