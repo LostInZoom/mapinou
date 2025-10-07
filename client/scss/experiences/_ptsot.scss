@@ -40,6 +40,12 @@ $timer-color-quarter: #e69797;
         font-family: 'Vincendo';
         font-size: .9rem;
     }
+
+    &>span {
+        font-family: 'Vincendo';
+        font-size: .9rem;
+        color: colors.$grey-extralight;
+    }
 }
 
 .ptsot-characters-character {

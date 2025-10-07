@@ -4,11 +4,6 @@
 interface:
   transition:
     page: 500
-  languages:
-    available:
-      - fr
-      - en
-    current: en
   map:
     levels: [ -7, 42, 12, 52 ]
     animation:
@@ -78,15 +73,15 @@ game:
     - Pas par là.
     - Je ne suis pas ici.
   lost:
-    - Tu t'égares...
-    - Ce n'est pas par là...
-    - Mauvaise direction.
-    - Tu refroidis !
+    - Reviens en arrière, Tu t'égares...
+    - Ce n'est pas par là, reviens en arrière !
+    - Ce n'est pas la bonne direction, reviens où tu étais.
+    - Tu refroidis, retourne en arrière !
 ###########################
 #### FORM DEFINITION ######
 ###########################
 form:
-  - question: 'Genre<br>(Sélectionnez les réponses applicables)'
+  - question: 'Genre<br>(Choix multiple possible)'
     mandatory: false
     multiple: true
     answers:
@@ -149,10 +144,10 @@ consent:
     content: 'Nous ne collectons aucune information personnelle tel que votre nom, votre
       localisation ou votre adresse IP.'
   - type: paragraph
-    content: 'Les données collectées ne seront jamais dévoilées au-delà de notre équipe
-      de recherche. Ceci étant dit, nous les utiliserons pour conduire des analyses
+    content: 'Les données collectées seront utilisées pour conduire des analyses
       statistiques, et les résultats de ces analyses pourront être sujets à une ou
-      plusieurs publications scientifiques.'
+      plusieurs publications scientifiques. Ces données seront donc disponibles librement
+      en ligne.'
   - type: paragraph
     content: 'En signant ce formulaire et en continuant le jeu, vous comprenez et acceptez
       de partager ces données avec notre équipe.'
@@ -380,7 +375,7 @@ levels:
           '6.81': Entre Limoges et Aubusson.
           '7.81': Dans la partie nord-ouest du PNR de Millevaches en Limousin.
           '8.81': À l'ouest de Gentioux-Pigerolles.
-          '9.81': Ah c'est ça, le lac de Vassivière est autour de moi !
+          '9.81': Ah c'est ça, je suis au lac de Vassivière !
           '10.82': Sur l'île où il y a Vassivière.
           '11.82': Oui enfin ! Je suis dans Vassivière. Clique sur ma position pour continuer.
         enemies:
@@ -600,16 +595,16 @@ levels:
         - type: characters
           subtype: names
       - content:
-        - text: 'Voici un exemple pour commencer.<br>Vous êtes sur le pigeon et vous faites face au chat.
-            Cliquez sur le cercle pour placer le lapin.'
+        - text: 'Voici un exemple pour commencer.<br>Vous êtes sur le <span>pigeon</span> et vous faites face au <span>chat</span>.
+            Cliquez sur le cercle pour placer le <span>lapin</span>.'
         - type: tutorial
           character1: pigeon
           character2: cat
           character3: rabbit
       - content:
         - text: 'Vous avez compris ? Alors essayez !'
-        - text: 'Vous êtes sur le lapin et vous faites face au chat.
-            Cliquez sur le cercle pour placer le serpent.'
+        - text: 'Vous êtes sur le <span>lapin</span> et vous faites face au <span>chat</span>.
+            Cliquez sur le cercle pour placer le <span>serpent</span>.'
         - type: test
           character1: rabbit
           character2: cat
@@ -618,40 +613,40 @@ levels:
         - text: 'C''est parti ! Attention, cette fois vous avez 30 secondes par test.'
     tests:
       - content:
-        - text: 'Imaginez que vous êtes sur l''<b>aigle</b> et que
-            vous faites face au <b>chat</b>. Pointez le <b>pigeon</b> sur le cercle.'
+        - text: 'Imaginez que vous êtes sur l''<span>aigle</span> et que
+            vous faites face au <span>chat</span>. Pointez le <span>pigeon</span> sur le cercle.'
         - type: test
           character1: eagle
           character2: cat
           character3: pigeon
         - type: timer
       - content:
-        - text: 'Imaginez que vous êtes sur le <b>lapin</b> et que
-            vous faites face au <b>pigeon</b>. Montrez l''<b>aigle</b> sur le cercle.'
+        - text: 'Imaginez que vous êtes sur le <span>lapin</span> et que
+            vous faites face au <span>pigeon</span>. Montrez l''<span>aigle</span> sur le cercle.'
         - type: test
           character1: rabbit
           character2: pigeon
           character3: eagle
         - type: timer
       - content:
-        - text: 'Imaginez que vous êtes sur le <b>chasseur</b> et que
-            vous faites face au <b>lapin</b>. Montrez le <b>serpent</b> sur le cercle.'
+        - text: 'Imaginez que vous êtes sur le <span>chasseur</span> et que
+            vous faites face au <span>lapin</span>. Montrez le <span>serpent</span> sur le cercle.'
         - type: test
           character1: hunter
           character2: rabbit
           character3: snake
         - type: timer
       - content:
-        - text: 'Imaginez que vous êtes sur le <b>lapin</b> et que
-            vous faites face à la <b>courgette</b>. Montrez l''<b>aigle</b> sur le cercle.'
+        - text: 'Imaginez que vous êtes sur le <span>lapin</span> et que
+            vous faites face à la <span>courgette</span>. Montrez l''<span>aigle</span> sur le cercle.'
         - type: test
           character1: rabbit
           character2: zucchini
           character3: eagle
         - type: timer
       - content:
-        - text: 'Imaginez que vous êtes sur le <b>chasseur</b> et que
-            vous faites face au <b>pigeon</b>. Montrez le <b>chat</b> sur le cercle.'
+        - text: 'Imaginez que vous êtes sur le <span>chasseur</span> et que
+            vous faites face au <span>pigeon</span>. Montrez le <span>chat</span> sur le cercle.'
         - type: test
           character1: hunter
           character2: pigeon
@@ -659,7 +654,7 @@ levels:
         - type: timer
       - content:
         - text: 'Imaginez que vous êtes sur le <b>lapin</b> et que
-            vous faites face au <b>chat</b>. Montrez le <b>serpent</b> sur le cercle.'
+            vous faites face au <span>chat</span>. Montrez le <span>serpent</span> sur le cercle.'
         - type: test
           character1: rabbit
           character2: cat

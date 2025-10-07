@@ -152,7 +152,7 @@ class SpatialOrientation extends Page {
                     let title = makeDiv(null, 'ptsot-characters-text title bottom', `Test ${parseInt(this.index) + 1}/${this.elements.tests.length}`);
                     this.bottomtext.append(title);
                 }
-                let bottom = makeDiv(null, 'ptsot-characters-text bottom', e.text);
+                let bottom = makeDiv(null, 'ptsot-characters-text bottom', e.text.replace(/<b>(.*?)<\/b>/gi, '<span>$1</span>'));
                 this.bottomtext.append(bottom);
             }
         });
