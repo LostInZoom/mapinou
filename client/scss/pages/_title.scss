@@ -96,10 +96,6 @@
     text-transform: uppercase;
     color: colors.$main-color-light;
     background-color: colors.$secondary-color-dark;
-
-    &.clicked {
-        animation: full-bounce .4s ease-in;
-    }
 }
 
 .title-build {

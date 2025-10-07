@@ -179,7 +179,7 @@ async function createTables() {
 }
 
 async function insertLevels() {
-    const file = fs.readFileSync('./server/configuration.yml', { encoding: 'utf-8' });
+    const file = fs.readFileSync('./server/levels.yml', { encoding: 'utf-8' });
     const params = load(file);
 
     let query = '';

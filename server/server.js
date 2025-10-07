@@ -6,15 +6,22 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import { checkVersion } from "../.database/tools.js";
 
-const file = fs.readFileSync('./server/configuration.yml', { encoding: 'utf-8' });
-const params = load(file);
+const parametersFile = fs.readFileSync('./server/parameters.yml', { encoding: 'utf-8' });
+const parameters = load(parametersFile);
+const levelsFile = fs.readFileSync('./server/levels.yml', { encoding: 'utf-8' });
+const levels = load(levelsFile);
+const creditsFile = fs.readFileSync('./server/credits.yml', { encoding: 'utf-8' });
+const credits = load(creditsFile);
+
+parameters.levels = levels;
+parameters.credits = credits;
 
 fs.readdir('./server/svg', (error, files) => {
-	params.svgs = {};
+	parameters.svgs = {};
 
 	files.forEach((file) => {
 		let f = fs.readFileSync('./server/svg/' + file, { encoding: 'utf-8' })
-		params.svgs[file.replace(/\.[^/.]+$/, "")] = f;
+		parameters.svgs[file.replace(/\.[^/.]+$/, "")] = f;
 	})
 });
 
@@ -30,7 +37,7 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use('/', express.static('dist'));
 
 app.get('/mapinou/configuration', (req, res) => {
-	res.json(params);
+	res.json(parameters);
 	return res;
 });
 

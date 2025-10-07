@@ -6,6 +6,7 @@ import Page from "./page";
 import { addClass, makeDiv, removeClass, removeClassList, wait } from "../utils/dom";
 import { remap, easeOutCubic, easeInOutSine } from "../utils/math";
 import { capitalizeFirstLetter, pxToRem } from "../utils/parse";
+import Credits from "./credits";
 
 class Title extends Page {
     constructor(options, callback) {
@@ -142,6 +143,14 @@ class Title extends Page {
             }
         });
 
+        this.creditslabel.addEventListener('click', () => {
+            if (this.listen) {
+                this.listen = false;
+                this.previous = new Credits({ app: this.app, position: 'previous' });
+                this.slidePrevious();
+            }
+        });
+
         this.startlabel.addEventListener('click', () => {
             if (this.listen) {
                 this.listen = false;
@@ -159,12 +168,10 @@ class Title extends Page {
                             });
                         });
                     } else {
-                        addClass(this.startlabel, 'clicked');
                         this.next = new Form({ app: this.app, position: 'next', question: 0 });
                         this.slideNext();
                     }
                 } else {
-                    addClass(this.startlabel, 'clicked');
                     this.next = new Consent({ app: this.app, position: 'next' });
                     this.slideNext();
                 }

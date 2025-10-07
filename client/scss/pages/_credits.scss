@@ -1,0 +1,57 @@
+@use '../colors';
+
+.page-content-credits {
+    pointer-events: all;
+    height: calc(100% - 10rem);
+
+    display: flex;
+    flex-direction: column;
+}
+
+.credits-content {
+    width: 100%;
+}
+
+.credits-title {
+    font-family: 'Vincendo';
+}
+
+.credits-entry {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+    overflow: hidden;
+}
+
+.credits-role {
+    text-align: end;
+    width: calc(50% - 2rem);
+}
+
+.credits-name {
+    width: calc(50% - 2rem);
+}
+
+.credits-button-title {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+
+    padding: .3rem .8rem;
+    border-radius: .4rem;
+    pointer-events: all;
+
+    font-family: 'Vincendo';
+    text-transform: uppercase;
+    color: colors.$main-color-light;
+    background-color: colors.$secondary-color-dark;
+
+    transform: scale(0);
+    transition: transform .3s cubic-bezier(0.36, 0, 0.66, -0.56);
+
+    &.pop {
+        transform: scale(1);
+        transition: transform .3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+}

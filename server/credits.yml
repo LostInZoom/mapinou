@@ -1,0 +1,52 @@
+#################
+#### CREDITS ####
+#################
+- title: LostInZoom
+  content:
+  - role: Développement
+    name: Justin Berli
+  - role: Sous la direction de
+    name: Guillaume Touya
+  - role: L'équipe du projet
+    name: Paul Bourcier<br>Bérénice Le Mao<br>Yiyan Li<br>Laura Wenclik
+  - role: Anciens membres
+    name: Esteban Carrasco<br>Azelle Courtial<br>Maïeul Gruget<br>Quentin Potié
+####################
+#### CHARACTERS ####
+####################
+- title: avec (par ordre d'apparition)
+  content:
+    - role: Lapinou et ses amis
+      name: 'Stephen "Redshrike" Challener<br>https://opengameart.org/content/bunny-rabbit-lpc-style-for-pixelfarm'
+    - role: Paloma, le pigeon ramier
+      name: 'bluecarrot16<br>https://opengameart.org/content/lpc-birds<br>modifié par Justin Berli'
+    - role: Pépinette, le serpent
+      name: 'basxto et yolkati<br>https://opengameart.org/content/isometric-snakes'
+    - role: Zéphyr, l'aigle
+      name: 'bluecarrot16<br>https://opengameart.org/content/lpc-birds'
+    - role: Jean-Claude, le chasseur...
+      name: 'généré avec l''Universal LPC Spritesheet Generator<br>https://liberatedpixelcup.github.io/Universal-LPC-Spritesheet-Character-Generator'
+    - role: '...et son feu de bois'
+      name: 'Zabin et Jetrel<br>https://opengameart.org/content/camp-fire-animation-for-rpgs-finished'
+    - role: Marguerite, la fleur
+      name: 'Lanea Zimmerman "Sharm" et madmarcel<br>https://opengameart.org/content/lpc-flower-grow-cycle'
+    - role: Choupine, le chat
+      name: 'bluecarrot16<br>https://opengameart.org/content/lpc-cats-and-dogs'
+###############
+#### AUDIO ####
+###############
+- title: Audio
+  content:
+  - role: Musique originale
+    name: Justin Berli
+  - role: Effets sonores
+    name: StarNinjas<br>https://opengameart.org/content/7-eating-crunches
+###############
+#### FONTS ####
+###############
+- title: Polices
+  content:
+  - role: Vincendo
+    name: GGBotNet<br>https://ggbot.itch.io/vincendo-font
+  - role: Cabin
+    name: Pablo Impallari<br>https://www.dafont.com/fr/cabin.font

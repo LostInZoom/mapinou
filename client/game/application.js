@@ -70,7 +70,7 @@ class Application {
                     app: this,
                     basemap: this.basemap,
                     position: 'current',
-                    init: true
+                    // init: true
                 }, () => {
                     this.music.display(true);
                     this.sounds.display(false);
