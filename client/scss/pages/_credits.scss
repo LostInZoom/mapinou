@@ -2,18 +2,64 @@
 
 .page-content-credits {
     pointer-events: all;
-    height: calc(100% - 10rem);
+    pointer-events: all;
+
+    background-color: colors.$secondary-color-dark;
+    color: colors.$main-color-light;
+    border-radius: .4rem;
+
+    margin: 4.5rem 0 4rem 0;
+    height: calc(100% - 8.5rem);
 
     display: flex;
     flex-direction: column;
-}
+    justify-content: center;
+    align-items: center;
 
-.credits-content {
-    width: 100%;
+    overflow: hidden;
 }
 
 .credits-title {
     font-family: 'Vincendo';
+    font-size: 2rem;
+    text-align: center;
+    padding: 1rem;
+}
+
+.credits-scrollbox {
+    height: 100%;
+    margin: 0 1rem 1rem 1rem;
+}
+
+.credits-spacer {
+    height: 100%;
+}
+
+.credits-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.credits-group-title {
+    font-family: 'Vincendo';
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.credits-group-maintitle {
+    font-size: 1.5rem;
+}
+
+.credits-group-subtitle {
+    font-size: 1rem;
+}
+
+.credits-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
 }
 
 .credits-entry {
@@ -21,16 +67,39 @@
     justify-content: center;
     gap: 1rem;
     width: 100%;
-    overflow: hidden;
 }
 
 .credits-role {
     text-align: end;
-    width: calc(50% - 2rem);
+    line-height: 1.1rem;
+    width: calc(50% - .5rem);
+    overflow-wrap: break-word;
 }
 
 .credits-name {
-    width: calc(50% - 2rem);
+    width: calc(50% - .5rem);
+
+    line-height: 1.1rem;
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    overflow-wrap: break-word;
+}
+
+.credits-hyperlink {
+    background-color: colors.$main-color-light;
+    color: colors.$main-color-dark;
+    flex-shrink: 0;
+
+    border-radius: .3rem;
+    height: 1.1rem;
+    width: 1.1rem;
+    margin-left: .2rem;
+
+    &>svg {
+        height: inherit;
+        width: inherit;
+    }
 }
 
 .credits-button-title {
