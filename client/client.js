@@ -55,17 +55,22 @@ window.addEventListener("DOMContentLoaded", async () => {
                 // Retrieve the current session progression
                 let tier = getStorage('tier');
                 let level = getStorage('level');
+                let finish = JSON.parse(getStorage('finish'));
+
                 if (!tier) {
-                    tier = 0;
+                    tier = 7;
                     level = 0;
+                    finish = false;
                     setStorage('tier', tier);
-                    setStorage('tier', level);
+                    setStorage('level', level);
+                    setStorage('finish', finish);
                 }
 
                 params.session = sessionId;
                 params.progression = {
                     tier: parseInt(tier),
-                    level: parseInt(level)
+                    level: parseInt(level),
+                    finish: JSON.parse(finish)
                 };
 
                 let color = getStorage('color');

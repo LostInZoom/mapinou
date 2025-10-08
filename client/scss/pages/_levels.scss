@@ -117,26 +117,24 @@
     opacity: 1;
     transition: transform .3s cubic-bezier(0.36, 0, 0.66, -0.56), border .3s linear;
 
-    &.active>.levels-minimap {
-        transform: scale(1);
+    &.active {
+        &>.levels-minimap {
+            transform: scale(1);
+            border: solid .4rem #0000;
+            background: conic-gradient(from var(--angle),
+                    colors.$main-color-medium,
+                    colors.$main-color-dark,
+                    colors.$main-color-dark,
+                    colors.$main-color-medium,
+                    colors.$main-color-dark,
+                    colors.$main-color-dark,
+                    colors.$main-color-medium ) border-box;
 
-        border: solid .4rem #0000;
-        background: conic-gradient(from var(--angle),
-                colors.$main-color-medium,
-                colors.$main-color-dark,
-                colors.$main-color-dark,
-                colors.$main-color-medium,
-                colors.$main-color-dark,
-                colors.$main-color-dark,
-                colors.$main-color-medium ) border-box;
+            animation: 6s border-rotation linear infinite;
 
-        animation:
-            6s border-rotation linear infinite,
-            3s scale-breathing ease-in-out infinite .3s;
-
-        &::before {
-            transform: translate(-50%, -50%) scale(1);
-            transition: transform .3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            &::before {
+                transform: translate(-50%, -50%) scale(1);
+            }
         }
     }
 
@@ -225,7 +223,7 @@
         background-color: colors.$main-color-light;
         color: colors.$main-color-dark;
 
-        transition: transform .3s cubic-bezier(0.36, 0, 0.66, -0.56);
+        transition: transform .3s ease-in-out;
     }
 }
 

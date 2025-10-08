@@ -19,6 +19,8 @@ class Levels extends Page {
 
         this.position = this.progression.tier;
         this.level = this.progression.level;
+        this.finish = this.progression.finish;
+
         this.tier = this.getTierContent();
         this.type = this.tier.type;
 
@@ -27,18 +29,25 @@ class Levels extends Page {
             type: this.type,
             position: 'current',
             animate: this.init,
-            update: this.update
+            update: this.update,
+            finish: this.finish
         }, (t) => {
-            this.listen = true;
-            if (this.update && !this.app.debug) {
-                if (this.isLast()) {
-                    this.slide('next');
-                } else {
-                    if (this.type === 'tier') {
-                        t.progress();
+            wait(600, () => {
+                this.listen = true;
+                if (this.update && !this.app.debug) {
+                    if (this.isLast()) {
+                        if (this.finish) {
+                            t.progress(true);
+                        } else {
+                            this.slide('next');
+                        }
+                    } else {
+                        if (this.type === 'tier') {
+                            t.progress(false);
+                        }
                     }
                 }
-            }
+            });
         });
 
         this.choose = makeDiv(null, 'header-button rabbit-button left');
@@ -181,7 +190,8 @@ class Levels extends Page {
                 type: this.getTierContent().type,
                 position: direction,
                 animate: false,
-                update: false
+                update: false,
+                finish: this.finish
             });
             obj.slideIn();
 
@@ -204,7 +214,8 @@ class Levels extends Page {
                 level: this.level,
                 animate: options.animate,
                 position: options.position,
-                update: options.update
+                update: options.update,
+                finish: options.finish
             }, (t) => { callback(t); });
             return tier;
         }

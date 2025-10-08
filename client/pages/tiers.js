@@ -39,13 +39,14 @@ class TierPanel extends Panel {
         this.tier = this.options.tier;
         this.level = this.options.level;
         this.update = this.options.update ?? false;
+        this.finish = this.options.finish;
 
         this.minimapscontainer = [];
         this.minimaps = [];
 
         this.svg = new LevelEdges({
             parent: this.container,
-            animation: this.animate
+            animation: this.update ? false : this.animate
         });
 
         this.observer = new ResizeObserver(() => {
@@ -141,26 +142,32 @@ class TierPanel extends Panel {
 
             if (!this.page.app.debug) {
                 if (this.tier === progtier) {
-                    if (i > this.level) {
-                        addClass(minimapcontainer, 'remaining');
-                        state.innerHTML = this.page.app.options.svgs.lock;
+                    if (!this.update && this.finish) {
+                        addClass(minimapcontainer, 'finished');
+                        state.innerHTML = this.page.app.options.svgs.check;
                     } else {
-                        if (i < this.level) {
-                            addClass(minimapcontainer, 'finished');
-                            state.innerHTML = this.page.app.options.svgs.check;
+                        if (i > this.level) {
+                            addClass(minimapcontainer, 'remaining');
+                            state.innerHTML = this.page.app.options.svgs.lock;
+                        } else {
+                            if (i < this.level) {
+                                addClass(minimapcontainer, 'finished');
+                                state.innerHTML = this.page.app.options.svgs.check;
+                            }
+                            if (i === this.level) {
+                                addClass(minimapcontainer, 'active');
+                            }
                         }
-                        if (i === this.level) {
-                            addClass(minimapcontainer, 'active');
+
+                        if (!this.update && i === this.level) {
+                            minimapcontainer.addEventListener('click', startLevel);
+                        }
+
+                        if (this.update && i === this.level + 1) {
+                            minimapcontainer.addEventListener('click', startLevel);
                         }
                     }
 
-                    if (!this.update && i === this.level) {
-                        minimapcontainer.addEventListener('click', startLevel);
-                    }
-
-                    if (this.update && i === this.level + 1) {
-                        minimapcontainer.addEventListener('click', startLevel);
-                    }
                 }
                 else if (this.tier < progtier) {
                     addClass(minimapcontainer, 'finished');
@@ -174,6 +181,7 @@ class TierPanel extends Panel {
                 if (!this.update && this.animate && i <= this.level) { await waitPromise(300); }
 
                 let drawLine = false;
+                if (this.finish && i < this.level) { drawLine = true; }
                 if (this.tier === progtier && i < this.level) { drawLine = true; }
                 if (this.tier < progtier && i < tier.content.length - 1) { drawLine = true; }
                 if (drawLine) {
@@ -229,38 +237,43 @@ class TierPanel extends Panel {
         wait(500, callback);
     }
 
-    progress(callback) {
+    progress(finish, callback) {
         callback = callback || function () { };
+        this.svg.setAnimation(true);
         const tier = this.page.getTierContent();
         const level = tier.content[this.level];
         let minimap = this.minimapscontainer[this.level];
         let minimaplevel = minimap.querySelector('.levels-minimap');
         let state = minimaplevel.querySelector('.levels-state');
         removeClass(minimap, 'active');
-        addClass(minimap, 'hide');
         wait(300, () => {
-            removeClass(minimap, 'hide');
             addClass(minimap, 'shrink');
-            state.remove();
-            state = makeDiv(null, 'levels-state');
-            state.innerHTML = this.page.app.options.svgs.check;
-            minimaplevel.append(state);
-            minimaplevel.offsetHeight;
-            addClass(minimap, 'finished');
             wait(300, () => {
-                removeClass(minimap, 'shrink');
+                state.remove();
+                state = makeDiv(null, 'levels-state');
+                state.innerHTML = this.page.app.options.svgs.check;
+                minimaplevel.append(state);
+                minimaplevel.offsetHeight;
+                addClass(minimap, 'finished');
                 wait(300, () => {
-                    let px = this.basemap.getPixelAtCoordinates(level.target);
-                    let nextpx = this.page.app.basemap.getPixelAtCoordinates(tier.content[this.level + 1].target);
-                    this.svg.addLine(px[0], px[1], nextpx[0], nextpx[1], this.level, this.level + 1);
-                    minimap = this.minimapscontainer[this.level + 1];
-                    wait(300, () => {
-                        removeClass(minimap, 'remaining');
-                        addClass(minimap, 'active');
+                    removeClass(minimap, 'shrink');
+                    if (finish) {
+                        callback();
+                    } else {
                         wait(300, () => {
-                            callback();
+                            let px = this.basemap.getPixelAtCoordinates(level.target);
+                            let nextpx = this.page.app.basemap.getPixelAtCoordinates(tier.content[this.level + 1].target);
+                            this.svg.addLine(px[0], px[1], nextpx[0], nextpx[1], this.level, this.level + 1);
+                            minimap = this.minimapscontainer[this.level + 1];
+                            wait(300, () => {
+                                removeClass(minimap, 'remaining');
+                                addClass(minimap, 'active');
+                                wait(300, () => {
+                                    callback();
+                                });
+                            });
                         });
-                    });
+                    }
                 });
             });
         });

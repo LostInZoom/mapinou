@@ -24,6 +24,10 @@ class LevelEdges {
         this.lines = [];
     }
 
+    setAnimation(animation) {
+        this.animation = animation;
+    }
+
     addLine(x1, y1, x2, y2, start, end) {
         let line = document.createElementNS(this.namespace, 'line');
         line.setAttribute('x1', x1);

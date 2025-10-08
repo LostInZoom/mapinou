@@ -13,9 +13,10 @@ class Application {
     constructor(options) {
         this.options = options;
         this.progression = options.progression;
+        console.log(this.progression);
 
-        this.debug = true;
-        // this.progression = { tier: 2, level: 0 };
+        // this.debug = false;
+        // this.progression = { tier: 8, level: 3, finish: false };
 
         // Create the DOM Element
         this.container = makeDiv('application', null);
@@ -163,12 +164,12 @@ class Application {
     }
 
     getProgression(previous) {
-        if (this.debug) { return { tier: 0, level: 0 }; }
-        if (previous) {
+        if (this.debug) { return { tier: 8, level: 3, finish: this.progression.finish }; }
+        if (previous && !this.progression.finish) {
             if (this.progression.level === 0) {
-                return { tier: this.progression.tier - 1, level: 0 }
+                return { tier: this.progression.tier - 1, level: 0, finish: this.progression.finish }
             } else {
-                return { tier: this.progression.tier, level: this.progression.level - 1 }
+                return { tier: this.progression.tier, level: this.progression.level - 1, finish: this.progression.finish }
             }
         } else {
             return this.progression;
@@ -180,12 +181,16 @@ class Application {
             let t = this.progression.tier;
             let l = this.progression.level;
             const tier = this.options.levels[t];
+            let finish = t >= this.options.levels.length - 1 && l >= tier.content.length - 1;
+
             if (tier.type === 'tier') {
-                if (l >= tier.content.length - 1) {
-                    this.progression.tier = t + 1;
-                    this.progression.level = 0;
-                } else {
-                    this.progression.level = l + 1;
+                if (!finish) {
+                    if (l >= tier.content.length - 1) {
+                        this.progression.tier = t + 1;
+                        this.progression.level = 0;
+                    } else {
+                        this.progression.level = l + 1;
+                    }
                 }
             } else {
                 this.progression.tier = t + 1;
@@ -193,6 +198,9 @@ class Application {
             }
             localStorage.setItem('tier', this.progression.tier);
             localStorage.setItem('level', this.progression.level);
+
+            this.progression.finish = finish;
+            localStorage.setItem('finish', finish);
         }
     }
 }

@@ -198,7 +198,7 @@ class Level extends Page {
                         });
                     });
                 });
-            })
+            });
         });
     }
 
@@ -423,7 +423,6 @@ class Level extends Page {
 
     toLevels(update) {
         this.destroy();
-
         this.basemap.fit(this.params.interface.map.levels, {
             easing: easeInOutSine
         }, () => {
