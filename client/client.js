@@ -58,7 +58,7 @@ window.addEventListener("DOMContentLoaded", async () => {
                 let finish = JSON.parse(getStorage('finish'));
 
                 if (!tier) {
-                    tier = 7;
+                    tier = 0;
                     level = 0;
                     finish = false;
                     setStorage('tier', tier);
