@@ -103,6 +103,70 @@ async function createTables() {
             CONSTRAINT versions_pkey PRIMARY KEY (id)
         );
 
+        CREATE TABLE IF NOT EXISTS data.experiences (
+            id serial,
+            name character varying(10),
+            session integer,
+            version integer,
+            start_time timestamptz,
+            end_time timestamptz,
+            duration integer,
+            CONSTRAINT experiences_pkey PRIMARY KEY (id),
+            CONSTRAINT experiences_session_key FOREIGN KEY (session) REFERENCES data.sessions(id),
+            CONSTRAINT experiences_version_key FOREIGN KEY (version) REFERENCES data.versions(id)
+        );
+
+        CREATE TABLE IF NOT EXISTS data.piaget (
+            id serial,
+            experience integer,
+            question integer,
+            x1 double precision,
+            y1 double precision,
+            x2 double precision,
+            y2 double precision,
+            difference double precision,
+            percentage double precision,
+            elapsed integer,
+            time timestamptz,
+            CONSTRAINT piaget_pkey PRIMARY KEY (id),
+            CONSTRAINT piaget_experiences_key FOREIGN KEY (experience) REFERENCES data.experiences(id) ON DELETE CASCADE
+        );
+
+        CREATE TABLE IF NOT EXISTS data.sbsod (
+            id serial,
+            experience integer,
+            question integer,
+            answer integer,
+            time timestamptz,
+            CONSTRAINT sbsod_pkey PRIMARY KEY (id),
+            CONSTRAINT sbsod_experiences_key FOREIGN KEY (experience) REFERENCES data.experiences(id) ON DELETE CASCADE
+        );
+
+        CREATE TABLE IF NOT EXISTS data.ptsot (
+            id serial,
+            experience integer,
+            question integer,
+            real double precision,
+            drawn double precision,
+            difference double precision,
+            elapsed integer,
+            time timestamptz,
+            CONSTRAINT ptsot_pkey PRIMARY KEY (id),
+            CONSTRAINT ptsot_experiences_key FOREIGN KEY (experience) REFERENCES data.experiences(id) ON DELETE CASCADE
+        );
+
+        CREATE TABLE IF NOT EXISTS data.purdue (
+            id serial,
+            experience integer,
+            question integer,
+            answer integer,
+            correct boolean,
+            elapsed integer,
+            time timestamptz,
+            CONSTRAINT purdue_pkey PRIMARY KEY (id),
+            CONSTRAINT purdue_experiences_key FOREIGN KEY (experience) REFERENCES data.experiences(id) ON DELETE CASCADE
+        );
+
         CREATE TABLE IF NOT EXISTS data.games (
             id serial,
             session integer,
@@ -179,15 +243,17 @@ async function createTables() {
 }
 
 async function insertLevels() {
-    const file = fs.readFileSync('./server/levels.yml', { encoding: 'utf-8' });
-    const params = load(file);
+    const parametersFile = fs.readFileSync('./server/parameters.yml', { encoding: 'utf-8' });
+    const parameters = load(parametersFile);
+    const levelsFile = fs.readFileSync('./server/levels.yml', { encoding: 'utf-8' });
+    const levels = load(levelsFile);
 
     let query = '';
     let values = [];
     let result = [];
 
-    for (let i = 0; i < params.form.length; i++) {
-        let q = params.form[i].question;
+    for (let i = 0; i < parameters.form.length; i++) {
+        let q = parameters.form[i].question;
         // Remove breaks
         q = q.replace('<br>', ' ');
         // Replace single quotes with two single quotes to avoid errors during insertion
@@ -200,15 +266,14 @@ async function insertLevels() {
     }
 
     // Insert version
-    await checkVersion(params.game);
+    await checkVersion(parameters.game);
 
-    for (let t = 0; t < params.levels.length; t++) {
-        let entry = params.levels[t];
+    for (let t = 0; t < levels.length; t++) {
+        let entry = levels[t];
 
         if (entry.type === 'tier') {
-            let levels = entry.content;
-            for (let l = 0; l < levels.length; l++) {
-                let level = levels[l];
+            for (let l = 0; l < entry.content.length; l++) {
+                let level = entry.content[l];
 
                 if (level.player) {
                     query = `

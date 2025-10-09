@@ -1,5 +1,6 @@
 import Levels from "../pages/levels";
 import Page from "../pages/page";
+import { ajaxPost } from "../utils/ajax";
 import { addClass, isOverflown, makeDiv, removeClass, wait } from "../utils/dom";
 import { easeInOutSine, generateRandomInteger, remap } from "../utils/math";
 
@@ -119,7 +120,10 @@ class SantaBarbara extends Page {
                         addClass(choice, 'pop');
                     }
 
-                    this.answers[c] = i;
+                    this.answers[c] = {
+                        time: new Date(Date.now()).toISOString(),
+                        answer: i
+                    }
 
                     let end = this.answers.every(v => v !== undefined);
                     if (end) { addClass(this.continue, 'pop'); }
@@ -151,6 +155,8 @@ class SantaBarbara extends Page {
         };
 
         wait(this.app.options.interface.transition.page, () => {
+            this.start = Date.now();
+
             let end = this.answers.every(v => v !== undefined);
             if (end) { addClass(this.continue, 'pop'); }
             addClass(this.back, 'pop');
@@ -199,18 +205,37 @@ class SantaBarbara extends Page {
             this.continue.addEventListener('click', () => {
                 this.app.progress();
                 removeClass(this.content, 'pop');
-                wait(500, () => {
-                    this.destroy();
-                    this.basemap.fit(this.params.interface.map.levels, {
-                        easing: easeInOutSine
-                    }, () => {
-                        this.app.page = new Levels({
-                            app: this.app,
-                            position: 'current',
-                            update: true
+
+                this.end = Date.now();
+                const results = {
+                    session: this.params.session.index,
+                    game: this.params.game,
+                    start: new Date(this.start).toISOString(),
+                    end: new Date(this.end).toISOString(),
+                    duration: this.end - this.start,
+                    answers: this.answers
+                }
+
+                const clearing = 2;
+                let cleared = 0;
+
+                const pursue = () => {
+                    if (++cleared >= clearing) {
+                        this.destroy();
+                        this.basemap.fit(this.params.interface.map.levels, {
+                            easing: easeInOutSine
+                        }, () => {
+                            this.app.page = new Levels({
+                                app: this.app,
+                                position: 'current',
+                                update: true
+                            });
                         });
-                    });
-                });
+                    }
+                }
+
+                ajaxPost('sbsod', results, pursue, pursue);
+                wait(500, pursue);
             }, { once: true });
         });
     }

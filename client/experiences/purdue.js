@@ -1,5 +1,6 @@
 import Levels from "../pages/levels";
 import Page from "../pages/page";
+import { ajaxPost } from "../utils/ajax";
 import { addClass, addClassList, hasClass, makeDiv, removeClass, removeClassList, wait } from "../utils/dom";
 import { easeInOutSine, generateRandomInteger } from "../utils/math";
 
@@ -29,6 +30,7 @@ class Purdue extends Page {
             });
         }
         else {
+            this.start = Date.now();
             this.createTest();
         }
     }
@@ -139,9 +141,12 @@ class Purdue extends Page {
                 } else {
                     removeClassList(answers, 'active');
                     addClass(t, 'active');
+                    const end = Date.now();
                     this.answer = {
                         value: value,
-                        right: this.elements.tests[this.index - 1] === value ? true : false
+                        correct: this.elements.tests[this.index - 1] === value ? true : false,
+                        time: new Date(end).toISOString(),
+                        elapsed: Math.round(end - this.questionstart)
                     };
                     if (this.stage === 'tutorial') {
                         if (value === this.elements.tutorial.solution) {
@@ -181,6 +186,8 @@ class Purdue extends Page {
         text.append(testcontainer);
 
         wait(this.app.options.interface.transition.page, () => {
+            this.questionstart = Date.now();
+
             this.listen = true;
             if (this.stage !== 'test') {
                 addClass(back, 'pop');
@@ -232,14 +239,34 @@ class Purdue extends Page {
         if (this.topcontent) { removeClass(this.topcontent, 'pop'); }
         if (this.bottomcontent) { removeClass(this.bottomcontent, 'pop'); }
         else { removeClass(this.content, 'pop'); }
-        wait(500, () => {
-            this.destroy();
-            this.basemap.fit(this.params.interface.map.levels, {
-                easing: easeInOutSine
-            }, () => {
-                this.app.page = new Levels({ app: this.app, position: 'current', update: update });
-            });
-        });
+
+        const clearing = update ? 2 : 1;
+        let cleared = 0;
+
+        const pursue = () => {
+            if (++cleared >= clearing) {
+                this.destroy();
+                this.basemap.fit(this.params.interface.map.levels, {
+                    easing: easeInOutSine
+                }, () => {
+                    this.app.page = new Levels({ app: this.app, position: 'current', update: update });
+                });
+            }
+        }
+
+        if (update) {
+            this.end = Date.now();
+            const results = {
+                session: this.params.session.index,
+                game: this.params.game,
+                start: new Date(this.start).toISOString(),
+                end: new Date(this.end).toISOString(),
+                duration: this.end - this.start,
+                answers: this.answers
+            }
+            ajaxPost('purdue', results, pursue, pursue);
+        }
+        wait(500, pursue);
     }
 }
 

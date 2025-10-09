@@ -1,5 +1,6 @@
 import Levels from "../pages/levels";
 import Page from "../pages/page";
+import { ajaxPost } from "../utils/ajax";
 import { addClass, addClassList, hasClass, makeDiv, removeClass, removeClassList, wait } from "../utils/dom";
 import { easeInOutSine, generateRandomInteger } from "../utils/math";
 
@@ -13,6 +14,7 @@ class SpatialOrientation extends Page {
         this.namespace = 'http://www.w3.org/2000/svg';
         this.index = 0;
         this.tutorial = true;
+        this.elapsed = 0;
 
         this.answer = {};
         this.texts = [];
@@ -37,6 +39,7 @@ class SpatialOrientation extends Page {
             this.toptext = makeDiv(null, 'experience-text top nobutton pop');
             this.topcontent.append(this.back, this.toptext);
             this.content.append(this.topcontent);
+            this.start = Date.now();
 
             if (this.stage === 'tutorial') {
                 this.elements.top.forEach(e => {
@@ -134,6 +137,7 @@ class SpatialOrientation extends Page {
             else if (e.type === 'timer') {
                 this.generateTimer(this.bottomtext, () => {
                     if (!this.tutorial) {
+                        this.answer.elapsed = Math.round(this.elapsed);
                         this.answers.push(this.answer);
                         this.answer = {};
                     }
@@ -180,6 +184,7 @@ class SpatialOrientation extends Page {
             this.continue.addEventListener('click', () => {
                 if (!this.tutorial) {
                     this.answer.difference = Math.abs(this.answer.trueAngle - this.answer.drawAngle);
+                    this.answer.elapsed = Math.round(this.elapsed);
                     this.answers.push(this.answer);
                     this.answer = {};
                 }
@@ -370,7 +375,8 @@ class SpatialOrientation extends Page {
                 } else {
                     this.answer = {
                         trueAngle: angle,
-                        drawAngle: 360 - this.calculateAngle(center, { x: center.x, y: padding }, { x: x, y: y })
+                        drawAngle: 360 - this.calculateAngle(center, { x: center.x, y: padding }, { x: x, y: y }),
+                        time: new Date(Date.now()).toISOString()
                     };
                 }
                 svgcontainer.addEventListener('touchstart', down);
@@ -399,14 +405,15 @@ class SpatialOrientation extends Page {
         container.append(timercontainer);
         let index = this.index;
         let start = performance.now();
+        this.elapsed = 0;
         const timer = () => {
             if (index === this.index) {
                 let time = performance.now();
-                let elapsed = time - start;
-                if (elapsed >= this.timelimit * 1000) {
+                this.elapsed = time - start;
+                if (this.elapsed >= this.timelimit * 1000) {
                     callback();
                 } else {
-                    let perc = 100 - (elapsed * 100 / (this.timelimit * 1000));
+                    let perc = 100 - (this.elapsed * 100 / (this.timelimit * 1000));
                     if (perc <= 50) {
                         if (perc > 25) { addClass(timerdiv, 'half'); }
                         else { addClass(timerdiv, 'quarter'); }
@@ -434,14 +441,34 @@ class SpatialOrientation extends Page {
         if (this.topcontent) { removeClass(this.topcontent, 'pop'); }
         if (this.bottomcontent) { removeClass(this.bottomcontent, 'pop'); }
         else { removeClass(this.content, 'pop'); }
-        wait(500, () => {
-            this.destroy();
-            this.basemap.fit(this.params.interface.map.levels, {
-                easing: easeInOutSine
-            }, () => {
-                this.app.page = new Levels({ app: this.app, position: 'current', update: update });
-            });
-        });
+
+        const clearing = update ? 2 : 1;
+        let cleared = 0;
+
+        const pursue = () => {
+            if (++cleared >= clearing) {
+                this.destroy();
+                this.basemap.fit(this.params.interface.map.levels, {
+                    easing: easeInOutSine
+                }, () => {
+                    this.app.page = new Levels({ app: this.app, position: 'current', update: update });
+                });
+            }
+        }
+
+        if (update) {
+            this.end = Date.now();
+            const results = {
+                session: this.params.session.index,
+                game: this.params.game,
+                start: new Date(this.start).toISOString(),
+                end: new Date(this.end).toISOString(),
+                duration: this.end - this.start,
+                answers: this.answers
+            }
+            ajaxPost('ptsot', results, pursue, pursue);
+        }
+        wait(500, pursue);
     }
 
     createCharactersLabels(svg, type, options) {

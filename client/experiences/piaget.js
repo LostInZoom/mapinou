@@ -1,5 +1,6 @@
 import Levels from "../pages/levels";
 import Page from "../pages/page";
+import { ajaxPost } from "../utils/ajax";
 import { addClass, addClassList, clearElement, makeDiv, removeClass, removeClassList, wait } from "../utils/dom";
 import { easeInOutSine, generateRandomInteger } from "../utils/math";
 
@@ -39,6 +40,8 @@ class Piaget extends Page {
 
             this.bottomcontent = makeDiv(null, 'experience-content bottom pop');
             this.content.append(this.bottomcontent);
+
+            this.start = Date.now();
             this.createBottomPanel(1);
 
             wait(this.app.options.interface.transition.page, () => {
@@ -71,7 +74,18 @@ class Piaget extends Page {
             this.listen = true;
 
             back.addEventListener('click', () => {
-                this.toLevels(false);
+                this.listen = false;
+                if (this.topcontent) { removeClass(this.topcontent, 'pop'); }
+                if (this.bottomcontent) { removeClass(this.bottomcontent, 'pop'); }
+                else { removeClass(this.content, 'pop'); }
+                wait(500, () => {
+                    this.destroy();
+                    this.basemap.fit(this.params.interface.map.levels, {
+                        easing: easeInOutSine
+                    }, () => {
+                        this.app.page = new Levels({ app: this.app, position: 'current', update: false });
+                    });
+                });
             }, { once: true });
 
             pursue.addEventListener('click', () => {
@@ -101,6 +115,8 @@ class Piaget extends Page {
         let svg = document.createElementNS(namespace, 'svg');
         svgcontainer.append(svg);
         bottombottle.append(svgcontainer);
+
+        const questionstart = Date.now();
 
         if (index > 1) {
             addClass(this.bottomcontent, 'pop');
@@ -194,14 +210,17 @@ class Piaget extends Page {
             } else {
                 addClass(pursue, 'pop');
                 removeClass(this.bottomtext, 'nobutton');
-                const [x1, y1] = [lines[0].getAttribute('x1'), lines[0].getAttribute('y1')];
-                const [x2, y2] = [lines[0].getAttribute('x2'), lines[0].getAttribute('y2')];
+                const [x1, y1] = [parseFloat(lines[0].getAttribute('x1')), parseFloat(lines[0].getAttribute('y1'))];
+                const [x2, y2] = [parseFloat(lines[0].getAttribute('x2')), parseFloat(lines[0].getAttribute('y2'))];
                 let angle = Math.abs(Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI);
                 if (angle > 180) angle = 360 - angle;
                 if (angle > 90) angle = 180 - angle;
                 this.answer = {
+                    x1: x1, y1: y1, x2, x2, y2: y2,
                     difference: angle,
-                    heightPercentage: 100 - (((y1 * 100 / vb.height) + (y2 * 100 / vb.height)) / 2)
+                    heightPercentage: 100 - (((y1 * 100 / vb.height) + (y2 * 100 / vb.height)) / 2),
+                    elapsed: Math.round(Date.now() - questionstart),
+                    time: new Date(Date.now()).toISOString()
                 };
             }
             bottombottle.addEventListener('touchstart', down);
@@ -216,7 +235,36 @@ class Piaget extends Page {
             this.answers.push(this.answer);
             if (index >= this.testnumber) {
                 this.app.progress();
-                this.toLevels(true);
+                this.listen = false;
+                if (this.topcontent) { removeClass(this.topcontent, 'pop'); }
+                if (this.bottomcontent) { removeClass(this.bottomcontent, 'pop'); }
+                else { removeClass(this.content, 'pop'); }
+
+                const clearing = 2;
+                let cleared = 0;
+
+                const pursue = () => {
+                    if (++cleared >= clearing) {
+                        this.destroy();
+                        this.basemap.fit(this.params.interface.map.levels, {
+                            easing: easeInOutSine
+                        }, () => {
+                            this.app.page = new Levels({ app: this.app, position: 'current', update: true });
+                        });
+                    }
+                }
+
+                this.end = Date.now();
+                const results = {
+                    session: this.params.session.index,
+                    game: this.params.game,
+                    start: new Date(this.start).toISOString(),
+                    end: new Date(this.end).toISOString(),
+                    duration: this.end - this.start,
+                    answers: this.answers
+                }
+                ajaxPost('piaget', results, pursue, pursue);
+                wait(500, pursue);
             } else {
                 removeClass(this.bottomcontent, 'pop');
                 wait(500, () => {
@@ -236,21 +284,6 @@ class Piaget extends Page {
         const x = xRel / rect.width * vb.width + vb.x;
         const y = yRel / rect.height * vb.height + vb.y;
         return [x, y];
-    }
-
-    toLevels(update) {
-        this.listen = false;
-        if (this.topcontent) { removeClass(this.topcontent, 'pop'); }
-        if (this.bottomcontent) { removeClass(this.bottomcontent, 'pop'); }
-        else { removeClass(this.content, 'pop'); }
-        wait(500, () => {
-            this.destroy();
-            this.basemap.fit(this.params.interface.map.levels, {
-                easing: easeInOutSine
-            }, () => {
-                this.app.page = new Levels({ app: this.app, position: 'current', update: update });
-            });
-        });
     }
 }
 
