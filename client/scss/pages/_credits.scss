@@ -8,7 +8,7 @@
     color: colors.$main-color-light;
     border-radius: .4rem;
 
-    margin: 5.5rem 0 4rem 0;
+    margin: 5.5rem 0 5rem 0;
     height: calc(100% - 9.5rem);
 
     display: flex;
@@ -104,14 +104,19 @@
 
 .credits-button-title {
     position: absolute;
+    height: 2.5rem;
     bottom: 1rem;
     right: 1rem;
 
-    padding: .3rem .8rem;
+    display: flex;
+    align-items: center;
+
+    padding: 0 1rem;
     border-radius: .4rem;
     pointer-events: all;
 
     font-family: 'Vincendo';
+    font-size: 1.2rem;
     text-transform: uppercase;
     color: colors.$main-color-light;
     background-color: colors.$secondary-color-dark;

@@ -12,10 +12,10 @@
   hints:
     '0': 'Je suis à l''ouest de la ville de Lyon.'
     '5.69': 'Entre St-Étienne et Clermont-Ferrand.'
-    '6.69': 'Tu chauffes ! Je suis au sud-ouest d''Ambert !'
+    '6.69': 'Vous chauffez ! Je suis au sud-ouest d''Ambert !'
     '8.70': 'Entre St-Amant-Roche-Savine et St-Germain-l''Herm.'
-    '9.70': 'Tu approches ! Au sud-ouest de Fournols !'
-    '11.70': 'Bravo, je suis dans le hameau de La Colombière ! Clique sur ma position pour continuer.'
+    '9.70': 'Vous approchez ! Au sud-ouest de Fournols !'
+    '11.70': 'Bravo, je suis dans le hameau de La Colombière ! Cliquez sur ma position pour continuer.'
   enemies:
     - type: eagle
       coordinates:
@@ -70,7 +70,7 @@
         '4.83': Mais oui ! Au sud de Brest !
         '6.83': Hmm, entre Brest en Quimper...
         '8.50': Un peu au sud de Crozon.
-        '9.65': C'est ça ! Je suis au Cap de la Chèvre. Clique sur ma position pour continuer.
+        '9.65': C'est ça ! Je suis au Cap de la Chèvre. Cliquez sur ma position pour continuer.
       enemies:
         - type: snake
           coordinates:
@@ -139,7 +139,7 @@
         '5.66': Et plus précisément au sud-est de Rouen.
         '6.66': Ça me revient, entre Rouen et les Andelys !
         '8.66': Au niveau de la confluence entre la Seine et l'Andelle.
-        '9.66': Dans le village de Flipou ! Clique sur ma position pour continuer.
+        '9.66': Dans le village de Flipou ! Cliquez sur ma position pour continuer.
       enemies:
         - type: snake
           coordinates:
@@ -230,7 +230,7 @@
         '8.81': À l'ouest de Gentioux-Pigerolles.
         '9.81': Ah c'est ça, je suis au lac de Vassivière !
         '10.82': Sur l'île où il y a Vassivière.
-        '11.82': Oui enfin ! Je suis dans Vassivière. Clique sur ma position pour continuer.
+        '11.82': Oui enfin ! Je suis dans Vassivière. Cliquez sur ma position pour continuer.
       enemies:
         - type: snake
           coordinates:
@@ -323,7 +323,7 @@
         '6.53': Ça me revient, je suis au nord de Grasse !
         '8.54': Au nord du Bar-sur-Loup.
         '9.54': Ah oui ! Vers Caussols, sur le plateau de Calern.
-        '11.54': Je suis sur le sommet de Calern, Clique sur ma position pour continuer.
+        '11.54': Je suis sur le sommet de Calern, Cliquez sur ma position pour continuer.
       enemies:
         - type: snake
           coordinates:
@@ -1284,7 +1284,14 @@
       target:
         - 5.868459680125909
         - 46.145652953648494
-      hints: {}
+      hints:
+        '0': Je suis au nord-est de Lyon.
+        '5.74': Ah oui, je suis au nord-ouest de Genève.
+        '6.75': C'est ça, je suis aux alentours de Saint-Claude.
+        '9.75': Un peu au nord-est de Saint-Claude, vers le crêt Pourri.
+        '11.09': >-
+          Je suis dans au lieu-dit la Main Morte. Cliquez sur ma position pour
+          continuer.
       enemies:
         - type: hunter
           coordinates:
