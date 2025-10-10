@@ -189,16 +189,15 @@ async function insertResults(data) {
     let returning;
 
     let version = await checkVersion(data.game);
-
-    query = `
-        SELECT id
-		FROM data.levels
-		WHERE tier = ${data.tier} AND level = ${data.level};
-    `
-
     let highscores = { highscores: [] };
     try {
-        returning = await db.query(query);
+        query = `
+            SELECT id
+            FROM data.levels
+            WHERE tier = $1 AND level = $2 AND version = $3;
+        `
+        values = [data.tier, data.level, version]
+        returning = await db.query(query, values);
 
         if (returning.rows.length > 0) {
             let level = returning.rows[0].id;
@@ -208,12 +207,12 @@ async function insertResults(data) {
             );
 
             query = `
-                INSERT INTO data.games (session, version, level, score, enemies, helpers, journey)
-                VALUES ($1, $2, $3, $4, $5, $6, ST_SetSRID(ST_GeomFromText($7), 4326))
+                INSERT INTO data.games (session, level, score, enemies, helpers, journey)
+                VALUES ($1, $2, $3, $4, $5, ST_SetSRID(ST_GeomFromText($6), 4326))
                 RETURNING id;
             `
             const wkt = 'LINESTRING(' + data.phase2.journey.map(p => `${p[0]} ${p[1]}`).join(', ') + ')';
-            values = [data.session, version, level, data.score, data.enemies, data.helpers, wkt];
+            values = [data.session, level, data.score, data.enemies, data.helpers, wkt];
             returning = await db.query(query, values);
             const gameIndex = returning.rows[0].id;
 

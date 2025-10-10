@@ -12,10 +12,10 @@
   hints:
     '0': 'Je suis à l''ouest de la ville de Lyon.'
     '5.69': 'Entre St-Étienne et Clermont-Ferrand.'
-    '6.69': 'Tu chauffes ! Je suis au sud-ouest d''Ambert !'
+    '6.69': 'Tu chauffes ! Je suis au sud-ouest d''Ambert !'
     '8.70': 'Entre St-Amant-Roche-Savine et St-Germain-l''Herm.'
-    '9.70': 'Tu approches ! Au sud-ouest de Fournols !'
-    '11.70': 'Bravo, je suis dans le hameau de La Colombière ! Clique sur ma position pour continuer.'
+    '9.70': 'Tu approches ! Au sud-ouest de Fournols !'
+    '11.70': 'Bravo, je suis dans le hameau de La Colombière ! Clique sur ma position pour continuer.'
   enemies:
     - type: eagle
       coordinates:
@@ -67,10 +67,10 @@
         - 48.28028059639661
       hints:
         '0': Je suis à l'ouest de Rennes.
-        '4.83': Mais oui ! Au sud de Brest !
+        '4.83': Mais oui ! Au sud de Brest !
         '6.83': Hmm, entre Brest en Quimper...
         '8.50': Un peu au sud de Crozon.
-        '9.65': C'est ça ! Je suis au Cap de la Chèvre. Clique sur ma position pour continuer.
+        '9.65': C'est ça ! Je suis au Cap de la Chèvre. Clique sur ma position pour continuer.
       enemies:
         - type: snake
           coordinates:
@@ -230,7 +230,7 @@
         '8.81': À l'ouest de Gentioux-Pigerolles.
         '9.81': Ah c'est ça, je suis au lac de Vassivière !
         '10.82': Sur l'île où il y a Vassivière.
-        '11.82': Oui enfin ! Je suis dans Vassivière. Clique sur ma position pour continuer.
+        '11.82': Oui enfin ! Je suis dans Vassivière. Clique sur ma position pour continuer.
       enemies:
         - type: snake
           coordinates:
@@ -446,7 +446,7 @@
         '5.63': Je suis à l'ouest de Lille, entre Arras et Calais.
         '6.64': Ah oui, je vois, je suis entre Béthune et St-Omer.
         '8.64': Je suis au niveau d'Aire-sur-la-Lys, de l'autre côté de la rivière.
-        '9.64': Mais oui, je suis à Steenbecque. Cliquez sur ma position pour continuer.
+        '9.64': Mais oui ! je suis à Steenbecque. Cliquez sur ma position pour continuer.
       enemies:
         - type: snake
           coordinates:
@@ -531,9 +531,9 @@
         '0': Je suis aux vers Strasbourg.
         '5.07': Entre Nancy et Mulhouse.
         '6.74': Ah oui, je suis vers St-Dié-des-Vosges.
-        '7.74': Ah oui ! Je suis à l'ouest de St-Dié-des-Vosges.
+        '7.74': Ah oui ! Je suis à l'ouest de St-Dié-des-Vosges.
         '9.75': Je suis au sud de la forêt de Rambervilliers.
-        '10.08': Mais oui, je suis à Mortagne ! Cliquez sur ma position pour continuer.
+        '10.08': Mais oui, je suis à Mortagne ! Cliquez sur ma position pour continuer.
       enemies:
         - type: snake
           coordinates:
@@ -602,11 +602,10 @@
         - 45.211739853555684
       hints:
         '0': Je suis entre Lyon et Toulouse, dans le Massif central.
-        '4.52': ''
         '5.18': Je suis au sud de Clermont-Ferrand.
         '6.52': Je suis au nord-est d'Aurillac.
         '7.52': Ah oui, je suis à l'est de Salers.
-        '8.52': C'est ça ! Je suis vers le Pas de Peyrol.
+        '8.52': C'est ça ! Je suis vers le Pas de Peyrol.
         '9.53': C'est bien ça, je suis au nord de Mandailles-St-Julien.
         '10.86': Au nord de Liadouze.
         '11.86': Au nord de Rudez.
@@ -680,7 +679,7 @@
       hints:
         '0': Je suis à Nantes.
         '6.54': À l'ouest de Nantes, vers St-Herblain.
-        '9.55': Ah c'est ça ! Je suis vers Couëron.
+        '9.55': Ah c'est ça ! Je suis vers Couëron.
         '11.13': Je suis au Port Launay. Cliquez sur ma position pour continuer.
       enemies:
         - type: snake
@@ -887,7 +886,7 @@
         '8.79': Ah oui, je suis au nord de Barfleur.
         '9.80': Au nord-est de Gatteville-le-Phare.
         '11.80': >-
-          Oui ! Je suis au phare de Gatteville. Cliquez sur ma position pour
+          Oui ! Je suis au phare de Gatteville. Cliquez sur ma position pour
           continuer.
       enemies:
         - type: hunter
@@ -961,7 +960,7 @@
         '6.77': Ah oui, je suis entre Auch et Mont-de-Marsan.
         '8.68': Je suis à l'est d'Aignan, aux sources de la Douze.
         '9.68': Je suis au lac qui se situe vers St-Pierre-d'Aubézies.
-        '10.59': Bravo ! Je suis à St-Jean. Cliquez sur ma position pour continuer.
+        '10.59': Bravo ! Je suis à St-Jean. Cliquez sur ma position pour continuer.
       enemies:
         - type: eagle
           coordinates:
@@ -1034,8 +1033,8 @@
         - 45.83004706610296
       hints:
         '0': Je suis à l'est de Lyon.
-        '5.75': C'est ça, je suis au sud d'Annecy !
-        '6.75': Ah oui ! Je suis à l'est de Chambery !
+        '5.75': C'est ça, je suis au sud d'Annecy !
+        '6.75': Ah oui ! Je suis à l'est de Chambery !
         '7.76': Je suis entre Chambéry et Albertville.
         '8.76': Mais oui, je suis entre Grésy-sur-Isère et le Châtelard.
         '9.76': Je suis au sud-est d'École.
@@ -1376,7 +1375,7 @@
         - 43.45071602286123
       hints:
         '0': Je suis à l'ouest de Marseille.
-        '5.69': Ah oui ! Entre Marseille et Nîmes !
+        '5.69': Ah oui ! Entre Marseille et Nîmes !
         '6.69': Ça me revient, aux alentours de Martigues.
         '7.70': C'est ça, je suis dans la partie est du PNR de Camargue.
         '8.70': Je suis vers Salin de Giraud.
@@ -1474,7 +1473,7 @@
       hints:
         '0': Je suis au nord de Bordeaux.
         '5.76': Je suis entre La Rochelle et Bordeaux.
-        '6.76': Ah oui ! Je suis entre La Rochelle et Royan.
+        '6.76': Ah oui ! Je suis entre La Rochelle et Royan.
         '7.76': C'est bien ça je suis au nord de l'Île d'Oléron.
         '8.76': Au nord-ouest de Saint-Denis-d'Oléron.
         '9.77': Je suis au niveau de la pointe de Chassiron.

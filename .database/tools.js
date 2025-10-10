@@ -28,6 +28,30 @@ async function createTables() {
             CONSTRAINT sessions_pkey PRIMARY KEY (id)
         );
 
+        CREATE TABLE IF NOT EXISTS data.versions (
+            id serial,
+            version character varying(20),
+            codename character varying(20),
+            score_increment_default integer,
+            score_increment_movement integer,
+            score_refresh_default integer,
+            score_refresh_movement integer,
+            score_modifier_position integer,
+            score_modifier_enemies integer,
+            score_modifier_helpers integer,
+            tolerance_target integer,
+            tolerance_enemies_snake integer,
+            tolerance_enemies_eagle integer,
+            tolerance_enemies_hunter integer,
+            tolerance_helpers integer,
+            visibility_helpers integer,
+            speed_travel_kmh integer,
+            speed_roaming_pxs integer,
+            invulnerability_ms integer,
+            routing_zoom numeric(4,2),
+            CONSTRAINT versions_pkey PRIMARY KEY (id)
+        );
+
         CREATE TABLE IF NOT EXISTS data.questions (
             id serial,
             value character varying(1000),
@@ -48,9 +72,11 @@ async function createTables() {
             id serial,
             tier int,
             level int,
+            version integer,
             player geometry(Point, 4326),
             target geometry(Point, 4326),
-            CONSTRAINT levels_pkey PRIMARY KEY (id)
+            CONSTRAINT levels_pkey PRIMARY KEY (id),
+            CONSTRAINT levels_versions_key FOREIGN KEY (version) REFERENCES data.versions(id)
         );
 
         CREATE TABLE IF NOT EXISTS data.hints (
@@ -77,30 +103,6 @@ async function createTables() {
             geom geometry(Point, 4326),
             CONSTRAINT helpers_pkey PRIMARY KEY (id),
             CONSTRAINT helpers_levels_key FOREIGN KEY (level) REFERENCES data.levels(id)
-        );
-
-        CREATE TABLE IF NOT EXISTS data.versions (
-            id serial,
-            version character varying(20),
-            codename character varying(20),
-            score_increment_default integer,
-            score_increment_movement integer,
-            score_refresh_default integer,
-            score_refresh_movement integer,
-            score_modifier_position integer,
-            score_modifier_enemies integer,
-            score_modifier_helpers integer,
-            tolerance_target integer,
-            tolerance_enemies_snake integer,
-            tolerance_enemies_eagle integer,
-            tolerance_enemies_hunter integer,
-            tolerance_helpers integer,
-            visibility_helpers integer,
-            speed_travel_kmh integer,
-            speed_roaming_pxs integer,
-            invulnerability_ms integer,
-            routing_zoom numeric(4,2),
-            CONSTRAINT versions_pkey PRIMARY KEY (id)
         );
 
         CREATE TABLE IF NOT EXISTS data.experiences (
@@ -170,7 +172,6 @@ async function createTables() {
         CREATE TABLE IF NOT EXISTS data.games (
             id serial,
             session integer,
-            version integer,
             level integer,
             score integer,
             enemies integer,
@@ -178,7 +179,6 @@ async function createTables() {
             journey geometry(LineString, 4326),
             CONSTRAINT games_pkey PRIMARY KEY (id),
             CONSTRAINT games_sessions_key FOREIGN KEY (session) REFERENCES data.sessions(id),
-            CONSTRAINT games_versions_key FOREIGN KEY (version) REFERENCES data.versions(id),
             CONSTRAINT games_levels_key FOREIGN KEY (level) REFERENCES data.levels(id)
         );
 
@@ -266,7 +266,7 @@ async function insertLevels() {
     }
 
     // Insert version
-    await checkVersion(parameters.game);
+    const versionId = await checkVersion(parameters.game);
 
     for (let t = 0; t < levels.length; t++) {
         let entry = levels[t];
@@ -277,15 +277,15 @@ async function insertLevels() {
 
                 if (level.player) {
                     query = `
-                        INSERT INTO data.levels (tier, level, player, target)
+                        INSERT INTO data.levels (tier, level, version, player, target)
                         VALUES (
-                            $1, $2,
-                            ST_SetSRID(ST_POINT($3, $4), 4326),
-                            ST_SetSRID(ST_POINT($5, $6), 4326)
+                            $1, $2, $3,
+                            ST_SetSRID(ST_POINT($4, $5), 4326),
+                            ST_SetSRID(ST_POINT($6, $7), 4326)
                         )
                         RETURNING id;
                     `
-                    values = [t, l, level.player[0], level.player[1], level.target[0], level.target[1]]
+                    values = [t, l, versionId, level.player[0], level.player[1], level.target[0], level.target[1]]
                     result = await db.query(query, values);
 
                     let index = result.rows[0].id;
