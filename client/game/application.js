@@ -14,8 +14,8 @@ class Application {
         this.options = options;
         this.progression = options.progression;
 
-        this.debug = false;
-        // this.progression = { tier: 8, level: 3, finish: false };
+        this.debug = true;
+        // this.progression = { tier: 2, level: 2, finish: false };
 
         // Create the DOM Element
         this.container = makeDiv('application', null);
@@ -41,7 +41,8 @@ class Application {
             parent: this.header,
             svg: this.options.svgs.music,
             src: 'menu',
-            format: 'mp3'
+            format: 'mp3',
+            loop: true
         });
 
         this.sounds = new SoundEffects({

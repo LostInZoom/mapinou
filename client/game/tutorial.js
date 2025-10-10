@@ -39,9 +39,9 @@ class Tutorial extends Page {
         this.paloma = new Woodpigeon({ level: this });
         this.hint = new Hint({ level: this });
 
-        if (this.app.music.isActive()) {
-            wait(1500, () => { this.app.music.change('game', true); })
-        }
+        // if (this.app.music.isActive()) {
+        //     wait(1500, () => { this.app.music.change('game', true); })
+        // }
 
         // Cancel current game and go back to level selection
         this.listening = false;
@@ -619,7 +619,7 @@ class Tutorial extends Page {
     }
 
     toLevels() {
-        this.app.music.fadeOut(500, true);
+        // this.app.music.fadeOut(500, true);
         this.tutorialcontainer.remove();
         this.destroy();
 

@@ -32,9 +32,9 @@ class Levels extends Page {
             update: this.update,
             finish: this.finish
         }, (t) => {
-            if (this.app.music.isPending()) {
-                this.app.music.change('menu', true);
-            }
+            // if (this.app.music.isPending()) {
+            //     this.app.music.change('menu', true);
+            // }
 
             wait(600, () => {
                 this.listen = true;
