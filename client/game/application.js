@@ -13,7 +13,6 @@ class Application {
     constructor(options) {
         this.options = options;
         this.progression = options.progression;
-        console.log(this.progression);
 
         this.debug = true;
         // this.progression = { tier: 8, level: 3, finish: false };
@@ -41,7 +40,7 @@ class Application {
         this.music = new Music({
             parent: this.header,
             svg: this.options.svgs.music,
-            src: './sounds/theme',
+            src: 'menu',
             format: 'mp3',
         });
 

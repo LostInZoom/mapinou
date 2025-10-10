@@ -55,6 +55,10 @@ class Level extends Page {
             }
         });
 
+        if (this.app.music.isActive()) {
+            wait(1500, () => { this.app.music.change('game', true); })
+        }
+
         this.phase1(() => {
             this.phase2(() => {
                 wait(300, () => {
@@ -422,7 +426,9 @@ class Level extends Page {
     }
 
     toLevels(update) {
+        this.app.music.fadeOut(500, true);
         this.destroy();
+
         this.basemap.fit(this.params.interface.map.levels, {
             easing: easeInOutSine
         }, () => {

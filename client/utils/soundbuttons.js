@@ -11,6 +11,15 @@ class SoundButton {
         this.parent.append(this.button);
 
         this.active = true;
+        this.pending = false;
+    }
+
+    isActive() {
+        return this.active;
+    }
+
+    isPending() {
+        return this.pending;
     }
 
     display(deactivate = true, callback) {
@@ -32,18 +41,58 @@ class Music extends SoundButton {
     constructor(options) {
         super(options);
         addClass(this.button, 'audio-button-music');
-
         this.sound = new Sound(options);
 
-        // Handle play and pause from the web app
-        this.button.addEventListener('click', () => {
-            if (this.sound.isPlaying()) { this.sound.pause(); }
-            else { this.sound.play(); }
-        });
+        this.buttonListener = () => {
+            if (this.sound.isPlaying()) {
+                this.sound.pause();
+                this.active = false;
+            }
+            else {
+                this.sound.play();
+                this.active = true;
+            }
+        }
+        this.pauseListener = () => {
+            removeClass(this.button, 'active');
+            this.active = false;
+        }
+        this.playListener = () => {
+            addClass(this.button, 'active');
+            this.active = true;
+        }
 
+        this.enableListeners();
+    }
+
+    enableListeners() {
+        // Handle play and pause from the web app
+        this.button.addEventListener('click', this.buttonListener);
         // Handle play and pause from outside the webapp
-        this.sound.audio.addEventListener('pause', () => { removeClass(this.button, 'active'); });
-        this.sound.audio.addEventListener('play', () => { addClass(this.button, 'active'); });
+        this.sound.audio.addEventListener('pause', this.pauseListener);
+        this.sound.audio.addEventListener('play', this.playListener);
+    }
+
+    disableListeners() {
+        this.button.removeEventListener('click', this.buttonListener);
+        this.sound.audio.removeEventListener('pause', this.pauseListener);
+        this.sound.audio.removeEventListener('play', this.playListener);
+    }
+
+    fadeOut(duration, keepAlive, callback) {
+        callback = callback || function () { };
+        if (!this.sound.isPlaying()) return;
+        if (keepAlive) {
+            this.disableListeners();
+            this.pending = true;
+        }
+        this.sound.fadeOut(duration, callback);
+    }
+
+    change(src, play) {
+        this.sound.setSource(src, true, play);
+        if (play) { this.pending = false; }
+        this.enableListeners();
     }
 }
 

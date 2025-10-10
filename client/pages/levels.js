@@ -32,6 +32,10 @@ class Levels extends Page {
             update: this.update,
             finish: this.finish
         }, (t) => {
+            if (this.app.music.isPending()) {
+                this.app.music.change('menu', true);
+            }
+
             wait(600, () => {
                 this.listen = true;
                 if (this.update && !this.app.debug) {
@@ -131,6 +135,7 @@ class Levels extends Page {
     }
 
     hide(callback) {
+        callback = callback || function () { };
         removeClass(this.back, 'pop');
         removeClass(this.choose, 'pop');
         this.navigation.hide();

@@ -53,7 +53,7 @@ class Helper extends Character {
         this.deactivate();
 
         this.app.sounds.playFile({
-            src: './sounds/crounch',
+            src: 'crounch',
             format: 'mp3',
             amount: 3,
         });

@@ -104,16 +104,16 @@ class TierPanel extends Panel {
                 if (this.page.listening()) {
                     minimapcontainer.removeEventListener('click', startLevel);
                     this.page.listen = false;
+
+                    this.page.app.music.fadeOut(500, true);
                     this.page.hide(() => {
-                        wait(100, () => {
-                            this.page.destroy();
-                            this.page.app.page = new Level({
-                                app: this.page.app,
-                                levels: this.page,
-                                position: 'current',
-                                tier: this.page.getPosition(),
-                                level: i
-                            });
+                        this.page.destroy();
+                        this.page.app.page = new Level({
+                            app: this.page.app,
+                            levels: this.page,
+                            position: 'current',
+                            tier: this.page.getPosition(),
+                            level: i
                         });
                     });
                 }
