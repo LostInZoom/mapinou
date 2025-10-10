@@ -1,0 +1,97 @@
+player:
+  - 4.743066844611235
+  - 43.418291604166996
+target:
+  - 4.4290259009511885
+  - 43.45071602286123
+hints:
+  '0': Je suis à l'ouest de Marseille.
+  '5.69': Ah oui ! Entre Marseille et Nîmes !
+  '6.69': Ça me revient, aux alentours de Martigues.
+  '7.70': C'est ça, je suis dans la partie est du PNR de Camargue.
+  '8.70': Je suis vers Salin de Giraud.
+  '9.70': >-
+    Je suis à l'extrémité de la route sur l'embouchure du Grand Rhône. Clique
+    sur ma position pour continuer.
+enemies:
+  - type: eagle
+    coordinates:
+      - 4.706147771370951
+      - 43.47123582602734
+  - type: snake
+    coordinates:
+      - 4.715144830348976
+      - 43.413706125519695
+  - type: eagle
+    coordinates:
+      - 4.669382309228723
+      - 43.402727800390494
+  - type: eagle
+    coordinates:
+      - 4.620788485396275
+      - 43.44788673532486
+  - type: snake
+    coordinates:
+      - 4.706767398381658
+      - 43.39401320162591
+  - type: eagle
+    coordinates:
+      - 4.644188420870762
+      - 43.486519836061404
+  - type: snake
+    coordinates:
+      - 4.599158900511668
+      - 43.40761071256463
+  - type: snake
+    coordinates:
+      - 4.737945451804535
+      - 43.38710513145713
+  - type: eagle
+    coordinates:
+      - 4.63747648817241
+      - 43.52354809975452
+  - type: snake
+    coordinates:
+      - 4.662520378517797
+      - 43.348256581461584
+  - type: hunter
+    coordinates:
+      - 4.713372296969396
+      - 43.35021811721788
+  - type: snake
+    coordinates:
+      - 4.439113292643583
+      - 43.46213632439901
+  - type: eagle
+    coordinates:
+      - 4.411894939856779
+      - 43.450694124772184
+  - type: hunter
+    coordinates:
+      - 4.677429253227189
+      - 43.44201111982531
+  - type: hunter
+    coordinates:
+      - 4.59264601379661
+      - 43.359974999914954
+helpers:
+  - - 4.494438615541071
+    - 43.47357852690584
+  - - 4.463617819407261
+    - 43.46545495342366
+  - - 4.438700582171464
+    - 43.476135634051985
+  - - 4.425733750057873
+    - 43.45899442669938
+  - - 4.779393264322891
+    - 43.371482762812775
+  - - 4.710562388834035
+    - 43.37012787102793
+  - - 4.6534873010837146
+    - 43.37067182966072
+  - - 4.584320283355623
+    - 43.45499642875981
+  - - 4.654504444119709
+    - 43.42777666084689
+  - - 4.708729331795098
+    - 43.438235121187944

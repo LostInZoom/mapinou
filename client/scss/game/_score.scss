@@ -3,7 +3,7 @@
 .score-container {
     pointer-events: none;
     position: relative;
-    height: 2.5rem;
+    height: 3.5rem;
     margin: 0 auto;
     color: colors.$main-color-light;
 
@@ -46,7 +46,7 @@
 
 .score-text {
     height: inherit;
-    border-radius: 2.5rem;
+    border-radius: 3.5rem;
 
     font-family: 'Cabin';
     font-weight: bold;

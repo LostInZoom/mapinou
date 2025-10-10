@@ -16,7 +16,7 @@ class Router {
 
         this.credentials = new Credentials();
         this.providers = ['openrouteservice', 'geoservice'];
-        this.provider = 'openrouteservice';
+        this.provider = 'geoservice';
 
         this.position = this.options.position;
         this.journeys = new Journeys({

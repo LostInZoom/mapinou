@@ -1,8 +1,8 @@
 @use '../colors';
 
 .audio-button-container {
-    height: 2.5rem;
-    width: 2.5rem;
+    height: 3.5rem;
+    width: 3.5rem;
     border-radius: 50%;
     pointer-events: all;
     overflow: hidden;
@@ -36,8 +36,8 @@
 }
 
 .audio-button {
-    height: 2.5rem;
-    width: 2.5rem;
+    height: 3.5rem;
+    width: 3.5rem;
 
     background-color: colors.$secondary-color-dark;
     border-radius: 50%;
@@ -52,8 +52,8 @@
 }
 
 .header-button {
-    height: 2.5rem;
-    width: 2.5rem;
+    height: 3.5rem;
+    width: 3.5rem;
     border-radius: 50%;
     pointer-events: all;
     overflow: hidden;
@@ -87,8 +87,8 @@
 }
 
 .rabbit-button {
-    height: 2rem;
-    width: 2rem;
+    height: 3rem;
+    width: 3rem;
     border: solid .3rem colors.$secondary-color-dark;
     background-color: colors.$main-color-light;
 }

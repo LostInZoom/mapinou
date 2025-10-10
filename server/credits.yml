@@ -46,6 +46,8 @@
 ###############
 - title: Audio
   content:
+  - role: Musique originale
+    name: Justin Berli
   - role: Effets sonores
     name: StarNinjas
     link: https://opengameart.org/content/7-eating-crunches
