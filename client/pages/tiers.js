@@ -458,6 +458,7 @@ class TutorialPanel extends Panel {
             if (this.page.listening()) {
                 this.minimapcontainer.removeEventListener('click', startTutorial);
                 this.page.listen = false;
+                this.page.app.music.fadeOut(500, true);
                 this.page.hide(() => {
                     wait(100, () => {
                         this.page.destroy();

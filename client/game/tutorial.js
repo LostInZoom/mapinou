@@ -39,6 +39,10 @@ class Tutorial extends Page {
         this.paloma = new Woodpigeon({ level: this });
         this.hint = new Hint({ level: this });
 
+        if (this.app.music.isActive()) {
+            wait(1500, () => { this.app.music.change('game', true); })
+        }
+
         // Cancel current game and go back to level selection
         this.listening = false;
         this.back.addEventListener('click', () => {
@@ -199,7 +203,7 @@ class Tutorial extends Page {
             this.tutorialcontainer.removeEventListener('click', tuto2bis);
             await this.paloma.hideBubble();
             await this.mask.unset();
-            await this.mask.set({ cx: this.score.getLeftPosition(), cy: "2.25rem", rx: "4rem", ry: "3rem" });
+            await this.mask.set({ cx: this.score.getLeftPosition(), cy: "2.75rem", rx: "5rem", ry: "4rem" });
             this.score.pop();
             this.score.setState('default');
             this.score.start();
@@ -213,7 +217,7 @@ class Tutorial extends Page {
             this.paloma.hideBubble();
             await this.mask.unset();
             this.paloma.setText('Vous pouvez annuler la partie en cours en haut à gauche.');
-            await this.mask.set({ cx: "2.25rem", cy: "2.25rem", r: '3rem' });
+            await this.mask.set({ cx: "2.75rem", cy: "2.75rem", r: '4rem' });
             this.paloma.displayBubble();
             this.tutorialcontainer.addEventListener('click', tuto2bis);
         };
@@ -221,7 +225,7 @@ class Tutorial extends Page {
         const tuto1 = async () => {
             this.tutorialcontainer.removeEventListener('click', tuto1);
             await this.paloma.hideBubble();
-            await this.mask.set({ cx: 'calc(100% - 4rem)', cy: "2.25rem", rx: '4rem', ry: '3rem' });
+            await this.mask.set({ cx: 'calc(100% - 5rem)', cy: "2.75rem", rx: '5rem', ry: '4rem' });
             this.paloma.setText('Vous pouvez activer ou désactiver la musique et les effets sonores en haut à droite.');
             await this.paloma.displayBubble();
             this.tutorialcontainer.addEventListener('click', tuto2);
@@ -615,6 +619,8 @@ class Tutorial extends Page {
     }
 
     toLevels() {
+        this.app.music.fadeOut(500, true);
+        this.tutorialcontainer.remove();
         this.destroy();
 
         this.basemap.fit(this.params.interface.map.levels, {
