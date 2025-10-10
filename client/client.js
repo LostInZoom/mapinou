@@ -81,6 +81,29 @@ window.addEventListener("DOMContentLoaded", async () => {
                 }
                 params.game.color = color;
 
+                let sounds = getStorage('sounds');
+                let music = getStorage('music');
+                if (!sounds) {
+                    sounds = true;
+                    setStorage('sounds', sounds);
+                } else {
+                    sounds = JSON.parse(sounds);
+                }
+
+                const isPWA = window.matchMedia('(display-mode: fullscreen)').matches
+                if (!music) {
+                    music = isPWA;
+                } else {
+                    music = JSON.parse(music);
+                    if (music) { music = isPWA; }
+                }
+                setStorage('music', music);
+
+                params.audio = {
+                    sounds: sounds,
+                    music: music
+                }
+
                 new Application(params);
             });
         });

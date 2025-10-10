@@ -20,6 +20,7 @@ class Sound {
 
         this.audio = new Audio(this.file);
         this.audio.loop = this.loop;
+        this.audio.autoplay = false;
     }
 
     setSource(src, loop, play) {

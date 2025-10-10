@@ -41,12 +41,12 @@ class Application {
             parent: this.header,
             svg: this.options.svgs.music,
             src: 'menu',
-            format: 'mp3',
+            format: 'mp3'
         });
 
         this.sounds = new SoundEffects({
             parent: this.header,
-            svg: this.options.svgs.sound,
+            svg: this.options.svgs.sound
         });
 
         let centers = this.options.interface.map.start.centers;
@@ -72,8 +72,17 @@ class Application {
                     position: 'current',
                     // init: true
                 }, () => {
-                    this.music.display(true);
-                    this.sounds.display(false);
+                    const audio = this.options.audio;
+                    this.music.display(() => {
+                        if (audio.music && window.matchMedia('(display-mode: fullscreen)').matches) {
+                            this.music.play();
+                        }
+                    });
+                    this.sounds.display(() => {
+                        if (audio.sounds) {
+                            this.sounds.activate();
+                        }
+                    });
                 });
 
                 this.rabbits = new Rabbits({

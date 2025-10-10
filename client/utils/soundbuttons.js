@@ -1,16 +1,17 @@
 import Sound from "./sounds";
-import { addClass, makeDiv, removeClass, wait } from "../utils/dom";
+import { addClass, makeDiv, removeClass, setStorage, wait } from "../utils/dom";
 
 class SoundButton {
     constructor(options) {
         this.parent = options.parent;
         this.svg = options.svg;
-        this.button = makeDiv(null, 'audio-button-container active');
+
+        this.button = makeDiv(null, 'audio-button-container');
         this.buttonchild = makeDiv(null, 'audio-button', this.svg);
         this.button.append(this.buttonchild);
         this.parent.append(this.button);
 
-        this.active = true;
+        this.active = false;
         this.pending = false;
     }
 
@@ -22,18 +23,26 @@ class SoundButton {
         return this.pending;
     }
 
-    display(deactivate = true, callback) {
-        callback = callback || function () { };
+    display(callback) {
         addClass(this.button, 'pop');
-        if (deactivate) {
-            wait(300, () => {
-                removeClass(this.button, 'active');
-                this.active = false;
-                callback();
-            });
-        } else {
-            callback();
-        }
+        wait(300, callback);
+    }
+
+    hide(callback) {
+        removeClass(this.button, 'pop');
+        wait(300, callback);
+    }
+
+    activate(callback) {
+        addClass(this.button, 'active');
+        this.active = true;
+        wait(300, callback);
+    }
+
+    deactivate(callback) {
+        removeClass(this.button, 'active');
+        this.active = false;
+        wait(300, callback);
     }
 }
 
@@ -44,25 +53,29 @@ class Music extends SoundButton {
         this.sound = new Sound(options);
 
         this.buttonListener = () => {
-            if (this.sound.isPlaying()) {
-                this.sound.pause();
-                this.active = false;
-            }
-            else {
-                this.sound.play();
-                this.active = true;
-            }
+            if (this.sound.isPlaying()) { this.pause(); }
+            else { this.play(); }
         }
         this.pauseListener = () => {
             removeClass(this.button, 'active');
             this.active = false;
+            setStorage('music', false);
         }
         this.playListener = () => {
             addClass(this.button, 'active');
             this.active = true;
+            setStorage('music', true);
         }
 
         this.enableListeners();
+    }
+
+    play() {
+        this.sound.play();
+    }
+
+    pause() {
+        this.sound.pause();
     }
 
     enableListeners() {
@@ -101,15 +114,18 @@ class SoundEffects extends SoundButton {
         super(options);
         addClass(this.button, 'audio-button-sounds');
 
-        this.button.addEventListener('click', () => {
+        this.buttonListener = () => {
             if (this.active) {
                 removeClass(this.button, 'active');
                 this.active = false;
+                setStorage('sounds', false);
             } else {
                 addClass(this.button, 'active');
                 this.active = true;
+                setStorage('sounds', true);
             }
-        });
+        }
+        this.button.addEventListener('click', this.buttonListener);
     }
 
     playFile(options) {

@@ -138,6 +138,7 @@ function clearElement(element) {
  * @param {function} callback The function to execute after waiting.
  */
 function wait(duration, callback) {
+    callback = callback || function () { };
     setTimeout(callback, duration);
 };
 
