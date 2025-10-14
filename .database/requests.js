@@ -188,162 +188,162 @@ async function insertResults(data) {
     let version = await checkVersion(data.game);
 
     let highscores = { highscores: [] };
-    // try {
-    query = `
+    try {
+        query = `
             SELECT id
             FROM data.levels
             WHERE tier = $1 AND level = $2;
         `
-    values = [data.tier, data.level]
-    returning = await db.query(query, values);
+        values = [data.tier, data.level]
+        returning = await db.query(query, values);
 
-    if (returning.rows.length > 0) {
-        let level = returning.rows[0].id;
-        await db.query(
-            `DELETE FROM data.games WHERE session = $1 AND level = $2 AND version = $3`,
-            [data.session, level, version]
-        );
+        if (returning.rows.length > 0) {
+            let level = returning.rows[0].id;
+            await db.query(
+                `DELETE FROM data.games WHERE session = $1 AND level = $2 AND version = $3`,
+                [data.session, level, version]
+            );
 
-        query = `
+            query = `
                 INSERT INTO data.games (session, level, version, score, enemies, helpers, journey)
                 VALUES ($1, $2, $3, $4, $5, $6, ST_SetSRID(ST_GeomFromText($7), 4326))
                 RETURNING id;
             `
-        const wkt = 'LINESTRING(' + data.phase2.journey.map(p => `${p[0]} ${p[1]}`).join(', ') + ')';
-        values = [data.session, level, version, data.score, data.enemies, data.helpers, wkt];
-        returning = await db.query(query, values);
-        const gameIndex = returning.rows[0].id;
+            const wkt = 'LINESTRING(' + data.phase2.journey.map(p => `${p[0]} ${p[1]}`).join(', ') + ')';
+            values = [data.session, level, version, data.score, data.enemies, data.helpers, wkt];
+            returning = await db.query(query, values);
+            const gameIndex = returning.rows[0].id;
 
-        const phase1 = data.phase1;
-        const phase2 = data.phase2;
+            const phase1 = data.phase1;
+            const phase2 = data.phase2;
 
-        // Insert Phase 1
-        query = `
+            // Insert Phase 1
+            query = `
                 INSERT INTO data.phases (game, number, start_time, end_time, duration, score)
                 VALUES ($1, $2, $3, $4, $5, $6)
                 RETURNING id;
             `
-        values = [gameIndex, 1, phase1.start, phase1.end, phase1.duration, phase1.score];
-        returning = await db.query(query, values);
-        const phase1Index = returning.rows[0].id;
+            values = [gameIndex, 1, phase1.start, phase1.end, phase1.duration, phase1.score];
+            returning = await db.query(query, values);
+            const phase1Index = returning.rows[0].id;
 
-        // Insert Phase 2
-        query = `
+            // Insert Phase 2
+            query = `
 			INSERT INTO data.phases (game, number, start_time, end_time, duration, score)
 			VALUES ($1, $2, $3, $4, $5, $6)
 			RETURNING id;
 		`
-        values = [gameIndex, 2, phase2.start, phase2.end, phase2.duration, phase2.score];
-        returning = await db.query(query, values);
-        const phase2Index = returning.rows[0].id;
+            values = [gameIndex, 2, phase2.start, phase2.end, phase2.duration, phase2.score];
+            returning = await db.query(query, values);
+            const phase2Index = returning.rows[0].id;
 
-        values = [];
-        let inserts = [];
-        // Phase 1 interactions
-        phase1.interactions.forEach(i => {
-            const center1 = `POINT(${i.center1[0]} ${i.center1[1]})`;
-            const center2 = `POINT(${i.center2[0]} ${i.center2[1]})`;
-            values.push(phase1Index, i.type, i.subtype ?? null, i.start, i.end, i.duration, i.zoom1, i.zoom2, center1, center2, i.extent1, i.extent2);
-            const base = values.length - 12;
-            inserts.push(`(
+            values = [];
+            let inserts = [];
+            // Phase 1 interactions
+            phase1.interactions.forEach(i => {
+                const center1 = `POINT(${i.center1[0]} ${i.center1[1]})`;
+                const center2 = `POINT(${i.center2[0]} ${i.center2[1]})`;
+                values.push(phase1Index, i.type, i.subtype ?? null, i.start, i.end, i.duration, i.zoom1, i.zoom2, center1, center2, i.extent1, i.extent2);
+                const base = values.length - 12;
+                inserts.push(`(
                 $${base + 1}, $${base + 2}, $${base + 3}, $${base + 4}, $${base + 5}, $${base + 6}, $${base + 7}, $${base + 8},
                 ST_SetSRID(ST_GeomFromText($${base + 9}), 4326), ST_SetSRID(ST_GeomFromText($${base + 10}), 4326),
                 ST_SetSRID(ST_GeomFromText($${base + 11}), 4326), ST_SetSRID(ST_GeomFromText($${base + 12}), 4326)
             )`);
-        });
-        // Phase 2 interactions
-        phase2.interactions.forEach(i => {
-            const center1 = `POINT(${i.center1[0]} ${i.center1[1]})`;
-            const center2 = `POINT(${i.center2[0]} ${i.center2[1]})`;
-            values.push(phase2Index, i.type, i.subtype ?? null, i.start, i.end, i.duration, i.zoom1, i.zoom2, center1, center2, i.extent1, i.extent2);
-            const base = values.length - 12;
-            inserts.push(`(
+            });
+            // Phase 2 interactions
+            phase2.interactions.forEach(i => {
+                const center1 = `POINT(${i.center1[0]} ${i.center1[1]})`;
+                const center2 = `POINT(${i.center2[0]} ${i.center2[1]})`;
+                values.push(phase2Index, i.type, i.subtype ?? null, i.start, i.end, i.duration, i.zoom1, i.zoom2, center1, center2, i.extent1, i.extent2);
+                const base = values.length - 12;
+                inserts.push(`(
                 $${base + 1}, $${base + 2}, $${base + 3}, $${base + 4}, $${base + 5}, $${base + 6}, $${base + 7}, $${base + 8},
                 ST_SetSRID(ST_GeomFromText($${base + 9}), 4326), ST_SetSRID(ST_GeomFromText($${base + 10}), 4326),
                 ST_SetSRID(ST_GeomFromText($${base + 11}), 4326), ST_SetSRID(ST_GeomFromText($${base + 12}), 4326)
             )`);
-        });
-        query = `
+            });
+            query = `
             INSERT INTO data.interactions (
                 phase, type, subtype, start_time, end_time, duration,
                 start_zoom, end_zoom, start_center, end_center, start_extent, end_extent
             )
             VALUES ${inserts.join(', ')};
         `;
-        await db.query(query, values);
+            await db.query(query, values);
 
-        // Investigation phase 1
-        values = [];
-        inserts = [];
-        phase1.clics.forEach(c => {
-            const point = `POINT(${c.coordinates[0]} ${c.coordinates[1]})`;
-            values.push(phase1Index, parseInt(c.pixel[0]), parseInt(c.pixel[1]), c.time, c.correct, point);
-            const base = values.length - 6;
-            inserts.push(`(
+            // Investigation phase 1
+            values = [];
+            inserts = [];
+            phase1.clics.forEach(c => {
+                const point = `POINT(${c.coordinates[0]} ${c.coordinates[1]})`;
+                values.push(phase1Index, parseInt(c.pixel[0]), parseInt(c.pixel[1]), c.time, c.correct, point);
+                const base = values.length - 6;
+                inserts.push(`(
                     $${base + 1}, $${base + 2}, $${base + 3}, $${base + 4}, $${base + 5},
                     ST_SetSRID(ST_GeomFromText($${base + 6}), 4326))
                 `);
-        });
-        query = `
+            });
+            query = `
                 INSERT INTO data.investigation (phase, pixel_x, pixel_y, time, correct, geom)
                 VALUES ${inserts};
             `
-        await db.query(query, values);
+            await db.query(query, values);
 
-        // Navigation phase 2
-        values = [];
-        inserts = [];
+            // Navigation phase 2
+            values = [];
+            inserts = [];
 
-        phase2.clics.forEach(c => {
-            let route = null;
-            if (c.route !== undefined && c.route.length > 0) {
-                route = 'LINESTRING(' + c.route.map(p => `${p[0]} ${p[1]}`).join(', ') + ')';
-            }
+            phase2.clics.forEach(c => {
+                let route = null;
+                if (c.route !== undefined && c.route.length > 0) {
+                    route = 'LINESTRING(' + c.route.map(p => `${p[0]} ${p[1]}`).join(', ') + ')';
+                }
 
-            const destination = `POINT(${c.coordinates[0]} ${c.coordinates[1]})`;
+                const destination = `POINT(${c.coordinates[0]} ${c.coordinates[1]})`;
 
-            values.push(
-                phase2Index,
-                c.state,
-                parseInt(c.pixel[0]),
-                parseInt(c.pixel[1]),
-                c.start,
-                c.end,
-                parseInt(c.duration),
-                parseInt(c.computing),
-                c.provider,
-                destination,
-                route
-            );
+                values.push(
+                    phase2Index,
+                    c.state,
+                    parseInt(c.pixel[0]),
+                    parseInt(c.pixel[1]),
+                    c.start,
+                    c.end,
+                    parseInt(c.duration),
+                    parseInt(c.computing),
+                    c.provider,
+                    destination,
+                    route
+                );
 
-            const base = values.length - 11;
+                const base = values.length - 11;
 
-            inserts.push(
-                `($${base + 1}, $${base + 2}, $${base + 3}, $${base + 4}, $${base + 5}, $${base + 6}, $${base + 7}, $${base + 8}, $${base + 9},
+                inserts.push(
+                    `($${base + 1}, $${base + 2}, $${base + 3}, $${base + 4}, $${base + 5}, $${base + 6}, $${base + 7}, $${base + 8}, $${base + 9},
                     ST_SetSRID(ST_GeomFromText($${base + 10}), 4326),
                     ${route ? `ST_SetSRID(ST_GeomFromText($${base + 11}), 4326)` : `$${base + 11}`})`
-            );
-        });
+                );
+            });
 
-        query = `
-                INSERT INTO data.navigation 
-                (phase, state, pixel_x, pixel_y, start_time, end_time, duration, computing_duration, provider, destination, route)
-                VALUES ${inserts.join(', ')}
-            `;
-        await db.query(query, values);
+            query = `
+            INSERT INTO data.navigation 
+            (phase, state, pixel_x, pixel_y, start_time, end_time, duration, computing_duration, provider, destination, route)
+            VALUES ${inserts.join(', ')}
+        `;
+            await db.query(query, values);
 
-        let highscoresQuery = `
+            let highscoresQuery = `
                 SELECT session, enemies, helpers, score
                 FROM data.games
                 WHERE level = ${level};
             `
-        let hs = await db.query(highscoresQuery);
-        highscores.highscores = hs.rows;
+            let hs = await db.query(highscoresQuery);
+            highscores.highscores = hs.rows;
+        }
+        return highscores;
+    } catch {
+        return highscores;
     }
-    return highscores;
-    // } catch {
-    //     return highscores;
-    // }
 }
 
 async function insertExperience(data, name, version) {

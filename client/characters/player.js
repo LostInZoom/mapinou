@@ -4,6 +4,7 @@ import { angle, within } from "../cartography/analysis.js";
 import Rabbit from "./rabbit.js";
 import Router from "../cartography/routing.js";
 import Flower from "./flower.js";
+import { wait } from "../utils/dom.js";
 
 class Player extends Rabbit {
     constructor(options) {
@@ -207,6 +208,7 @@ class Player extends Rabbit {
                             if (within(this.position, this.layer.basemap.target.getCoordinates(), this.params.game.tolerance.target)) {
                                 if (this.clic) { this.clic.state = 'won'; }
                                 this.stop();
+                                this.router.setProvider('ign');
                                 callback(true);
                             }
                         }
@@ -216,7 +218,7 @@ class Player extends Rabbit {
                         this.setCoordinates(vertexes[vertexes.length - 1]);
                         if (this.clic) { this.clic.state = 'reached'; }
                         this.stop();
-                        callback();
+                        callback(false);
                     }
                 }
             };
@@ -234,6 +236,7 @@ class Player extends Rabbit {
             start: Date.now(),
             pixel: this.layer.basemap.getPixelAtCoordinates(destination),
             coordinates: destination,
+            provider: this.router.getProvider(),
             state: 'initial'
         }
 
@@ -246,20 +249,35 @@ class Player extends Rabbit {
         this.level.routing();
         this.level.score.stop();
 
-        // Calculate the route using the router (AJAX)
-        this.router.calculateRoute(destination,
-            (route) => {
-                // Make sure the map hasn't been clicked while fetching the route
-                if (destination === this.destination) {
-                    this.clic.state = 'computed';
-                    this.clic.route = route.geometry.coordinates;
-                    this.clic.computing = performance.now() - start;
-                    this.clic.provider = this.router.getProvider();
-                    this.move(route, start, callback);
-                }
-            },
-            () => { this.stop(); }
-        );
+        let success = false;
+        const calculate = () => {
+            // Calculate the route using the router (AJAX)
+            this.router.calculateRoute(destination,
+                (route) => {
+                    success = true;
+                    // Make sure the map hasn't been clicked while fetching the route
+                    if (destination === this.destination) {
+                        this.clic.state = 'computed';
+                        this.clic.route = route.geometry.coordinates;
+                        this.clic.provider = this.router.getProvider();
+                        this.clic.computing = performance.now() - start;
+                        this.move(route, start, callback);
+                    }
+                },
+                () => { this.stop(); }
+            );
+        }
+        calculate();
+
+        let provider = this.router.getProvider();
+        wait(this.router.getWaitingThreshold(), () => {
+            if (!success && destination === this.destination && provider === this.router.getProvider() && start === this.start) {
+                this.router.switchProvider();
+                this.clic.state = 'switched';
+                this.stop();
+                this.travel(destination, callback);
+            }
+        });
     }
 }
 
