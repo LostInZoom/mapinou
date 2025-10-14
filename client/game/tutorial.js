@@ -68,10 +68,9 @@ class Tutorial extends Page {
         const selectionListener = (e) => {
             let target = e.lngLat.toArray();
             let player = this.parameters.player;
-            if (within(target, player, this.params.game.tolerance.target)) {
+            if (within(target, player, this.params.game.tolerance.click)) {
                 this.score.unpop();
                 this.score.stop();
-
                 this.mask.reveal().then(() => {
                     this.hint.end(callback);
                 });

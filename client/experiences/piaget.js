@@ -220,7 +220,7 @@ class Piaget extends Page {
                     difference: angle,
                     heightPercentage: 100 - (((y1 * 100 / vb.height) + (y2 * 100 / vb.height)) / 2),
                     elapsed: Math.round(Date.now() - questionstart),
-                    time: new Date(Date.now()).toISOString()
+                    time: new Date().toISOString()
                 };
             }
             bottombottle.addEventListener('touchstart', down);

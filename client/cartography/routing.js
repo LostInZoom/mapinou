@@ -49,16 +49,13 @@ class Router {
 
         let url = '';
         if (this.provider === 'geoservice') {
-            url = 'https://data.geopf.fr/navigation/itineraire?'
-                + 'resource=bdtopo-osrm'
-                + '&profile=pedestrian'
-                + '&optimization=shortest'
+            url = 'https://data.geopf.fr/navigation/itineraire?resource=bdtopo-osrm&profile=pedestrian&optimization=shortest'
                 + `&start=${this.position[0]},${this.position[1]}`
                 + `&end=${target[0]},${target[1]}`
                 + '&geometryFormat=geojson'
         }
         else if (this.provider === 'openrouteservice') {
-            url = 'https://api.openrouteservice.org/v2/directions/foot-hiking?'
+            url = 'https://api.openrouteservice.org/v2/directions/foot-walking?'
                 + `api_key=${this.credentials.openrouteservice}`
                 + `&start=${this.position[0]},${this.position[1]}`
                 + `&end=${target[0]},${target[1]}`

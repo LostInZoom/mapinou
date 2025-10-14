@@ -2,8 +2,8 @@
 #### GAME PARAMETERS ####
 #########################
 game:
-  version: '1.0'
-  codename: livia
+  version: '1.1'
+  codename: oenas
   name: Mapinou
   description: Naviguez dans des cartes et trouvez des lapins.
   colors:
@@ -23,6 +23,7 @@ game:
       position: 5
       helpers: -20
   tolerance:
+    click: 600
     target: 300
     enemies:
       hunter: 1500

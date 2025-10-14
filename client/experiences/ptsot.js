@@ -376,7 +376,7 @@ class SpatialOrientation extends Page {
                     this.answer = {
                         trueAngle: angle,
                         drawAngle: 360 - this.calculateAngle(center, { x: center.x, y: padding }, { x: x, y: y }),
-                        time: new Date(Date.now()).toISOString()
+                        time: new Date().toISOString()
                     };
                 }
                 svgcontainer.addEventListener('touchstart', down);

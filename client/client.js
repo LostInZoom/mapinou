@@ -21,6 +21,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
         let sessionId = getStorage('session');
         let results = { consent: false, form: false };
+
         if (sessionId) {
             ajaxPost('verification/', { sessionId: sessionId }, (data) => {
                 if (data.isPresent) {

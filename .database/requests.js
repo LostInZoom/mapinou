@@ -3,16 +3,13 @@ import { checkVersion } from "./tools.js";
 
 async function createSession(options) {
     let creation = `
-        INSERT INTO data.sessions (user_agent, device, orientation, os, width, height)
-        VALUES (
-			'${options.userAgent}',
-			'${options.device}', '${options.orientation}', '${options.os}', 
-			${options.width}, ${options.height}
-		)
+        INSERT INTO data.sessions (user_agent, device, orientation, os, width, height, time)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
         RETURNING id;
     `
     try {
-        let result = await db.query(creation);
+        let values = [options.userAgent, options.device, options.orientation, options.os, options.width, options.height, new Date().toISOString()];
+        let result = await db.query(creation, values);
         let index = result.rows[0].id;
         return index;
     } catch {
@@ -189,30 +186,31 @@ async function insertResults(data) {
     let returning;
 
     let version = await checkVersion(data.game);
+
     let highscores = { highscores: [] };
     try {
         query = `
             SELECT id
             FROM data.levels
-            WHERE tier = $1 AND level = $2 AND version = $3;
+            WHERE tier = $1 AND level = $2;
         `
-        values = [data.tier, data.level, version]
+        values = [data.tier, data.level]
         returning = await db.query(query, values);
 
         if (returning.rows.length > 0) {
             let level = returning.rows[0].id;
             await db.query(
-                `DELETE FROM data.games WHERE session = $1 AND level = $2`,
-                [data.session, level]
+                `DELETE FROM data.games WHERE session = $1 AND level = $2 AND version = $3`,
+                [data.session, level, version]
             );
 
             query = `
-                INSERT INTO data.games (session, level, score, enemies, helpers, journey)
-                VALUES ($1, $2, $3, $4, $5, ST_SetSRID(ST_GeomFromText($6), 4326))
+                INSERT INTO data.games (session, level, version, score, enemies, helpers, journey)
+                VALUES ($1, $2, $3, $4, $5, $6, ST_SetSRID(ST_GeomFromText($7), 4326))
                 RETURNING id;
             `
             const wkt = 'LINESTRING(' + data.phase2.journey.map(p => `${p[0]} ${p[1]}`).join(', ') + ')';
-            values = [data.session, level, data.score, data.enemies, data.helpers, wkt];
+            values = [data.session, level, version, data.score, data.enemies, data.helpers, wkt];
             returning = await db.query(query, values);
             const gameIndex = returning.rows[0].id;
 
@@ -221,10 +219,10 @@ async function insertResults(data) {
 
             // Insert Phase 1
             query = `
-			INSERT INTO data.phases (game, number, start_time, end_time, duration, score)
-			VALUES ($1, $2, $3, $4, $5, $6)
-			RETURNING id;
-		`
+                INSERT INTO data.phases (game, number, start_time, end_time, duration, score)
+                VALUES ($1, $2, $3, $4, $5, $6)
+                RETURNING id;
+            `
             values = [gameIndex, 1, phase1.start, phase1.end, phase1.duration, phase1.score];
             returning = await db.query(query, values);
             const phase1Index = returning.rows[0].id;

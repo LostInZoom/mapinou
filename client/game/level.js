@@ -59,19 +59,19 @@ class Level extends Page {
         //     wait(1500, () => { this.app.music.change('game', true); })
         // }
 
-        // this.phase1(() => {
-        //     this.phase2(() => {
-        //         wait(300, () => {
-        //             this.ending();
-        //         });
-        //     });
-        // });
-
-        this.phase2(() => {
-            wait(300, () => {
-                this.ending();
+        this.phase1(() => {
+            this.phase2(() => {
+                wait(300, () => {
+                    this.ending();
+                });
             });
         });
+
+        // this.phase2(() => {
+        //     wait(300, () => {
+        //         this.ending();
+        //     });
+        // });
     }
 
     async phase1(callback) {
@@ -85,12 +85,12 @@ class Level extends Page {
                 let target = e.lngLat.toArray();
                 let player = this.parameters.player;
                 let clic = {
-                    time: new Date(Date.now()).toISOString(),
+                    time: new Date().toISOString(),
                     pixel: [e.point.x, e.point.y],
                     coordinates: target
                 }
 
-                if (within(target, player, this.params.game.tolerance.target)) {
+                if (within(target, player, this.params.game.tolerance.click)) {
                     this.score.stop();
                     clic.correct = true;
                     this.basemap.recorder.insertCustomClic(clic);

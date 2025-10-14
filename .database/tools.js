@@ -25,6 +25,7 @@ async function createTables() {
             height integer,
             consent boolean DEFAULT False,
             form boolean DEFAULT False,
+            time timestamptz,
             CONSTRAINT sessions_pkey PRIMARY KEY (id)
         );
 
@@ -39,6 +40,7 @@ async function createTables() {
             score_modifier_position integer,
             score_modifier_enemies integer,
             score_modifier_helpers integer,
+            tolerance_click integer,
             tolerance_target integer,
             tolerance_enemies_snake integer,
             tolerance_enemies_eagle integer,
@@ -50,6 +52,7 @@ async function createTables() {
             invulnerability_ms integer,
             routing_maxzoom numeric(4,2),
             routing_minzoom numeric(4,2),
+            time timestamptz,
             CONSTRAINT versions_pkey PRIMARY KEY (id)
         );
 
@@ -73,7 +76,6 @@ async function createTables() {
             id serial,
             tier int,
             level int,
-            version integer,
             player geometry(Point, 4326),
             target geometry(Point, 4326),
             CONSTRAINT levels_pkey PRIMARY KEY (id),
@@ -174,13 +176,15 @@ async function createTables() {
             id serial,
             session integer,
             level integer,
+            version integer,
             score integer,
             enemies integer,
             helpers integer,
             journey geometry(LineString, 4326),
             CONSTRAINT games_pkey PRIMARY KEY (id),
             CONSTRAINT games_sessions_key FOREIGN KEY (session) REFERENCES data.sessions(id),
-            CONSTRAINT games_levels_key FOREIGN KEY (level) REFERENCES data.levels(id)
+            CONSTRAINT games_levels_key FOREIGN KEY (level) REFERENCES data.levels(id),
+            CONSTRAINT games_versions_key FOREIGN KEY (version) REFERENCES data.versions(id)
         );
 
         CREATE TABLE IF NOT EXISTS data.phases (
@@ -345,18 +349,18 @@ async function checkVersion(game) {
                 score_increment_default, score_increment_movement,
                 score_refresh_default, score_refresh_movement,
                 score_modifier_position, score_modifier_enemies, score_modifier_helpers,
-                tolerance_target, tolerance_enemies_snake, tolerance_enemies_eagle, tolerance_enemies_hunter, tolerance_helpers,
+                tolerance_click, tolerance_target, tolerance_enemies_snake, tolerance_enemies_eagle, tolerance_enemies_hunter, tolerance_helpers,
                 visibility_helpers, speed_travel_kmh, speed_roaming_pxs,
-                invulnerability_ms, routing_minzoom, routing_maxzoom
+                invulnerability_ms, routing_minzoom, routing_maxzoom, time
             )
             VALUES (
                 $1, $2,
                 $3, $4,
                 $5, $6,
                 $7, $8, $9,
-                $10, $11, $12, $13, $14,
-                $15, $16, $17,
-                $18, $19, $20
+                $10, $11, $12, $13, $14, $15,
+                $16, $17, $18,
+                $19, $20, $21, $22
             )
             RETURNING id;
         `
@@ -365,9 +369,9 @@ async function checkVersion(game) {
             game.score.increment.default, game.score.increment.movement,
             game.score.refresh.default, game.score.refresh.movement,
             game.score.modifier.enemies, game.score.modifier.position, game.score.modifier.helpers,
-            game.tolerance.target, game.tolerance.enemies.snake, game.tolerance.enemies.eagle, game.tolerance.enemies.hunter, game.tolerance.helpers,
+            game.tolerance.click, game.tolerance.target, game.tolerance.enemies.snake, game.tolerance.enemies.eagle, game.tolerance.enemies.hunter, game.tolerance.helpers,
             game.visibility.helpers, game.speed.travel, game.speed.roaming,
-            game.invulnerability, game.routing.minzoom, game.routing.maxzoom
+            game.invulnerability, game.routing.minzoom, game.routing.maxzoom, new Date().toISOString()
         ]
         let returning = await db.query(query, values);
         return returning.rows[0].id;

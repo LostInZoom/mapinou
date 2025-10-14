@@ -121,7 +121,7 @@ class SantaBarbara extends Page {
                     }
 
                     this.answers[c] = {
-                        time: new Date(Date.now()).toISOString(),
+                        time: new Date().toISOString(),
                         answer: i
                     }
 
