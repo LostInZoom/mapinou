@@ -441,18 +441,28 @@ class Basemap {
         routingHelp.append(routingLabel);
         this.container.append(routingHelp);
 
+        let last = 0;
         const movement = (e) => {
             if (this.routable) {
                 let destination = e.lngLat.toArray();
                 this.player.travel(destination, callback);
             } else {
-                if (this.isVisible(this.player.getCoordinates(), 0)) {
-
-                } else {
-                    if (this.getZoom() >= this.params.game.routing.minzoom) {
-
-                    }
+                if (this.getZoom() >= this.params.game.routing.minzoom) {
+                    routingLabel.innerHTML = "Déplacement impossible : vous devez dézoomer un peu.";
                 }
+                if (this.getZoom() <= this.params.game.routing.maxzoom) {
+                    routingLabel.innerHTML = "Déplacement impossible : vous devez zoomer davantage.";
+                }
+                if (!this.isVisible(this.player.getCoordinates(), 0)) {
+                    routingLabel.innerHTML = "Déplacement impossible : Lapinou doit être visible pour se déplacer.";
+                }
+
+                last = Date.now();
+                const current = last;
+                addClass(routingLabel, 'reveal');
+                wait(1200, () => {
+                    if (current === last) { removeClass(routingLabel, 'reveal'); }
+                });
             }
         }
         this.addListener('click', movement);
