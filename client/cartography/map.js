@@ -196,6 +196,16 @@ class Basemap {
         this.map.setMinZoom(0);
     }
 
+    getExtentAsWKT() {
+        const bounds = this.map.getBounds();
+        const west = bounds.getWest();
+        const south = bounds.getSouth();
+        const east = bounds.getEast();
+        const north = bounds.getNorth();
+        const wkt = `POLYGON((${west} ${south}, ${east} ${south}, ${east} ${north}, ${west} ${north}, ${west} ${south}))`;
+        return wkt;
+    }
+
     getResolution() {
         const R = 6378137;
         const tileSize = 256;

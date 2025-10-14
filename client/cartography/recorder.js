@@ -87,6 +87,7 @@ class Recorder {
     startInteraction() {
         this.start = Date.now();
         this.center = this.basemap.getCenter();
+        this.extent = this.basemap.getExtentAsWKT();
         this.zoom = this.basemap.getZoom();
         this.isSet = true;
     }
@@ -94,6 +95,7 @@ class Recorder {
     resetInteraction() {
         this.center = null;
         this.zoom = null;
+        this.extent = null;
         this.start = null;
         this.isSet = false;
     }
@@ -127,7 +129,9 @@ class Recorder {
             center1: this.center.toArray(),
             center2: this.basemap.getCenter().toArray(),
             zoom1: this.zoom.toFixed(2),
-            zoom2: this.basemap.getZoom().toFixed(2)
+            zoom2: this.basemap.getZoom().toFixed(2),
+            extent1: this.extent,
+            extent2: this.basemap.getExtentAsWKT()
         };
 
         this.interactions.push(r);
