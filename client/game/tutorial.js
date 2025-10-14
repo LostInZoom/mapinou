@@ -271,7 +271,7 @@ class Tutorial extends Page {
         };
 
         const mapListener = async () => {
-            let threshold = this.params.game.routing;
+            let threshold = this.params.game.routing.minzoom;
             let zoom = this.basemap.getZoom();
             if (zoom >= threshold && !visible) {
                 visible = true;
@@ -411,7 +411,7 @@ class Tutorial extends Page {
 
             this.basemap.ease({
                 center: centroid(centers),
-                zoom: this.params.game.routing,
+                zoom: this.params.game.routing.minzoom,
                 duration: 1000,
                 padding: { top: 0, bottom: 50, left: 0, right: 0 }
             }, async () => {

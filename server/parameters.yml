@@ -35,7 +35,9 @@ game:
     travel: 4000 # in km/h
     roaming: 20 # in px/s
   invulnerability: 3000
-  routing: 12.5
+  routing:
+    minzoom: 12.5
+    maxzoom: 14
   wrong:
     - Aïe aïe aïe, pas par là !
     - Et non, c'est pas ici !

@@ -173,7 +173,7 @@ class Application {
     }
 
     getProgression(previous) {
-        if (this.debug) { return { tier: 0, level: 0, finish: this.progression.finish }; }
+        if (this.debug) { return { tier: 2, level: 0, finish: this.progression.finish }; }
         if (previous && !this.progression.finish) {
             if (this.progression.level === 0) {
                 const l = this.options.levels[this.progression.tier - 1].type === 'tier' ? this.options.levels[this.progression.tier - 1].content.length - 1 : 0;

@@ -14,7 +14,7 @@ class Helper extends Character {
             'turnip', 'zucchini', 'beet', 'squash', 'butternut'
         ]
         this.type = this.types[generateRandomInteger(0, 9)];
-        this.opacity = this.layer.basemap.getZoom() < this.params.game.routing ? 0 : 1;
+        this.opacity = this.layer.basemap.getZoom() < this.params.game.routing.minzoom ? 0 : 1;
 
         this.feature.properties.type = this.type;
         this.feature.properties.scale = this.scale;

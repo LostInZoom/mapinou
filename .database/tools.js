@@ -48,7 +48,8 @@ async function createTables() {
             speed_travel_kmh integer,
             speed_roaming_pxs integer,
             invulnerability_ms integer,
-            routing_zoom numeric(4,2),
+            routing_maxzoom numeric(4,2),
+            routing_minzoom numeric(4,2),
             CONSTRAINT versions_pkey PRIMARY KEY (id)
         );
 
@@ -206,6 +207,8 @@ async function createTables() {
             end_zoom numeric(4,2),
             start_center geometry(Point, 4326),
             end_center geometry(Point, 4326),
+            start_extent geometry(Polygon, 4326),
+            end_extent geometry(Polygon, 4326),
             CONSTRAINT interactions_pkey PRIMARY KEY (id),
             CONSTRAINT interactions_phases_key FOREIGN KEY (phase) REFERENCES data.phases(id) ON DELETE CASCADE
         );
@@ -344,7 +347,7 @@ async function checkVersion(game) {
                 score_modifier_position, score_modifier_enemies, score_modifier_helpers,
                 tolerance_target, tolerance_enemies_snake, tolerance_enemies_eagle, tolerance_enemies_hunter, tolerance_helpers,
                 visibility_helpers, speed_travel_kmh, speed_roaming_pxs,
-                invulnerability_ms, routing_zoom
+                invulnerability_ms, routing_minzoom, routing_maxzoom
             )
             VALUES (
                 $1, $2,
@@ -353,7 +356,7 @@ async function checkVersion(game) {
                 $7, $8, $9,
                 $10, $11, $12, $13, $14,
                 $15, $16, $17,
-                $18, $19
+                $18, $19, $20
             )
             RETURNING id;
         `
@@ -364,7 +367,7 @@ async function checkVersion(game) {
             game.score.modifier.enemies, game.score.modifier.position, game.score.modifier.helpers,
             game.tolerance.target, game.tolerance.enemies.snake, game.tolerance.enemies.eagle, game.tolerance.enemies.hunter, game.tolerance.helpers,
             game.visibility.helpers, game.speed.travel, game.speed.roaming,
-            game.invulnerability, game.routing
+            game.invulnerability, game.routing.minzoom, game.routing.maxzoom
         ]
         let returning = await db.query(query, values);
         return returning.rows[0].id;

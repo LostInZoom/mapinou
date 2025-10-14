@@ -390,7 +390,7 @@ class Basemap {
             basemap: this,
             level: level,
             coordinates: options.helpers,
-            minZoom: this.params.game.routing
+            minZoom: this.params.game.routing.minzoom
         });
 
         this.rabbits = new Rabbits({
@@ -436,10 +436,23 @@ class Basemap {
     enableMovement(callback) {
         callback = callback || function () { };
 
+        const routingHelp = makeDiv(null, 'level-routing-hint');
+        const routingLabel = makeDiv(null, 'level-routing-label');
+        routingHelp.append(routingLabel);
+        this.container.append(routingHelp);
+
         const movement = (e) => {
             if (this.routable) {
                 let destination = e.lngLat.toArray();
                 this.player.travel(destination, callback);
+            } else {
+                if (this.isVisible(this.player.getCoordinates(), 0)) {
+
+                } else {
+                    if (this.getZoom() >= this.params.game.routing.minzoom) {
+
+                    }
+                }
             }
         }
         this.addListener('click', movement);
@@ -450,7 +463,8 @@ class Basemap {
         });
 
         const routing = () => {
-            const isClose = this.getZoom() >= this.params.game.routing;
+            const zoom = this.getZoom();
+            const isClose = zoom >= this.params.game.routing.minzoom && zoom <= this.params.game.routing.maxzoom;
             const isVisible = this.isVisible(this.player.getCoordinates(), 0);
             if (isClose && isVisible) { this.makeRoutable(); }
             else { this.makeUnroutable(); }

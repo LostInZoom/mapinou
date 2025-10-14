@@ -59,11 +59,17 @@ class Level extends Page {
         //     wait(1500, () => { this.app.music.change('game', true); })
         // }
 
-        this.phase1(() => {
-            this.phase2(() => {
-                wait(300, () => {
-                    this.ending();
-                });
+        // this.phase1(() => {
+        //     this.phase2(() => {
+        //         wait(300, () => {
+        //             this.ending();
+        //         });
+        //     });
+        // });
+
+        this.phase2(() => {
+            wait(300, () => {
+                this.ending();
             });
         });
     }
@@ -150,7 +156,7 @@ class Level extends Page {
 
         let visible = false;
         this.basemap.addListener('render', () => {
-            let threshold = this.params.game.routing;
+            let threshold = this.params.game.routing.minzoom;
             let zoom = this.basemap.getZoom();
             if (zoom >= threshold && !visible) {
                 visible = true;
