@@ -91,7 +91,10 @@ class Title extends Page {
         this.creditslabel = makeDiv(null, 'title-button-label', 'Crédits');
         this.credits.append(this.creditslabel);
 
-        this.buttons.append(this.start, this.credits);
+        this.share = makeDiv(null, 'title-button title-button-share', this.params.svgs.share);
+        if (navigator.share) { addClass(this.share, 'active'); }
+
+        this.buttons.append(this.start, this.credits, this.share);
         this.buildinfos = makeDiv(null, 'title-build');
         this.buildinfoslabel = makeDiv(null, 'title-build-label', `
             version ${this.params.game.version} "${capitalizeFirstLetter(this.params.game.codename)}" - ${new Date().getFullYear()}
@@ -106,7 +109,7 @@ class Title extends Page {
 
         delay += 300;
         // For each button slide and increment the delay
-        [this.start, this.credits].forEach((button) => {
+        [this.start, this.credits, this.share].forEach((button) => {
             if (init) {
                 wait(delay, () => { addClass(button, 'pop'); });
             } else {
@@ -148,6 +151,20 @@ class Title extends Page {
                 this.listen = false;
                 this.previous = new Credits({ app: this.app, position: 'previous' });
                 this.slidePrevious();
+            }
+        });
+
+        this.share.addEventListener('click', async () => {
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'Mapinou',
+                        text: 'Naviguez dans des cartes et trouvez des lapins.',
+                        url: window.location.href
+                    });
+                } catch {
+
+                }
             }
         });
 
