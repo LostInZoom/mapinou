@@ -138,6 +138,8 @@ class Enemies extends Characters {
                         this.level.score.addModifier('enemies');
                         player.makeInvulnerable(this.params.game.invulnerability, 300);
                         player.incrementEnemies();
+                        enemy.playSound();
+                        wait(300, () => { player.playSound(); })
                     }
                 }
             } else {

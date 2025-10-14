@@ -48,9 +48,21 @@
   content:
   - role: Musique originale
     name: Justin Berli
-  - role: Effets sonores
+  - role: Lapinou
+    name: floraphonic
+    link: https://pixabay.com/sound-effects/cute-animal-squeak-2-188095/
+  - role: Crounch légumes
     name: StarNinjas
     link: https://opengameart.org/content/7-eating-crunches
+  - role: Coup de feu
+    name: cedarstudios
+    link: https://pixabay.com/sound-effects/22-ricochet-90225/
+  - role: Aigle de Bonelli
+    name: Timo Janhonen
+    link: https://xeno-canto.org/112654
+  - role: Serpent
+    name: quicksounds.com
+    link: https://quicksounds.com/sound/4386/
 ###############
 #### FONTS ####
 ###############

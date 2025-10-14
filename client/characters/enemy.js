@@ -107,6 +107,14 @@ class Enemy extends Character {
         };
         requestAnimationFrame(animation);
     }
+
+    playSound() {
+        this.layer.basemap.app.sounds.playFile({
+            src: this.soundSrc,
+            format: 'mp3',
+            amount: this.soundAmount,
+        });
+    }
 }
 
 class Hunter extends Enemy {
@@ -120,6 +128,9 @@ class Hunter extends Enemy {
         this.framenumber = 5;
         this.framescale = 0.9;
         this.offset = [0, -15];
+
+        this.soundSrc = 'shot';
+        this.soundAmount = 4;
 
         this.feature.properties.type = 'hunter';
         this.feature.properties.offset = this.offset;
@@ -140,6 +151,9 @@ class Eagle extends Enemy {
         this.framenumber = 3;
         this.framescale = 1;
 
+        this.soundSrc = 'eagle';
+        this.soundAmount = 2;
+
         this.feature.properties.type = 'eagle';
         this.feature.properties.offset = this.offset;
 
@@ -158,6 +172,9 @@ class Snake extends Enemy {
         this.framerate = 200;
         this.framenumber = 3;
         this.framescale = 0.8;
+
+        this.soundSrc = 'snake';
+        this.soundAmount = 2;
 
         this.feature.properties.type = 'snake';
         this.feature.properties.offset = this.offset;

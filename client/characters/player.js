@@ -279,6 +279,13 @@ class Player extends Rabbit {
             }
         });
     }
+
+    playSound() {
+        this.layer.basemap.app.sounds.playFile({
+            src: 'lapinou',
+            format: 'mp3'
+        });
+    }
 }
 
 export default Player;
