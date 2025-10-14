@@ -8,7 +8,7 @@ import Position from '../game/position.js';
 import { addClass, makeDiv, removeClass, wait } from '../utils/dom.js';
 import Rabbits from '../layers/rabbits.js';
 import { mergeExtents, project } from './analysis.js';
-import { easeInOutCubic, easeInQuint, easeOutCirc, easeOutQuint, remap } from '../utils/math.js';
+import { easeInOutCubic, easeOutCirc, remap } from '../utils/math.js';
 import Flowers from '../layers/flowers.js';
 import Recorder from './recorder.js';
 
@@ -105,10 +105,10 @@ class Basemap {
             this.map.dragRotate.disable();
             this.map.keyboard.disable();
             this.map.touchPitch.disable();
+            this.map.doubleClickZoom.disable();
 
             if (!this.options.interactive) {
                 this.map.scrollZoom.disable();
-                this.map.doubleClickZoom.disable();
                 this.map.dragPan.disable();
                 this.map.touchZoomRotate.disable();
                 this.map.touchZoomRotate.disableRotation();
@@ -328,7 +328,6 @@ class Basemap {
 
     enableInteractions() {
         this.map.scrollZoom.enable();
-        this.map.doubleClickZoom.enable();
         this.map.dragPan.enable();
         this.map.touchZoomRotate.enable();
         this.map.touchZoomRotate.disableRotation();
@@ -336,7 +335,6 @@ class Basemap {
 
     disableInteractions() {
         this.map.scrollZoom.disable();
-        this.map.doubleClickZoom.disable();
         this.map.dragPan.disable();
         this.map.touchZoomRotate.disable();
     }

@@ -104,15 +104,17 @@ form:
     mandatory: false
     multiple: false
     answers:
-      - text: 18-24
+      - text: Moins de 18 ans
         unique: true
-      - text: 25-34
+      - text: 18-24 ans
         unique: true
-      - text: 35-44
+      - text: 25-34 ans
         unique: true
-      - text: 45-59
+      - text: 35-44 ans
         unique: true
-      - text: 60 et plus
+      - text: 45-59 ans
+        unique: true
+      - text: 60 ans et plus
         unique: true
       - text: Ne se prononce pas
         unique: true
@@ -136,6 +138,9 @@ consent:
       soient collectées et utilisées par l''équipe LostInZoom
       afin de mieux comprendre comment nous naviguons dans
       les cartes interactives.'
+  - type: paragraph
+    content: 'Si vous avez moins de 18 ans, vous devez faire valider le
+      présent formulaire par un parent ou un représentant légal.'
   - type: list
     title: 'Les données suivantes sont collectées:'
     content:
