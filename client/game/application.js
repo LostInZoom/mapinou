@@ -14,7 +14,7 @@ class Application {
         this.options = options;
         this.progression = options.progression;
 
-        this.debug = true;
+        this.debug = false;
         // this.progression = { tier: 2, level: 2, finish: false };
 
         // Create the DOM Element
@@ -71,7 +71,7 @@ class Application {
                     app: this,
                     basemap: this.basemap,
                     position: 'current',
-                    // init: true
+                    init: !this.debug
                 }, () => {
                     const audio = this.options.audio;
                     this.music.display(() => {

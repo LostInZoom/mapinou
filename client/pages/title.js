@@ -3,7 +3,7 @@ import Form from "./form";
 import Levels from "./levels";
 import Page from "./page";
 
-import { addClass, makeDiv, removeClass, removeClassList, wait } from "../utils/dom";
+import { addClass, makeDiv, removeClass, removeClassList, wait, waitPromise } from "../utils/dom";
 import { remap, easeOutCubic, easeInOutSine } from "../utils/math";
 import { capitalizeFirstLetter, pxToRem } from "../utils/parse";
 import Credits from "./credits";
@@ -168,12 +168,12 @@ class Title extends Page {
             }
         });
 
-        this.startlabel.addEventListener('click', () => {
+        this.startlabel.addEventListener('click', async () => {
             if (this.listen) {
                 this.listen = false;
                 if (this.options.app.options.session.consent) {
                     if (this.options.app.options.session.form) {
-                        removeClassList([this.letters, this.start, this.credits, this.buildinfos], 'pop');
+                        removeClassList([this.letters, this.start, this.credits, this.share, this.buildinfos], 'pop');
                         this.app.killRabbits();
                         this.app.forbidRabbits();
                         wait(300, () => {
