@@ -67,13 +67,14 @@
     justify-content: center;
     gap: 1rem;
     width: 100%;
+    font-size: 4vw;
 }
 
 .credits-role {
     text-align: end;
     line-height: 1.1rem;
     width: calc(50% - .5rem);
-    overflow-wrap: break-word;
+    overflow-wrap: anywhere;
 }
 
 .credits-name {
@@ -83,7 +84,10 @@
     display: flex;
     align-items: start;
     justify-content: space-between;
-    overflow-wrap: break-word;
+}
+
+.credits-label {
+    overflow-wrap: anywhere;
 }
 
 .credits-hyperlink {
@@ -127,5 +131,11 @@
     &.pop {
         transform: scale(1);
         transition: transform .3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+}
+
+@media screen and (min-width: 400px) {
+    .credits-entry {
+        font-size: 1rem;
     }
 }

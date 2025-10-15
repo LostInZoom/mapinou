@@ -1,11 +1,5 @@
-import Consent from "./consent";
-import Form from "./form";
-import Levels from "./levels";
 import Page from "./page";
-
-import { addClass, makeDiv, removeClass, removeClassList, wait } from "../utils/dom";
-import { remap, easeOutCubic, easeInOutSine } from "../utils/math";
-import { capitalizeFirstLetter, pxToRem } from "../utils/parse";
+import { makeDiv, wait } from "../utils/dom";
 import Title from "./title";
 
 class Credits extends Page {
@@ -46,7 +40,9 @@ class Credits extends Page {
             part.content.forEach(e => {
                 let entry = makeDiv(null, 'credits-entry');
                 let role = makeDiv(null, 'credits-role', e.role);
-                let name = makeDiv(null, 'credits-name', e.name);
+                let name = makeDiv(null, 'credits-name');
+                let label = makeDiv(null, 'credits-label', e.name);
+                name.append(label);
                 if ('link' in e) {
                     let link = makeDiv(null, 'credits-hyperlink', this.params.svgs.hyperlink);
                     name.append(link);
