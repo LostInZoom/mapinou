@@ -3,16 +3,20 @@
 .highscore-container {
     position: relative;
     pointer-events: all;
-    width: 80%;
-    height: 80%;
+
+    width: calc(100% - 2rem);
+    height: calc(100% - 8rem - min(20vw, 12.5vh, 5rem));
+    margin-top: calc(5rem + min(20vw, 12.5vh, 5rem));
+    margin-bottom: 3rem;
     max-width: 20rem;
     max-height: 30rem;
 
+    background-color: colors.$secondary-color-dark;
+    border-radius: .4rem .4rem 0 .4rem;
+
     display: flex;
     flex-direction: column;
-
-    font-family: 'Cabin';
-    font-weight: bold;
+    align-items: center;
 
     transform: scale(0);
     transition: transform .3s cubic-bezier(0.545, -0.215, 1.000, 0.470);
@@ -23,13 +27,24 @@
     }
 }
 
+.highscore-continue {
+    position: absolute;
+    bottom: -2rem;
+
+    border-bottom-right-radius: .4rem;
+    border-bottom-left-radius: .4rem;
+    align-self: end;
+    transform-origin: right top;
+}
+
 .highscore-map {
     position: absolute;
-    top: 0;
+    top: max(-20vw, -12.5vh, -5rem);
     left: 50%;
-    width: 10rem;
+    width: min(40vw, 25vh);
+    height: min(40vw, 25vh);
     max-width: 10rem;
-    aspect-ratio: 1/1;
+    max-height: 10rem;
 
     z-index: 2;
 
@@ -40,66 +55,81 @@
     transform: translateX(-50%);
 }
 
-.highscore-leaderboard-container {
-    position: absolute;
-    top: 5.5rem;
-
-    height: calc(100% - 5.5rem);
-    width: 100%;
-    z-index: 1;
-
-    background-color: colors.$secondary-color-dark;
-    border-radius: .4rem;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.highscore-score {
-    position: relative;
-    margin-top: 6rem;
-    font-size: 3rem;
-
-    color: colors.$main-color-light;
-
-    transform: scale(0);
-    transition: transform .3s cubic-bezier(0.36, 0, 0.66, -0.56);
-
-    &.pop {
-        transform: scale(1);
-        transition: transform .3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    &.incrementing {
-        animation: leaderboard-score-increment .3s ease-in-out infinite;
-    }
-
-    &.stop {
-        animation: leaderboard-score-stop .2s ease-out;
-    }
-}
-
-.highscore-leaderboard {
-    position: relative;
-
-    display: flex;
-    flex-direction: column;
-    border-radius: .4rem;
+.highscore-tabs-container {
+    height: calc(100% - min(20vw, 12.5vh, 5rem) - 2.5rem);
+    margin-top: calc(min(20vw, 12.5vh, 5rem) + 1.5rem);
+    margin-bottom: 1rem;
 
     width: calc(100% - 2rem);
-    margin: 1rem 1rem 4rem 1rem;
+    z-index: 1;
+
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
-.highscore-leaderboard-entry {
+.highscore-buttons {
+    display: flex;
+    width: 100%;
+    gap: 1rem;
+}
+
+.highscore-button {
+    flex: 1;
+    padding: .4rem .8rem;
+    text-align: center;
+    font-family: 'Vincendo';
+    font-size: .9rem;
+    text-overflow: ellipsis;
+    overflow: hidden;
+
+    border-radius: .4rem;
+    background-color: colors.$main-color-dark;
+    color: colors.$main-color-light;
+
+    transition: all .2s ease-in-out;
+
+    &.active {
+        background-color: colors.$main-color-light;
+        color: colors.$main-color-dark;
+    }
+}
+
+.highscore-tabs {
+    position: relative;
+    flex: 1;
+    height: inherit;
+    width: 100%;
+    display: flex;
+    overflow: hidden;
+    border-radius: .4rem;
+}
+
+.highscore-tab {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    flex: 0;
+    transition: flex .2s ease-in-out;
+    background-color: colors.$main-color-light;
+
+    &.active {
+        flex: 1;
+    }
+
+    &.statistics {}
+
+    &.leaderboard {}
+}
+
+.highscore-entry {
+    flex: 1;
     display: flex;
     justify-content: space-between;
     align-items: center;
 
-    height: 4rem;
     font-size: .9rem;
-
     padding: .5rem .5rem;
 
     color: colors.$main-color-dark;
@@ -115,31 +145,38 @@
     }
 }
 
-.highscore-continue-button {
-    position: absolute;
-    z-index: 3;
-    bottom: 1rem;
-    left: 50%;
-
-    font-family: 'Vincendo';
-    font-weight: normal;
-    font-size: .9rem;
-    pointer-events: all;
-
+.highscore-entry-label {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 
-    border-radius: .4rem;
-    background-color: colors.$main-color-light;
-    color: colors.$main-color-dark;
-    padding: .5rem .8rem;
-
-    transform: translateX(-50%) scale(0);
+    transform: scale(0);
     transition: transform .2s cubic-bezier(0.36, 0, 0.66, -0.56);
 
     &.pop {
-        transform: translateX(-50%) scale(1);
+        transform: scale(1);
         transition: transform .2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    &.incrementing {
+        animation: leaderboard-score-increment .3s ease-in-out infinite;
+    }
+
+    &.stop {
+        animation: leaderboard-score-stop .2s ease-out;
+    }
+
+    &.value {
+        font-weight: bold;
+    }
+
+    &.first,
+    &.second {
+        margin-right: .1rem;
+    }
+
+    &.second {
+        margin-left: .2rem;
     }
 }

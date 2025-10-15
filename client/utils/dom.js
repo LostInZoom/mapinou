@@ -163,7 +163,8 @@ function getStorage(name) {
     return localStorage.getItem(name);
 }
 
-function easingIncrement(options, callback) {
+async function easingIncrement(options, callback) {
+    callback = callback || function () { };
     let element = options.element;
     let maximum = options.maximum;
     let duration = options.duration;
@@ -176,7 +177,8 @@ function easingIncrement(options, callback) {
         let delay = remap(eased, 0, 1, 0, duration);
         wait(delay, () => { element.innerHTML = value++; });
     }
-    wait(duration, callback);
+    await waitPromise(duration);
+    callback();
 }
 
 function createValidation(parent, text, options, callback) {

@@ -1,3 +1,5 @@
+import * as turf from '@turf/turf';
+
 import Basemap from '../cartography/map';
 import Rabbits from '../layers/rabbits';
 
@@ -7,7 +9,7 @@ import Score from "../cartography/score";
 import Target from '../characters/target';
 
 import { pointExtent, randomPointInCircle, within } from "../cartography/analysis";
-import { addClass, easingIncrement, makeDiv, removeClass, wait, waitPromise } from "../utils/dom";
+import { addClass, addClassList, easingIncrement, getStorage, hasClass, makeDiv, removeClass, removeClassList, setStorage, wait, waitPromise } from "../utils/dom";
 import { ajaxPost } from '../utils/ajax';
 import { easeInOutSine, easeOutExpo } from '../utils/math';
 import Hint from './hint';
@@ -59,19 +61,26 @@ class Level extends Page {
         //     wait(1500, () => { this.app.music.change('game', true); })
         // }
 
-        this.phase1(() => {
-            this.phase2(() => {
-                wait(300, () => {
-                    this.ending();
-                });
-            });
-        });
+        // this.phase1(() => {
+        //     this.phase2(() => {
+        //         wait(300, () => {
+        //             this.ending();
+        //         });
+        //     });
+        // });
 
         // this.phase2(() => {
         //     wait(300, () => {
         //         this.ending();
         //     });
         // });
+
+        this.results = JSON.parse(getStorage('test'));
+        this.results.score = 150;
+        this.basemap.createCharacters(this, this.parameters);
+        this.dataExtent = this.basemap.getExtentForData();
+
+        this.ending();
     }
 
     async phase1(callback) {
@@ -234,32 +243,193 @@ class Level extends Page {
 
     leaderboard() {
         this.app.progress();
-        this.canceler.remove();
+        if (this.canceler) { this.canceler.remove(); }
 
-        this.highscoreContainer = makeDiv(null, 'highscore-container');
-        this.highscoreMap = makeDiv(null, 'highscore-map');
-        this.highscoreScore = makeDiv(null, 'highscore-score', 0);
-        this.highscoreLeaderboardContainer = makeDiv(null, 'highscore-leaderboard-container');
-        this.highscoreLeaderboard = makeDiv(null, 'highscore-leaderboard no-scrollbar');
-        this.continue = makeDiv(null, 'highscore-continue-button', "Continuer")
+        console.log(this.results);
 
-        this.highscoreLeaderboardContainer.append(this.highscoreScore, this.highscoreLeaderboard)
-        this.highscoreContainer.append(this.highscoreMap, this.highscoreLeaderboardContainer, this.continue);
-        this.container.append(this.highscoreContainer);
+        // Creation of containers and map
+        let highscorecontainer = makeDiv(null, 'highscore-container');
+        let map = makeDiv(null, 'highscore-map');
+        let tabscontainer = makeDiv(null, 'highscore-tabs-container');
 
-        this.highscoreContainer.offsetWidth;
-        addClass(this.highscoreContainer, 'pop');
+        // Tabs buttons
+        let buttons = makeDiv(null, 'highscore-buttons');
+        let buttonstats = makeDiv(null, 'highscore-button active statistics', 'Statistiques');
+        buttonstats.setAttribute('value', 'statistics');
+        let buttonleaderboard = makeDiv(null, 'highscore-button leaderboard', 'Position');
+        buttonleaderboard.setAttribute('value', 'leaderboard');
+        buttons.append(buttonstats, buttonleaderboard);
+
+        // Tabs to display statistics/leaderboard
+        let tabs = makeDiv(null, 'highscore-tabs');
+        let statscontainer = makeDiv(null, 'highscore-tab active statistics no-scrollbar');
+        let leaderboardcontainer = makeDiv(null, 'highscore-tab leaderboard no-scrollbar');
+        tabs.append(statscontainer, leaderboardcontainer);
+        tabscontainer.append(buttons, tabs);
+
+        const n = this.results.phase1.duration + this.results.phase2.duration;
+        const m = Math.floor(n / 60000).toString();
+        const s = Math.floor((n % 60000) / 1000).toString();
+
+        const length = turf.length(turf.lineString(this.results.phase2.journey));
+        const km = Math.floor(length).toString();
+        const metres = length.toString().split('.')[1]?.slice(0, 3) || '000';
+
+        let [zoomin, zoomout, pan] = [0, 0, 0];
+        const calculateInteractions = (phase) => {
+            this.results[`phase${phase}`].interactions.forEach(i => {
+                if (i.type === 'zoom in') { ++zoomin; }
+                else if (i.type === 'zoom out') { ++zoomout; }
+                else if (i.type === 'pan') { ++pan; }
+            });
+        }
+        calculateInteractions(1);
+        calculateInteractions(2);
+
+        let increments = [
+            { name: 'Score', value: this.results.score, duration: 500 },
+            { name: 'Temps', value: [m, s], duration: [100, 500], labels: ['m', 's'] },
+            { name: 'Distance parcourue', value: [km, metres], duration: [300, 500], labels: ['km', 'm'] },
+            { name: 'Prédateurs rencontrés', value: this.results.enemies, duration: 100 },
+            { name: 'Légumes mangés', value: this.results.helpers, duration: 100 },
+            { name: 'Clics pour trouver Lapinou', value: this.results.phase1.clics.length, duration: 100 },
+            { name: 'Clics pour guider Lapinou', value: this.results.phase2.clics.length, duration: 100 },
+            { name: 'Zooms avant', value: zoomin, duration: 100 },
+            { name: 'Zooms arrière', value: zoomout, duration: 100 },
+            { name: 'Déplacements sur la carte', value: pan, duration: 100 },
+        ]
+
+        increments.forEach(i => {
+            let entry = makeDiv(null, 'highscore-entry');
+            let name = makeDiv(null, 'highscore-entry-label pop name', i.name);
+            let value = makeDiv(null, 'highscore-entry-label pop value');
+
+            if (i.value.constructor === Array) {
+                let v1 = makeDiv(null, 'highscore-entry-label pop first', '0');
+                let v1l = makeDiv(null, 'highscore-entry-label pop', i.labels[0]);
+                let v2 = makeDiv(null, 'highscore-entry-label pop second', '0'.repeat(i.value[1].length));
+                let v2l = makeDiv(null, 'highscore-entry-label pop', i.labels[1]);
+                value.append(v1, v1l, v2, v2l);
+            } else {
+                value.innerHTML = 0;
+            }
+
+            entry.append(name, value);
+            statscontainer.append(entry);
+        });
+
+        this.highscores.sort((a, b) => a.score - b.score);
+        let personal;
+        for (let e = 0; e < this.highscores.length; e++) {
+            let entry = this.highscores[e];
+            let boardEntry = makeDiv(null, 'highscore-entry');
+            let html = `${e + 1}.`;
+            if (this.params.session.index === entry.session) {
+                html += ' Vous';
+                addClass(boardEntry, 'active');
+                personal = boardEntry;
+            }
+            let boardPlace = makeDiv(null, 'highscore-entry-label pop name', html);
+            let boardScore = makeDiv(null, 'highscore-entry-label pop value', entry.score);
+            boardEntry.append(boardPlace, boardScore);
+            leaderboardcontainer.append(boardEntry);
+        }
+
+        // Scroll to the user result
+        if (personal) {
+            let topScroll = personal.offsetTop;
+            leaderboardcontainer.scrollTop = topScroll - leaderboardcontainer.offsetHeight / 2;
+        }
+
+        let pursue = makeDiv(null, 'highscore-continue page-button', "Continuer")
+        highscorecontainer.append(map, tabscontainer, pursue);
+        this.container.append(highscorecontainer);
+
+        highscorecontainer.offsetWidth;
+        addClass(highscorecontainer, 'pop');
+
+        const activate = (e) => {
+            const el = e.target;
+            if (!hasClass(el, 'active')) {
+                const v = el.getAttribute('value');
+                Array.from(tabs.children).forEach(t => {
+                    if (hasClass(t, v)) {
+                        addClass(t, 'active');
+                    } else {
+                        removeClass(t, 'active');
+                    }
+                });
+                Array.from(buttons.children).forEach(b => { removeClass(b, 'active'); });
+                addClass(el, 'active');
+            }
+        }
+
+        buttonstats.addEventListener('click', activate);
+        buttonleaderboard.addEventListener('click', activate);
+
+        // Increment statistics
+        const incrementStats = async (callback) => {
+            const entries = statscontainer.children;
+            for (let i = 0; i < entries.length; i++) {
+                const entry = entries[i];
+                const value = entry.querySelector('.value');
+                const duration = increments[i].duration;
+
+                if (increments[i].value.constructor === Array) {
+                    if (increments[i].value[0] > 0) {
+                        const v1 = value.querySelector('.first');
+                        addClass(v1, 'incrementing');
+                        await easingIncrement({
+                            element: v1,
+                            maximum: increments[i].value[0],
+                            duration: duration[0],
+                            easing: easeOutExpo
+                        }, () => {
+                            removeClass(v1, 'incrementing');
+                            addClass(v1, 'stop');
+                        });
+                    }
+                    if (increments[i].value[1] > 0) {
+                        const v2 = value.querySelector('.second');
+                        addClass(v2, 'incrementing');
+                        await easingIncrement({
+                            element: v2,
+                            maximum: increments[i].value[1],
+                            duration: duration[1],
+                            easing: easeOutExpo
+                        }, () => {
+                            removeClass(v2, 'incrementing');
+                            addClass(v2, 'stop');
+                        });
+                    }
+                } else {
+                    if (increments[i].value) {
+                        addClass(value, 'incrementing');
+                        await easingIncrement({
+                            element: value,
+                            maximum: increments[i].value,
+                            duration: duration,
+                            easing: easeOutExpo
+                        }, () => {
+                            removeClass(value, 'incrementing');
+                            addClass(value, 'stop');
+                        });
+                    }
+                }
+            }
+            callback();
+        }
 
         let c = this.parameters.target;
         let r = this.params.game.tolerance.target;
         let hsmap = new Basemap({
             app: this.app,
-            parent: this.highscoreMap,
+            parent: map,
             class: 'minimap',
             interactive: false,
             extent: pointExtent(c, r * 2)
         }, () => {
-            hsmap.loadSprites().then(() => {
+            hsmap.loadSprites().then(async () => {
                 let hsRabbits = new Rabbits({
                     id: 'leaderboard-rabbits',
                     basemap: hsmap,
@@ -278,62 +448,22 @@ class Level extends Page {
                     coordinates: randomPointInCircle(c, r)
                 });
 
-                let delay = 300;
-                wait(delay, () => {
-                    hsTarget.spawn();
-                    hsPlayer.spawn();
+                await waitPromise(300);
+                hsTarget.spawn();
+                hsPlayer.spawn();
+                await waitPromise(200);
+
+                incrementStats(() => {
+                    addClass(pursue, 'pop');
+                    pursue.addEventListener('click', () => {
+                        removeClass(highscorecontainer, 'pop');
+                        hsRabbits.despawnCharacters(() => {
+                            hsRabbits.destroy();
+                            hsmap.remove();
+                            this.toLevels(true);
+                        });
+                    }, { once: true })
                 });
-
-                delay += 200;
-                wait(delay, () => {
-                    addClass(this.highscoreScore, 'pop');
-                    addClass(this.continue, 'pop');
-                });
-
-                delay += 500;
-                wait(delay, () => {
-                    addClass(this.highscoreScore, 'incrementing');
-                    easingIncrement({
-                        element: this.highscoreScore,
-                        maximum: this.results.score,
-                        duration: 1000,
-                        easing: easeOutExpo
-                    }, () => {
-                        removeClass(this.highscoreScore, 'incrementing');
-                        addClass(this.highscoreScore, 'stop');
-                        this.continue.addEventListener('click', () => {
-                            removeClass(this.highscoreContainer, 'pop');
-                            hsRabbits.despawnCharacters(() => {
-                                hsRabbits.destroy();
-                                hsmap.remove();
-                                this.toLevels(true);
-                            });
-                        }, { once: true })
-                    });
-                })
-
-                this.highscores.sort((a, b) => a.score - b.score);
-                let personal;
-                for (let e = 0; e < this.highscores.length; e++) {
-                    let entry = this.highscores[e];
-                    let boardEntry = makeDiv(null, 'highscore-leaderboard-entry');
-                    let html = `${e + 1}.`;
-                    if (this.params.session.index === entry.session) {
-                        html += ' Vous';
-                        addClass(boardEntry, 'active');
-                        personal = boardEntry;
-                    }
-                    let boardPlace = makeDiv(null, 'highscore-leaderboard-place', html);
-                    let boardScore = makeDiv(null, 'highscore-leaderboard-score', entry.score);
-                    boardEntry.append(boardPlace, boardScore);
-                    this.highscoreLeaderboard.append(boardEntry);
-                }
-
-                // Scroll to the user result
-                if (personal) {
-                    let topScroll = personal.offsetTop;
-                    this.highscoreLeaderboard.scrollTop = topScroll - this.highscoreLeaderboard.offsetHeight / 2;
-                }
             });
         });
     }

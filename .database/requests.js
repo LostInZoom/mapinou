@@ -229,10 +229,10 @@ async function insertResults(data) {
 
             // Insert Phase 2
             query = `
-			INSERT INTO data.phases (game, number, start_time, end_time, duration, score)
-			VALUES ($1, $2, $3, $4, $5, $6)
-			RETURNING id;
-		`
+                INSERT INTO data.phases (game, number, start_time, end_time, duration, score)
+                VALUES ($1, $2, $3, $4, $5, $6)
+                RETURNING id;
+            `
             values = [gameIndex, 2, phase2.start, phase2.end, phase2.duration, phase2.score];
             returning = await db.query(query, values);
             const phase2Index = returning.rows[0].id;
@@ -264,13 +264,16 @@ async function insertResults(data) {
             )`);
             });
             query = `
-            INSERT INTO data.interactions (
-                phase, type, subtype, start_time, end_time, duration,
-                start_zoom, end_zoom, start_center, end_center, start_extent, end_extent
-            )
-            VALUES ${inserts.join(', ')};
-        `;
-            await db.query(query, values);
+                INSERT INTO data.interactions (
+                    phase, type, subtype, start_time, end_time, duration,
+                    start_zoom, end_zoom, start_center, end_center, start_extent, end_extent
+                )
+                VALUES ${inserts.join(', ')};
+            `;
+
+            if (inserts.length > 0) {
+                await db.query(query, values);
+            }
 
             // Investigation phase 1
             values = [];
