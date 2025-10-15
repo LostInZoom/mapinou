@@ -1,13 +1,17 @@
 import Page from "./page";
-import { makeDiv, wait } from "../utils/dom";
+import { addClass, makeDiv, removeClass, wait } from "../utils/dom";
 import Title from "./title";
 
 class Credits extends Page {
     constructor(options, callback) {
         super(options, callback);
 
+        this.bottombuttons = makeDiv(null, 'credits-bottom-buttons');
+        this.buttonscroll = makeDiv(null, 'credits-scroll pop', this.params.svgs.scroll);
         this.buttonTitle = makeDiv(null, 'credits-button-title pop', 'Menu principal');
-        this.container.append(this.buttonTitle);
+
+        this.bottombuttons.append(this.buttonscroll, this.buttonTitle);
+        this.container.append(this.bottombuttons);
 
         this.content = makeDiv(null, 'page-content page-content-credits pop');
         this.container.append(this.content);
@@ -64,57 +68,54 @@ class Credits extends Page {
                     this.next = new Title({ app: this.app, position: 'next' });
                     this.slideNext();
                     wait(this.params.interface.transition.page, () => {
-                        this.cancelAnimation();
+                        this.stopScroll();
                     });
                 }
             });
 
             this.animate();
+
+            this.buttonscroll.addEventListener('click', () => {
+                if (this.scrolling) {
+                    this.stopScroll();
+                    this.scrolling = false;
+                    addClass(this.buttonscroll, 'active');
+                }
+                else {
+                    this.startScroll();
+                    this.scrolling = true;
+                    removeClass(this.buttonscroll, 'active');
+                }
+            });
         });
     }
 
+    startScroll() {
+        this.scrollbox.scrollTop += 1;
+        if (this.scrollbox.scrollTop + this.scrollbox.clientHeight >= this.scrollbox.scrollHeight) {
+            this.scrollbox.scrollTop = 0;
+        }
+        this.scroller = requestAnimationFrame(() => { this.startScroll(); });
+    }
+
+    stopScroll() {
+        if (this.scroller) { cancelAnimationFrame(this.scroller); }
+    }
+
     animate() {
-        const scroll = () => {
-            this.scrollbox.scrollTop += 1;
-            if (this.scrollbox.scrollTop + this.scrollbox.clientHeight >= this.scrollbox.scrollHeight) {
-                this.scrollbox.scrollTop = 0;
-            }
-            this.scroller = requestAnimationFrame(scroll);
-        }
-
         this.scrolling = true;
-        this.scroller = requestAnimationFrame(scroll);
-
-        const cancelscroll = () => {
-            if (this.scroller) { cancelAnimationFrame(this.scroller); }
-        }
+        this.scroller = requestAnimationFrame(() => { this.startScroll(); });
 
         const touchstart = () => {
-            if (this.scrolling) { cancelscroll(); }
+            if (this.scrolling) { this.stopScroll(); }
         }
 
         const touchend = () => {
-            if (this.scrolling) { scroll(); }
-        }
-
-        const click = () => {
-            if (this.scrolling) {
-                cancelscroll();
-                this.scrolling = false;
-            }
-            else {
-                scroll();
-                this.scrolling = true;
-            }
+            if (this.scrolling) { this.startScroll(); }
         }
 
         this.scrollbox.addEventListener('touchstart', touchstart);
         this.scrollbox.addEventListener('touchend', touchend);
-        this.scrollbox.addEventListener('click', click);
-    }
-
-    cancelAnimation() {
-        if (this.scroller) { cancelAnimationFrame(this.scroller); }
     }
 }
 
