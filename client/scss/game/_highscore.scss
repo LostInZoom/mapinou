@@ -76,11 +76,11 @@
 
 .highscore-button {
     flex: 1;
-    padding: .4rem .8rem;
-    text-align: center;
-    font-family: 'Vincendo';
-    font-size: .9rem;
-    text-overflow: ellipsis;
+    pointer-events: all;
+
+    height: 2rem;
+    width: 2rem;
+
     overflow: hidden;
 
     border-radius: .4rem;
@@ -91,7 +91,16 @@
 
     &.active {
         background-color: colors.$main-color-light;
-        color: colors.$main-color-dark;
+
+        &>svg {
+            color: colors.$main-color-dark;
+        }
+    }
+
+    &>svg {
+        pointer-events: none;
+        height: 100%;
+        width: 100%;
     }
 }
 
@@ -121,6 +130,23 @@
     &.statistics {}
 
     &.leaderboard {}
+
+    &.chart {
+        background-color: colors.$secondary-color-dark;
+
+        &>svg {
+            height: 100%;
+
+            &>path {
+                fill: colors.$main-color-light;
+            }
+
+            &>line {
+                stroke: colors.$secondary-color-dark;
+                stroke-width: 3;
+            }
+        }
+    }
 }
 
 .highscore-entry {

@@ -1,4 +1,5 @@
 import * as turf from '@turf/turf';
+import * as d3 from "d3";
 
 import Basemap from '../cartography/map';
 import Rabbits from '../layers/rabbits';
@@ -254,18 +255,28 @@ class Level extends Page {
 
         // Tabs buttons
         let buttons = makeDiv(null, 'highscore-buttons');
-        let buttonstats = makeDiv(null, 'highscore-button active statistics', 'Statistiques');
+        let buttonstats = makeDiv(null, 'highscore-button active statistics', this.params.svgs.stats);
         buttonstats.setAttribute('value', 'statistics');
-        let buttonleaderboard = makeDiv(null, 'highscore-button leaderboard', 'Position');
+        let buttonleaderboard = makeDiv(null, 'highscore-button leaderboard', this.params.svgs.rank);
         buttonleaderboard.setAttribute('value', 'leaderboard');
-        buttons.append(buttonstats, buttonleaderboard);
+        let buttonchart = makeDiv(null, 'highscore-button chart', this.params.svgs.histogram);
+        buttonchart.setAttribute('value', 'chart');
+        buttons.append(buttonstats, buttonleaderboard, buttonchart);
 
         // Tabs to display statistics/leaderboard
         let tabs = makeDiv(null, 'highscore-tabs');
         let statscontainer = makeDiv(null, 'highscore-tab active statistics no-scrollbar');
         let leaderboardcontainer = makeDiv(null, 'highscore-tab leaderboard no-scrollbar');
-        tabs.append(statscontainer, leaderboardcontainer);
+        let chartcontainer = makeDiv(null, 'highscore-tab chart no-scrollbar');
+        tabs.append(statscontainer, leaderboardcontainer, chartcontainer);
         tabscontainer.append(buttons, tabs);
+
+        let pursue = makeDiv(null, 'highscore-continue page-button', "Continuer")
+        highscorecontainer.append(map, tabscontainer, pursue);
+        this.container.append(highscorecontainer);
+
+        const width = statscontainer.offsetWidth;
+        const height = statscontainer.offsetHeight;
 
         const n = this.results.phase1.duration + this.results.phase2.duration;
         const m = Math.floor(n / 60000).toString();
@@ -318,6 +329,7 @@ class Level extends Page {
             statscontainer.append(entry);
         });
 
+        // Tab to display personnal rank
         this.highscores.sort((a, b) => a.score - b.score);
         let personal;
         for (let e = 0; e < this.highscores.length; e++) {
@@ -335,17 +347,85 @@ class Level extends Page {
             leaderboardcontainer.append(boardEntry);
         }
 
+
+        // GENERATE DATA
+        function randomNormal(mean = 0, stdDev = 1) {
+            let u = 0, v = 0;
+            while (u === 0) u = Math.random(); // éviter 0
+            while (v === 0) v = Math.random();
+            const z = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+            return z * stdDev + mean;
+        }
+
+        const mean = (10 + 500) / 2;
+        const stdDev = (500 - 10) / 6; // 99.7% des valeurs dans l'intervalle
+        const scores = [];
+        for (let i = 0; i < 200; i++) {
+            let val;
+            do {
+                val = randomNormal(mean, stdDev);
+            } while (val < 10 || val > 500);
+            scores.push(val);
+        }
+
+        // Tab to display d3.js chart
+        // const scores = this.highscores.map(h => h.score);
+        // const score = this.results.score;
+
+        const score = 400;
+        scores.sort();
+
+        function kde(kernel, thresholds, data) {
+            return thresholds.map(t => [t, d3.mean(data, d => kernel(t - d))]);
+        }
+
+        function epanechnikov(bandwidth) {
+            return x => Math.abs(x /= bandwidth) <= 1 ? 0.75 * (1 - x * x) / bandwidth : 0;
+        }
+
+        const x = d3.scaleLinear()
+            .domain([d3.min(scores), d3.max(scores)])
+            .range([0, width]);
+
+        const thresholds = d3.ticks(...d3.nice(...d3.extent(scores), 10), 40);
+        const bandwidth = 30;
+        const density = kde(epanechnikov(bandwidth), thresholds, scores);
+        const y = d3.scaleLinear()
+            .domain([0, d3.max(density, d => d[1])])
+            .range([height, 0]);
+
+        density.unshift([thresholds[0], -1]);
+        density.push([thresholds[thresholds.length - 1], -1]);
+
+        const svg = d3.create("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .attr("viewBox", [0, 0, width, height])
+            .attr("preserveAspectRatio", "none")
+            .attr("style", "height: auto;");
+
+        svg.append("path")
+            .datum(density)
+            .attr("d", d3.line()
+                .curve(d3.curveBasis)
+                .x(d => x(d[0]))
+                .y(d => y(d[1]))
+            );
+
+        svg.append("line")
+            .attr("x1", x(score))
+            .attr("x2", x(score))
+            .attr("y1", y(0))
+            .attr("y2", y(d3.max(density, d => d[1])));
+
+        chartcontainer.append(svg.node());
+
         // Scroll to the user result
         if (personal) {
             let topScroll = personal.offsetTop;
             leaderboardcontainer.scrollTop = topScroll - leaderboardcontainer.offsetHeight / 2;
         }
 
-        let pursue = makeDiv(null, 'highscore-continue page-button', "Continuer")
-        highscorecontainer.append(map, tabscontainer, pursue);
-        this.container.append(highscorecontainer);
-
-        highscorecontainer.offsetWidth;
         addClass(highscorecontainer, 'pop');
 
         const activate = (e) => {
@@ -353,11 +433,8 @@ class Level extends Page {
             if (!hasClass(el, 'active')) {
                 const v = el.getAttribute('value');
                 Array.from(tabs.children).forEach(t => {
-                    if (hasClass(t, v)) {
-                        addClass(t, 'active');
-                    } else {
-                        removeClass(t, 'active');
-                    }
+                    if (hasClass(t, v)) { addClass(t, 'active'); }
+                    else { removeClass(t, 'active'); }
                 });
                 Array.from(buttons.children).forEach(b => { removeClass(b, 'active'); });
                 addClass(el, 'active');
@@ -366,6 +443,7 @@ class Level extends Page {
 
         buttonstats.addEventListener('click', activate);
         buttonleaderboard.addEventListener('click', activate);
+        buttonchart.addEventListener('click', activate);
 
         // Increment statistics
         const incrementStats = async (callback) => {

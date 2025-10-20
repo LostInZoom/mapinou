@@ -74,6 +74,7 @@ async function createTables() {
 
         CREATE TABLE IF NOT EXISTS data.levels (
             id serial,
+            version integer,
             tier int,
             level int,
             player geometry(Point, 4326),
@@ -385,24 +386,45 @@ async function populateResults() {
     `;
     let result = await db.query(query);
     if (result.rows.length > 0) {
+        function randomNormal(mean = 0, stdDev = 1) {
+            let u = 0, v = 0;
+            while (u === 0) u = Math.random();
+            while (v === 0) v = Math.random();
+            const z = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+            return z * stdDev + mean;
+        }
+        const mean = (10 + 500) / 2;
+        const stdDev = (500 - 10) / 6;
+
         for (let i = 0; i < result.rows.length; i++) {
             const lid = result.rows[i].id;
-            for (let j = 0; j < 40; j++) {
-                let session = `
+            let values = [];
+            let inserts = [];
+
+            let session = `
                     INSERT INTO data.sessions(id)
                     VALUES(default)
                     RETURNING id;
                 `
-                let s = await db.query(session);
-                let sid = s.rows[0].id;
-                let score = Math.random() * (500 - 20) + 20;
+            let s = await db.query(session);
+            let sid = s.rows[0].id;
 
-                let insertion = `
-                    INSERT INTO data.games(session, level, score)
-                    VALUES(${sid}, ${lid}, ${score});
-                `
-                await db.query(insertion);
+            for (let j = 0; j <= 200; j++) {
+                let val;
+                do {
+                    val = randomNormal(mean, stdDev);
+                } while (val < 10 || val > 500);
+
+                values.push(sid, lid, parseInt(val));
+                const base = values.length - 3;
+                inserts.push(`($${base + 1}, $${base + 2}, $${base + 3})`);
             }
+
+            query = `
+                INSERT INTO data.games(session, level, score)
+                VALUES ${inserts};
+            `
+            await db.query(query, values);
         }
     }
 }
