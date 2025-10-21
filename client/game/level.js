@@ -1,20 +1,14 @@
-import * as turf from '@turf/turf';
-import * as d3 from "d3";
-
-import Basemap from '../cartography/map';
-import Rabbits from '../layers/rabbits';
-
 import Page from "../pages/page";
 import Levels from '../pages/levels';
 import Score from "../cartography/score";
-import Target from '../characters/target';
-
-import { pointExtent, randomPointInCircle, within } from "../cartography/analysis";
-import { addClass, addClassList, easingIncrement, getStorage, hasClass, makeDiv, removeClass, removeClassList, setStorage, wait, waitPromise } from "../utils/dom";
-import { ajaxPost } from '../utils/ajax';
-import { easeInOutSine, easeOutExpo } from '../utils/math';
 import Hint from './hint';
 import Recorder from '../cartography/recorder';
+import Leaderboard from './leaderboard';
+
+import { within } from "../cartography/analysis";
+import { addClass, getStorage, makeDiv, removeClass, wait, waitPromise } from "../utils/dom";
+import { ajaxPost } from '../utils/ajax';
+import { easeInOutSine } from '../utils/math';
 
 class Level extends Page {
     constructor(options, callback) {
@@ -62,13 +56,13 @@ class Level extends Page {
         //     wait(1500, () => { this.app.music.change('game', true); })
         // }
 
-        // this.phase1(() => {
-        //     this.phase2(() => {
-        //         wait(300, () => {
-        //             this.ending();
-        //         });
-        //     });
-        // });
+        this.phase1(() => {
+            this.phase2(() => {
+                wait(300, () => {
+                    this.ending();
+                });
+            });
+        });
 
         // this.phase2(() => {
         //     wait(300, () => {
@@ -76,12 +70,12 @@ class Level extends Page {
         //     });
         // });
 
-        this.results = JSON.parse(getStorage('test'));
-        this.results.score = 150;
-        this.basemap.createCharacters(this, this.parameters);
-        this.dataExtent = this.basemap.getExtentForData();
+        // this.results = JSON.parse(getStorage('test'));
+        // this.results.score = 150;
+        // this.basemap.createCharacters(this, this.parameters);
+        // this.dataExtent = this.basemap.getExtentForData();
 
-        this.ending();
+        // this.ending();
     }
 
     async phase1(callback) {
@@ -230,7 +224,7 @@ class Level extends Page {
         };
 
         ajaxPost('results', this.results, hs => {
-            this.highscores = hs.highscores;
+            this.highscores = hs;
             toLeaderBoard();
         });
 
@@ -246,304 +240,11 @@ class Level extends Page {
         this.app.progress();
         if (this.canceler) { this.canceler.remove(); }
 
-        console.log(this.results);
-
-        // Creation of containers and map
-        let highscorecontainer = makeDiv(null, 'highscore-container');
-        let map = makeDiv(null, 'highscore-map');
-        let tabscontainer = makeDiv(null, 'highscore-tabs-container');
-
-        // Tabs buttons
-        let buttons = makeDiv(null, 'highscore-buttons');
-        let buttonstats = makeDiv(null, 'highscore-button active statistics', this.params.svgs.stats);
-        buttonstats.setAttribute('value', 'statistics');
-        let buttonleaderboard = makeDiv(null, 'highscore-button leaderboard', this.params.svgs.rank);
-        buttonleaderboard.setAttribute('value', 'leaderboard');
-        let buttonchart = makeDiv(null, 'highscore-button chart', this.params.svgs.histogram);
-        buttonchart.setAttribute('value', 'chart');
-        buttons.append(buttonstats, buttonleaderboard, buttonchart);
-
-        // Tabs to display statistics/leaderboard
-        let tabs = makeDiv(null, 'highscore-tabs');
-        let statscontainer = makeDiv(null, 'highscore-tab active statistics no-scrollbar');
-        let leaderboardcontainer = makeDiv(null, 'highscore-tab leaderboard no-scrollbar');
-        let chartcontainer = makeDiv(null, 'highscore-tab chart no-scrollbar');
-        tabs.append(statscontainer, leaderboardcontainer, chartcontainer);
-        tabscontainer.append(buttons, tabs);
-
-        let pursue = makeDiv(null, 'highscore-continue page-button', "Continuer")
-        highscorecontainer.append(map, tabscontainer, pursue);
-        this.container.append(highscorecontainer);
-
-        const width = statscontainer.offsetWidth;
-        const height = statscontainer.offsetHeight;
-
-        const n = this.results.phase1.duration + this.results.phase2.duration;
-        const m = Math.floor(n / 60000).toString();
-        const s = Math.floor((n % 60000) / 1000).toString();
-
-        const length = turf.length(turf.lineString(this.results.phase2.journey));
-        const km = Math.floor(length).toString();
-        const metres = length.toString().split('.')[1]?.slice(0, 3) || '000';
-
-        let [zoomin, zoomout, pan] = [0, 0, 0];
-        const calculateInteractions = (phase) => {
-            this.results[`phase${phase}`].interactions.forEach(i => {
-                if (i.type === 'zoom in') { ++zoomin; }
-                else if (i.type === 'zoom out') { ++zoomout; }
-                else if (i.type === 'pan') { ++pan; }
-            });
-        }
-        calculateInteractions(1);
-        calculateInteractions(2);
-
-        let increments = [
-            { name: 'Score', value: this.results.score, duration: 500 },
-            { name: 'Temps', value: [m, s], duration: [100, 500], labels: ['m', 's'] },
-            { name: 'Distance parcourue', value: [km, metres], duration: [300, 500], labels: ['km', 'm'] },
-            { name: 'Prédateurs rencontrés', value: this.results.enemies, duration: 100 },
-            { name: 'Légumes mangés', value: this.results.helpers, duration: 100 },
-            { name: 'Clics pour trouver Lapinou', value: this.results.phase1.clics.length, duration: 100 },
-            { name: 'Clics pour guider Lapinou', value: this.results.phase2.clics.length, duration: 100 },
-            { name: 'Zooms avant', value: zoomin, duration: 100 },
-            { name: 'Zooms arrière', value: zoomout, duration: 100 },
-            { name: 'Déplacements sur la carte', value: pan, duration: 100 },
-        ]
-
-        increments.forEach(i => {
-            let entry = makeDiv(null, 'highscore-entry');
-            let name = makeDiv(null, 'highscore-entry-label pop name', i.name);
-            let value = makeDiv(null, 'highscore-entry-label pop value');
-
-            if (i.value.constructor === Array) {
-                let v1 = makeDiv(null, 'highscore-entry-label pop first', '0');
-                let v1l = makeDiv(null, 'highscore-entry-label pop', i.labels[0]);
-                let v2 = makeDiv(null, 'highscore-entry-label pop second', '0'.repeat(i.value[1].length));
-                let v2l = makeDiv(null, 'highscore-entry-label pop', i.labels[1]);
-                value.append(v1, v1l, v2, v2l);
-            } else {
-                value.innerHTML = 0;
-            }
-
-            entry.append(name, value);
-            statscontainer.append(entry);
-        });
-
-        // Tab to display personnal rank
-        this.highscores.sort((a, b) => a.score - b.score);
-        let personal;
-        for (let e = 0; e < this.highscores.length; e++) {
-            let entry = this.highscores[e];
-            let boardEntry = makeDiv(null, 'highscore-entry');
-            let html = `${e + 1}.`;
-            if (this.params.session.index === entry.session) {
-                html += ' Vous';
-                addClass(boardEntry, 'active');
-                personal = boardEntry;
-            }
-            let boardPlace = makeDiv(null, 'highscore-entry-label pop name', html);
-            let boardScore = makeDiv(null, 'highscore-entry-label pop value', entry.score);
-            boardEntry.append(boardPlace, boardScore);
-            leaderboardcontainer.append(boardEntry);
-        }
-
-
-        // GENERATE DATA
-        function randomNormal(mean = 0, stdDev = 1) {
-            let u = 0, v = 0;
-            while (u === 0) u = Math.random(); // éviter 0
-            while (v === 0) v = Math.random();
-            const z = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
-            return z * stdDev + mean;
-        }
-
-        const mean = (10 + 500) / 2;
-        const stdDev = (500 - 10) / 6; // 99.7% des valeurs dans l'intervalle
-        const scores = [];
-        for (let i = 0; i < 200; i++) {
-            let val;
-            do {
-                val = randomNormal(mean, stdDev);
-            } while (val < 10 || val > 500);
-            scores.push(val);
-        }
-
-        // Tab to display d3.js chart
-        // const scores = this.highscores.map(h => h.score);
-        // const score = this.results.score;
-
-        const score = 400;
-        scores.sort();
-
-        function kde(kernel, thresholds, data) {
-            return thresholds.map(t => [t, d3.mean(data, d => kernel(t - d))]);
-        }
-
-        function epanechnikov(bandwidth) {
-            return x => Math.abs(x /= bandwidth) <= 1 ? 0.75 * (1 - x * x) / bandwidth : 0;
-        }
-
-        const x = d3.scaleLinear()
-            .domain([d3.min(scores), d3.max(scores)])
-            .range([0, width]);
-
-        const thresholds = d3.ticks(...d3.nice(...d3.extent(scores), 10), 40);
-        const bandwidth = 30;
-        const density = kde(epanechnikov(bandwidth), thresholds, scores);
-        const y = d3.scaleLinear()
-            .domain([0, d3.max(density, d => d[1])])
-            .range([height, 0]);
-
-        density.unshift([thresholds[0], -1]);
-        density.push([thresholds[thresholds.length - 1], -1]);
-
-        const svg = d3.create("svg")
-            .attr("width", width)
-            .attr("height", height)
-            .attr("viewBox", [0, 0, width, height])
-            .attr("preserveAspectRatio", "none")
-            .attr("style", "height: auto;");
-
-        svg.append("path")
-            .datum(density)
-            .attr("d", d3.line()
-                .curve(d3.curveBasis)
-                .x(d => x(d[0]))
-                .y(d => y(d[1]))
-            );
-
-        svg.append("line")
-            .attr("x1", x(score))
-            .attr("x2", x(score))
-            .attr("y1", y(0))
-            .attr("y2", y(d3.max(density, d => d[1])));
-
-        chartcontainer.append(svg.node());
-
-        // Scroll to the user result
-        if (personal) {
-            let topScroll = personal.offsetTop;
-            leaderboardcontainer.scrollTop = topScroll - leaderboardcontainer.offsetHeight / 2;
-        }
-
-        addClass(highscorecontainer, 'pop');
-
-        const activate = (e) => {
-            const el = e.target;
-            if (!hasClass(el, 'active')) {
-                const v = el.getAttribute('value');
-                Array.from(tabs.children).forEach(t => {
-                    if (hasClass(t, v)) { addClass(t, 'active'); }
-                    else { removeClass(t, 'active'); }
-                });
-                Array.from(buttons.children).forEach(b => { removeClass(b, 'active'); });
-                addClass(el, 'active');
-            }
-        }
-
-        buttonstats.addEventListener('click', activate);
-        buttonleaderboard.addEventListener('click', activate);
-        buttonchart.addEventListener('click', activate);
-
-        // Increment statistics
-        const incrementStats = async (callback) => {
-            const entries = statscontainer.children;
-            for (let i = 0; i < entries.length; i++) {
-                const entry = entries[i];
-                const value = entry.querySelector('.value');
-                const duration = increments[i].duration;
-
-                if (increments[i].value.constructor === Array) {
-                    if (increments[i].value[0] > 0) {
-                        const v1 = value.querySelector('.first');
-                        addClass(v1, 'incrementing');
-                        await easingIncrement({
-                            element: v1,
-                            maximum: increments[i].value[0],
-                            duration: duration[0],
-                            easing: easeOutExpo
-                        }, () => {
-                            removeClass(v1, 'incrementing');
-                            addClass(v1, 'stop');
-                        });
-                    }
-                    if (increments[i].value[1] > 0) {
-                        const v2 = value.querySelector('.second');
-                        addClass(v2, 'incrementing');
-                        await easingIncrement({
-                            element: v2,
-                            maximum: increments[i].value[1],
-                            duration: duration[1],
-                            easing: easeOutExpo
-                        }, () => {
-                            removeClass(v2, 'incrementing');
-                            addClass(v2, 'stop');
-                        });
-                    }
-                } else {
-                    if (increments[i].value) {
-                        addClass(value, 'incrementing');
-                        await easingIncrement({
-                            element: value,
-                            maximum: increments[i].value,
-                            duration: duration,
-                            easing: easeOutExpo
-                        }, () => {
-                            removeClass(value, 'incrementing');
-                            addClass(value, 'stop');
-                        });
-                    }
-                }
-            }
-            callback();
-        }
-
-        let c = this.parameters.target;
-        let r = this.params.game.tolerance.target;
-        let hsmap = new Basemap({
-            app: this.app,
-            parent: map,
-            class: 'minimap',
-            interactive: false,
-            extent: pointExtent(c, r * 2)
-        }, () => {
-            hsmap.loadSprites().then(async () => {
-                let hsRabbits = new Rabbits({
-                    id: 'leaderboard-rabbits',
-                    basemap: hsmap,
-                    level: this
-                });
-                let hsTarget = new Target({
-                    layer: hsRabbits,
-                    colors: ['brown', 'sand', 'grey'],
-                    color: 'random',
-                    coordinates: randomPointInCircle(c, r)
-                });
-                let hsPlayer = new Target({
-                    layer: hsRabbits,
-                    colors: ['brown', 'sand', 'grey'],
-                    color: 'random',
-                    coordinates: randomPointInCircle(c, r)
-                });
-
-                await waitPromise(300);
-                hsTarget.spawn();
-                hsPlayer.spawn();
-                await waitPromise(200);
-
-                incrementStats(() => {
-                    addClass(pursue, 'pop');
-                    pursue.addEventListener('click', () => {
-                        removeClass(highscorecontainer, 'pop');
-                        hsRabbits.despawnCharacters(() => {
-                            hsRabbits.destroy();
-                            hsmap.remove();
-                            this.toLevels(true);
-                        });
-                    }, { once: true })
-                });
-            });
-        });
+        this.leaderboard = new Leaderboard({
+            page: this,
+            results: this.results,
+            highscores: this.highscores
+        }, () => { this.toLevels(true); });
     }
 
     async displayPhase(number, callback) {

@@ -70,10 +70,22 @@ function remap(value, xmin, xmax, dmin = 0, dmax = 1) {
     return dmin + ((value - xmin) / (xmax - xmin)) * (dmax - dmin);
 }
 
+function removeOutliersIQR(values) {
+    const sorted = [...values].sort((a, b) => a - b);
+    if (sorted.length < 2) return sorted;
+    const q1 = sorted[Math.floor((sorted.length / 4))];
+    const q3 = sorted[Math.ceil((sorted.length * 3) / 4)];
+    const iqr = q3 - q1;
+    const lower = q1 - 1.5 * iqr;
+    const upper = q3 + 1.5 * iqr;
+    const filtered = sorted.filter(v => v >= lower && v <= upper);
+    return filtered.length >= 2 ? filtered : sorted;
+}
+
 export {
     generateRandomInteger, weightedRandom,
     easeInSine, easeInCubic, easeInQuint,
     easeOutSine, easeOutCubic, easeOutQuint, easeOutCirc, easeOutExpo,
     easeInOutSine, easeInOutCubic, easeInOutQuint,
-    remap
+    remap, removeOutliersIQR
 };

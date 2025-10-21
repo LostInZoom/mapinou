@@ -51,6 +51,14 @@ $enemies-transparent: #af616142;
     background-color: #8D8988;
 }
 
+.highscore-player {
+    background-color: $player;
+}
+
+.highscore-winner {
+    background-color: $enemies;
+}
+
 // .player { background-color: $player; }
 // .player-transparent { background-color: $player-transparent; }
 // .target { background-color: $target; }

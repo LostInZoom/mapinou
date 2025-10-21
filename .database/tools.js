@@ -1,6 +1,7 @@
 import { db } from "./credentials.js";
 import * as fs from 'fs';
 import { load } from "js-yaml";
+import * as d3 from "d3";
 
 /**
  * Clear the tables from the given database.
@@ -386,17 +387,10 @@ async function populateResults() {
     `;
     let result = await db.query(query);
     if (result.rows.length > 0) {
-        function randomNormal(mean = 0, stdDev = 1) {
-            let u = 0, v = 0;
-            while (u === 0) u = Math.random();
-            while (v === 0) v = Math.random();
-            const z = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
-            return z * stdDev + mean;
-        }
-        const mean = (10 + 500) / 2;
-        const stdDev = (500 - 10) / 6;
-
         for (let i = 0; i < result.rows.length; i++) {
+            const randomNormal = d3.randomNormal(50, 30);
+            const norm = Array.from({ length: 100 }, () => Math.max(0, Math.round(randomNormal())));
+
             const lid = result.rows[i].id;
             let values = [];
             let inserts = [];
@@ -409,12 +403,8 @@ async function populateResults() {
             let s = await db.query(session);
             let sid = s.rows[0].id;
 
-            for (let j = 0; j <= 200; j++) {
-                let val;
-                do {
-                    val = randomNormal(mean, stdDev);
-                } while (val < 10 || val > 500);
-
+            for (let j = 0; j < norm.length; j++) {
+                let val = norm[j];
                 values.push(sid, lid, parseInt(val));
                 const base = values.length - 3;
                 inserts.push(`($${base + 1}, $${base + 2}, $${base + 3})`);

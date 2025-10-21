@@ -115,6 +115,7 @@
 }
 
 .highscore-tab {
+    position: relative;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -127,25 +128,113 @@
         flex: 1;
     }
 
-    &.statistics {}
-
-    &.leaderboard {}
-
     &.chart {
         background-color: colors.$secondary-color-dark;
 
         &>svg {
             height: 100%;
 
-            &>path {
+            &>g>path {
                 fill: colors.$main-color-light;
             }
 
-            &>line {
-                stroke: colors.$secondary-color-dark;
+            &>g>line {
+                stroke: colors.$main-color-dark;
+                stroke-dasharray: 8;
                 stroke-width: 3;
             }
+
+            &>text {
+                fill: colors.$secondary-color-dark;
+                font-weight: bold;
+            }
         }
+    }
+
+    &.journey {
+        overflow: hidden;
+    }
+}
+
+.highscore-chart-labels {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+
+    opacity: 0;
+    transition: opacity .2s linear;
+
+    &.reveal {
+        opacity: 1;
+    }
+}
+
+.highscore-chart-label {
+    position: absolute;
+
+    padding: .2rem .5rem;
+    border-radius: .4rem;
+
+    background-color: colors.$main-color-dark;
+    color: colors.$main-color-light;
+
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+
+    &.top {
+        bottom: .5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        font-weight: bold;
+    }
+
+    &.min {
+        top: .5rem;
+        left: .5rem;
+    }
+
+    &.max {
+        top: .5rem;
+        right: .5rem;
+    }
+}
+
+.highscore-journey-labels {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
+.highscore-journey-label {
+    position: absolute;
+
+    padding: .2rem .5rem;
+    border-radius: .4rem;
+
+    color: colors.$main-color-light;
+
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+
+    opacity: 0;
+    transition: opacity .2s linear;
+
+    &.reveal {
+        opacity: 1;
+    }
+
+    &.player {
+        background-color: colors.$player;
+        bottom: .5rem;
+        left: .5rem;
+    }
+
+    &.winner {
+        background-color: colors.$enemies;
+        bottom: .5rem;
+        right: .5rem;
     }
 }
 
@@ -205,4 +294,18 @@
     &.second {
         margin-left: .2rem;
     }
+}
+
+.highscore-oops {
+    height: 100%;
+    font-family: 'Vincendo';
+    color: colors.$main-color-light;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }

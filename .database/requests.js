@@ -187,7 +187,7 @@ async function insertResults(data) {
 
     let version = await checkVersion(data.game);
 
-    let highscores = { highscores: [] };
+    let highscores = { leaderboard: [] };
     try {
         query = `
             SELECT id
@@ -329,10 +329,10 @@ async function insertResults(data) {
             });
 
             query = `
-            INSERT INTO data.navigation 
-            (phase, state, pixel_x, pixel_y, start_time, end_time, duration, computing_duration, provider, destination, route)
-            VALUES ${inserts.join(', ')}
-        `;
+                INSERT INTO data.navigation 
+                (phase, state, pixel_x, pixel_y, start_time, end_time, duration, computing_duration, provider, destination, route)
+                VALUES ${inserts.join(', ')}
+            `;
             await db.query(query, values);
 
             let highscoresQuery = `
@@ -341,7 +341,19 @@ async function insertResults(data) {
                 WHERE level = ${level};
             `
             let hs = await db.query(highscoresQuery);
-            highscores.highscores = hs.rows;
+            highscores.leaderboard = hs.rows;
+
+            query = `
+                SELECT ST_AsGeoJSON(journey) AS journey
+                FROM data.games
+                WHERE level = ${level} AND journey IS NOT NULL
+                ORDER BY score ASC
+                LIMIT 1;
+            `
+            let journey = await db.query(query);
+            if (journey.rows.length > 0) {
+                highscores.journey = journey.rows[0].journey;
+            }
         }
         return highscores;
     } catch {
