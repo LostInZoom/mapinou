@@ -40,8 +40,8 @@ app.get('/mapinou/configuration', (req, res) => {
 });
 
 app.post('/mapinou/registration', jsonParser, (req, res) => {
-	createSession(req.body).then((index) => {
-		res.send(JSON.stringify({ sessionId: index }));
+	createSession(req.body).then((infos) => {
+		res.send(JSON.stringify(infos));
 	});
 });
 

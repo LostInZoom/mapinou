@@ -34,7 +34,9 @@
     "d3": "^7.9.0",
     "maplibre-gl": "^5.6.2",
     "proj4": "^2.15.0",
-    "wellknown": "^0.5.0"
+    "translate": "^3.0.1",
+    "wellknown": "^0.5.0",
+    "zoo-ids": "^2.0.7"
   },
   "devDependencies": {
     "@parcel/packager-raw-url": "^2.13.3",

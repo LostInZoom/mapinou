@@ -22,6 +22,14 @@ window.addEventListener("DOMContentLoaded", async () => {
         let sessionId = getStorage('session');
         let results = { consent: false, form: false };
 
+        const getData = (data) => {
+            setStorage('session', data.id);
+            setStorage('name', data.name);
+            results.index = parseInt(data.id);
+            results.name = data.name;
+            callback(results);
+        };
+
         if (sessionId) {
             ajaxPost('verification/', { sessionId: sessionId }, (data) => {
                 if (data.isPresent) {
@@ -30,19 +38,11 @@ window.addEventListener("DOMContentLoaded", async () => {
                     results.form = data.form;
                     callback(results);
                 } else {
-                    ajaxPost('registration/', getInformation(), (data) => {
-                        setStorage('session', data.sessionId);
-                        results.index = parseInt(data.sessionId);
-                        callback(results);
-                    });
+                    ajaxPost('registration/', getInformation(), getData);
                 }
             });
         } else {
-            ajaxPost('registration/', getInformation(), (data) => {
-                setStorage('session', data.sessionId);
-                results.index = parseInt(data.sessionId);
-                callback(results);
-            });
+            ajaxPost('registration/', getInformation(), getData);
         }
     }
 

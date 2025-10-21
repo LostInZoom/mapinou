@@ -1,17 +1,29 @@
 import { db } from "./credentials.js";
 import { checkVersion } from "./tools.js";
+import translate from "translate";
+import { generateId } from "zoo-ids";
 
 async function createSession(options) {
     let creation = `
-        INSERT INTO data.sessions (user_agent, device, orientation, os, width, height, time)
-        VALUES ($1, $2, $3, $4, $5, $6, $7)
-        RETURNING id;
+        INSERT INTO data.sessions (name, user_agent, device, orientation, os, width, height, time)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        RETURNING id, name;
     `
     try {
-        let values = [options.userAgent, options.device, options.orientation, options.os, options.width, options.height, new Date().toISOString()];
+        const animal = generateId(null, {
+            numAdjectives: 1,
+            caseStyle: 'titlecase',
+            delimiter: ' '
+        });
+        translate.engine = "google";
+        const translation = await translate(animal, "fr");
+
+        let values = [translation, options.userAgent, options.device, options.orientation, options.os, options.width, options.height, new Date().toISOString()];
         let result = await db.query(creation, values);
-        let index = result.rows[0].id;
-        return index;
+        return {
+            id: result.rows[0].id,
+            name: result.rows[0].name
+        };
     } catch {
         return -1;
     }
@@ -336,21 +348,23 @@ async function insertResults(data) {
             await db.query(query, values);
 
             let highscoresQuery = `
-                SELECT session, enemies, helpers, score
-                FROM data.games
-                WHERE level = ${level};
+                SELECT s.id as session, s.name, g.enemies, g.helpers, g.score
+                FROM data.games g
+                JOIN data.sessions s
+                ON g.session = s.id
+                WHERE g.level = $1;
             `
-            let hs = await db.query(highscoresQuery);
+            let hs = await db.query(highscoresQuery, [level]);
             highscores.leaderboard = hs.rows;
 
             query = `
                 SELECT ST_AsGeoJSON(journey) AS journey
                 FROM data.games
-                WHERE level = ${level} AND journey IS NOT NULL
+                WHERE level = $1 AND journey IS NOT NULL
                 ORDER BY score ASC
                 LIMIT 1;
             `
-            let journey = await db.query(query);
+            let journey = await db.query(query, [level]);
             if (journey.rows.length > 0) {
                 highscores.journey = journey.rows[0].journey;
             }

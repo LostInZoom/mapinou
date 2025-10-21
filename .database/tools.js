@@ -3,6 +3,9 @@ import * as fs from 'fs';
 import { load } from "js-yaml";
 import * as d3 from "d3";
 
+import translate from "translate";
+import { generateId } from "zoo-ids";
+
 /**
  * Clear the tables from the given database.
  * @param {Pool} db - The database to clear the tables from.
@@ -18,6 +21,7 @@ async function createTables() {
     const TABLES = `
         CREATE TABLE IF NOT EXISTS data.sessions (
             id serial,
+            name character varying(500),
             user_agent character varying(500),
             device character varying(100),
             orientation character varying(100),
@@ -385,27 +389,41 @@ async function populateResults() {
         SELECT *
 		FROM data.levels;
     `;
+
     let result = await db.query(query);
+
+    const amount = 100;
+    const indexes = [];
+    for (let index = 0; index < amount; index++) {
+        const animal = generateId(null, {
+            numAdjectives: 1,
+            caseStyle: 'titlecase',
+            delimiter: ' '
+        });
+        translate.engine = "google";
+        const translation = await translate(animal, "fr");
+
+        let session = `
+            INSERT INTO data.sessions(name)
+            VALUES($1)
+            RETURNING id;
+        `
+        let s = await db.query(session, [translation]);
+        indexes.push(s.rows[0].id);
+    }
+
     if (result.rows.length > 0) {
         for (let i = 0; i < result.rows.length; i++) {
             const randomNormal = d3.randomNormal(50, 30);
-            const norm = Array.from({ length: 100 }, () => Math.max(0, Math.round(randomNormal())));
+            const norm = Array.from({ length: amount }, () => Math.max(0, Math.round(randomNormal())));
 
             const lid = result.rows[i].id;
             let values = [];
             let inserts = [];
 
-            let session = `
-                    INSERT INTO data.sessions(id)
-                    VALUES(default)
-                    RETURNING id;
-                `
-            let s = await db.query(session);
-            let sid = s.rows[0].id;
-
-            for (let j = 0; j < norm.length; j++) {
+            for (let j = 0; j < amount; j++) {
                 let val = norm[j];
-                values.push(sid, lid, parseInt(val));
+                values.push(indexes[j], lid, parseInt(val));
                 const base = values.length - 3;
                 inserts.push(`($${base + 1}, $${base + 2}, $${base + 3})`);
             }

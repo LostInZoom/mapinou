@@ -259,9 +259,9 @@ class Leaderboard {
         for (let i = 0; i < this.highscores.leaderboard.length; i++) {
             let e = this.highscores.leaderboard[i];
             let entry = makeDiv(null, 'highscore-entry');
-            let html = `${i + 1}.`;
+            let html = `${i + 1}. ${e.name}`;
             if (this.params.session.index === e.session) {
-                html += ' Vous';
+                html += ' (Vous)';
                 addClass(entry, 'active');
                 this.personal = entry;
             }
