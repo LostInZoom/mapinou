@@ -219,9 +219,18 @@ function createValidation(parent, text, options, callback) {
     addClass(mask, 'reveal');
 }
 
+function hasSameKeys(obj, keys) {
+    const objKeys = Object.keys(obj).sort();
+    const expected = [...keys].sort();
+    return (
+        objKeys.length === expected.length &&
+        objKeys.every((key, i) => key === expected[i])
+    );
+}
+
 export {
     makeDiv, hasClass, addClass, removeClass, addClassList, removeClassList,
     activate, deactivate,
     clearElement, addSVG, getCSSColors, remove, wait, waitPromise, isOverflown,
-    easingIncrement, createValidation, setStorage, getStorage
+    easingIncrement, createValidation, setStorage, getStorage, hasSameKeys
 }

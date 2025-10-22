@@ -5,7 +5,7 @@ import Player from '../characters/player.js';
 import Target from '../characters/target.js';
 import Helpers from '../layers/helpers.js';
 import Position from '../game/position.js';
-import { addClass, makeDiv, removeClass, wait } from '../utils/dom.js';
+import { addClass, hasSameKeys, makeDiv, removeClass, wait } from '../utils/dom.js';
 import Rabbits from '../layers/rabbits.js';
 import { mergeExtents, project } from './analysis.js';
 import { easeInOutCubic, easeOutCirc, remap } from '../utils/math.js';
@@ -576,7 +576,7 @@ class Basemap {
 
     async loadSprites() {
         let s = JSON.parse(localStorage.getItem('sprites'));
-        if (s) {
+        if (hasSameKeys(s, this.spritesheets)) {
             this.addSprites(s);
         } else {
             let sprites = {};
