@@ -69,8 +69,8 @@ class Levels extends Page {
 
             addClass(this.choose, 'clicked');
             this.choose.addEventListener('animationend', () => { removeClass(this.choose, 'clicked'); });
-
             this.playSound('button');
+
             let choosecontainer = makeDiv(null, 'levels-rabbit-container');
             let choosewindow = makeDiv(null, 'levels-rabbit-window');
             choosecontainer.append(choosewindow);

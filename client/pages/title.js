@@ -7,6 +7,7 @@ import { addClass, makeDiv, removeClass, removeClassList, wait, waitPromise } fr
 import { remap, easeOutCubic, easeInOutSine } from "../utils/math";
 import { capitalizeFirstLetter, pxToRem } from "../utils/parse";
 import Credits from "./credits";
+import Custom from "./custom";
 
 class Title extends Page {
     constructor(options, callback) {
