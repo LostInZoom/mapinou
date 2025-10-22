@@ -1,6 +1,7 @@
 import Page from "./page";
 import { addClass, makeDiv, removeClass, wait } from "../utils/dom";
 import Title from "./title";
+import Sound from "../utils/sounds";
 
 class Credits extends Page {
     constructor(options, callback) {
@@ -24,6 +25,9 @@ class Credits extends Page {
 
         this.scrollbox.append(spacertop, text, spacerbottom);
         this.content.append(title, this.scrollbox);
+
+        this.music = new Sound({ src: 'campfire', loop: true });
+        this.music.fadeIn(2000);
 
         const credits = this.params.credits;
         credits.forEach(part => {
@@ -65,6 +69,7 @@ class Credits extends Page {
             this.buttonTitle.addEventListener('click', () => {
                 if (this.listen) {
                     this.listen = false;
+                    this.music.fadeOut(2000, () => { this.music.destroy(); })
                     this.next = new Title({ app: this.app, position: 'next' });
                     this.slideNext();
                     wait(this.params.interface.transition.page, () => {

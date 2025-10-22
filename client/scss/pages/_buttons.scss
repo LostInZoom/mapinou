@@ -1,8 +1,11 @@
 @use '../colors';
 
+$button-size: min(3.5rem, 15vw, 15vh);
+
 .audio-button-container {
-    height: 3.5rem;
-    width: 3.5rem;
+    height: $button-size;
+    width: $button-size;
+
     border-radius: 50%;
     pointer-events: all;
     overflow: hidden;
@@ -36,8 +39,8 @@
 }
 
 .audio-button {
-    height: 3.5rem;
-    width: 3.5rem;
+    height: $button-size;
+    width: $button-size;
 
     background-color: colors.$secondary-color-dark;
     border-radius: 50%;
@@ -52,8 +55,9 @@
 }
 
 .header-button {
-    height: 3.5rem;
-    width: 3.5rem;
+    height: $button-size;
+    width: $button-size;
+
     border-radius: 50%;
     pointer-events: all;
     overflow: hidden;
@@ -87,10 +91,9 @@
 }
 
 .rabbit-button {
-    height: 3rem;
-    width: 3rem;
-    border: solid .3rem colors.$secondary-color-dark;
-    background-color: colors.$main-color-light;
+    height: calc($button-size - .4rem);
+    width: calc($button-size - .4rem);
+    padding: .2rem;
 }
 
 .page-button {

@@ -23,6 +23,13 @@ class Sound {
         this.audio.autoplay = false;
     }
 
+    destroy() {
+        this.audio.pause();
+        this.audio.removeAttribute('src');
+        this.audio.load();
+        this.audio = null;
+    }
+
     setSource(src, loop, play) {
         this.src = src;
         this.loop = loop;
@@ -46,6 +53,34 @@ class Sound {
 
     isPlaying() {
         return !this.audio.paused;
+    }
+
+    fadeIn(duration, callback) {
+        callback = callback || function () { };
+        const audio = this.audio;
+        const targetVolume = this.targetVolume || 1;
+        const startTime = performance.now();
+
+        if (audio.paused) {
+            audio.volume = 0;
+            audio.play();
+        }
+
+        const step = (now) => {
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const newValue = targetVolume * progress;
+            audio.volume = newValue > 1 ? 1 : newValue;
+
+            if (progress < 1) {
+                requestAnimationFrame(step);
+            } else {
+                audio.volume = targetVolume;
+                callback();
+            }
+        };
+
+        requestAnimationFrame(step);
     }
 
     fadeOut(duration, callback) {
