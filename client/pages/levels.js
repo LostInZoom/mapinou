@@ -91,6 +91,7 @@ class Levels extends Page {
 
                 chooserabbit.addEventListener('click', () => {
                     if (!hasClass(chooserabbit)) {
+                        this.playSound('lapinou');
                         rabbitlist.forEach(r => { removeClass(r, 'active'); })
                         addClass(chooserabbit, 'active');
                         this.image.src = src;
