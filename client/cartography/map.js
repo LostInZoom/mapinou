@@ -511,7 +511,7 @@ class Basemap {
         else {
             this.routable = false;
             removeClass(this.maskcontainer, 'routable');
-            wait(500, callback);
+            wait(500, () => { callback(); });
         }
     }
 

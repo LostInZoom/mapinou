@@ -118,13 +118,13 @@ class Score {
     pop(callback) {
         callback = callback || function () { };
         addClass(this.container, 'pop');
-        wait(200, callback);
+        wait(200, () => { callback(); });
     }
 
     unpop(callback) {
         callback = callback || function () { };
         removeClass(this.container, 'pop');
-        wait(200, callback);
+        wait(200, () => { callback(); });
     }
 
     destroy(callback) {

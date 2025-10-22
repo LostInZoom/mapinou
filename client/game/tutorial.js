@@ -328,6 +328,9 @@ class Tutorial extends Page {
                 this.basemap.enableMovement(win => {
                     if (win) {
                         this.listening = false;
+                        this.tutorialcontainer.removeEventListener('click', vege1);
+                        this.tutorialcontainer.removeEventListener('click', vege2);
+                        this.basemap.removeListener('render', mapListener);
                         this.clear(callback);
                     }
                 });
@@ -486,37 +489,36 @@ class Tutorial extends Page {
     }
 
     async ending() {
-        const tuto4 = async () => {
-            this.tutorialcontainer.removeEventListener('click', tuto4);
+        const end4 = async () => {
+            this.tutorialcontainer.removeEventListener('click', end4);
             this.paloma.hideInformation();
             await this.paloma.hideBubble();
             this.paloma.setState('fly');
             await waitPromise(1000);
             await this.paloma.flyOut();
             await this.hideTutorial();
-
             this.toLevels();
         }
 
-        const tuto3 = async () => {
-            this.tutorialcontainer.removeEventListener('click', tuto3);
+        const end3 = async () => {
+            this.tutorialcontainer.removeEventListener('click', end3);
             this.paloma.setText("Amusez-vous bien !");
             await this.paloma.focusBubble();
-            this.tutorialcontainer.addEventListener('click', tuto4);
+            this.tutorialcontainer.addEventListener('click', end4);
         }
 
-        const tuto2 = async () => {
-            this.tutorialcontainer.removeEventListener('click', tuto2);
+        const end2 = async () => {
+            this.tutorialcontainer.removeEventListener('click', end2);
             this.paloma.setText("Par contre, vous ne pouvez faire chaque niveau qu'une fois.");
             await this.paloma.focusBubble();
-            this.tutorialcontainer.addEventListener('click', tuto3);
+            this.tutorialcontainer.addEventListener('click', end3);
         }
 
-        const tuto1 = async () => {
-            this.tutorialcontainer.removeEventListener('click', tuto1);
+        const end1 = async () => {
+            this.tutorialcontainer.removeEventListener('click', end1);
             this.paloma.setText("Vous pouvez refaire ce tutoriel avec moi quand vous voulez.");
             await this.paloma.focusBubble();
-            this.tutorialcontainer.addEventListener('click', tuto2);
+            this.tutorialcontainer.addEventListener('click', end2);
         }
 
         this.centerWoodpigeon();
@@ -525,8 +527,7 @@ class Tutorial extends Page {
         this.paloma.setText("Bravo, vous avez retrouvé l'ami de Lapinou !");
         await this.paloma.displayBubble();
         this.paloma.displayInformation();
-
-        this.tutorialcontainer.addEventListener('click', tuto1);
+        this.tutorialcontainer.addEventListener('click', end1);
     }
 
     async displayTutorial() {
@@ -618,7 +619,6 @@ class Tutorial extends Page {
     }
 
     toLevels() {
-        // this.app.music.fadeOut(500, true);
         this.tutorialcontainer.remove();
         this.destroy();
 
