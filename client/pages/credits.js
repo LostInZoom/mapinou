@@ -1,5 +1,5 @@
 import Page from "./page";
-import { addClass, makeDiv, removeClass, wait } from "../utils/dom";
+import { addClass, makeDiv, remove, removeClass, wait } from "../utils/dom";
 import Title from "./title";
 import Sound from "../utils/sounds";
 
@@ -27,7 +27,8 @@ class Credits extends Page {
         this.content.append(title, this.scrollbox);
 
         this.music = new Sound({ src: 'campfire', loop: true });
-        this.music.fadeIn(2000);
+        this.app.addSound(this.music);
+        if (this.app.sounds.isActive()) { this.music.fadeIn(2000); }
 
         const credits = this.params.credits;
         credits.forEach(part => {
@@ -68,8 +69,14 @@ class Credits extends Page {
             this.listen = true;
             this.buttonTitle.addEventListener('click', () => {
                 if (this.listen) {
+                    addClass(this.buttonTitle, 'clicked');
+                    this.buttonTitle.addEventListener('animationend', () => { removeClass(this.buttonTitle, 'clicked'); });
+                    this.playSound('button');
+
                     this.listen = false;
-                    this.music.fadeOut(2000, () => { this.music.destroy(); })
+                    this.music.fadeOut(2000, () => { this.music.destroy(); });
+                    this.app.soundpool = [];
+
                     this.next = new Title({ app: this.app, position: 'next' });
                     this.slideNext();
                     wait(this.params.interface.transition.page, () => {
@@ -81,6 +88,11 @@ class Credits extends Page {
             this.animate();
 
             this.buttonscroll.addEventListener('click', () => {
+                addClass(this.buttonscroll, 'clicked');
+                this.buttonscroll.addEventListener('animationend', () => { removeClass(this.buttonscroll, 'clicked'); });
+
+                this.playSound('button');
+
                 if (this.scrolling) {
                     this.stopScroll();
                     this.scrolling = false;

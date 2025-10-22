@@ -148,6 +148,8 @@ class Title extends Page {
 
         this.creditslabel.addEventListener('click', () => {
             if (this.listen) {
+                addClass(this.creditslabel, 'clicked');
+                this.playSound('button');
                 this.listen = false;
                 this.previous = new Credits({ app: this.app, position: 'previous' });
                 this.slidePrevious();
@@ -155,7 +157,10 @@ class Title extends Page {
         });
 
         this.share.addEventListener('click', async () => {
-            if (navigator.share) {
+            if (this.listen && navigator.share) {
+                addClass(this.share, 'clicked');
+                this.share.addEventListener('animationend', () => { removeClass(this.share, 'clicked'); });
+                this.playSound('button');
                 try {
                     await navigator.share({
                         title: 'Mapinou',
@@ -170,6 +175,8 @@ class Title extends Page {
 
         this.startlabel.addEventListener('click', async () => {
             if (this.listen) {
+                addClass(this.startlabel, 'clicked');
+                this.playSound('button');
                 this.listen = false;
                 if (this.options.app.options.session.consent) {
                     if (this.options.app.options.session.form) {

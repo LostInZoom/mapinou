@@ -3,6 +3,7 @@ import { addClass, makeDiv, removeClass, setStorage, wait } from "../utils/dom";
 
 class SoundButton {
     constructor(options) {
+        this.app = options.app;
         this.parent = options.parent;
         this.svg = options.svg;
 
@@ -116,10 +117,12 @@ class SoundEffects extends SoundButton {
 
         this.buttonListener = () => {
             if (this.active) {
+                this.app.pauseSounds();
                 removeClass(this.button, 'active');
                 this.active = false;
                 setStorage('sounds', false);
             } else {
+                this.app.playSounds();
                 addClass(this.button, 'active');
                 this.active = true;
                 setStorage('sounds', true);
@@ -130,7 +133,7 @@ class SoundEffects extends SoundButton {
 
     playFile(options) {
         if (this.active) {
-            new Sound(options).play();
+            return new Sound(options).play();
         }
     }
 }

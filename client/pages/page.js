@@ -60,6 +60,10 @@ class Page {
         });
     }
 
+    playSound(src) {
+        return this.app.sounds.playFile({ src: src });
+    }
+
     clear() {
         clearElement(this.container);
     }

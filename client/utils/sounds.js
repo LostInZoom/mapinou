@@ -70,7 +70,7 @@ class Sound {
             const elapsed = now - startTime;
             const progress = Math.min(elapsed / duration, 1);
             const newValue = targetVolume * progress;
-            audio.volume = newValue > 1 ? 1 : newValue;
+            audio.volume = Math.min(1, Math.max(0, newValue));
 
             if (progress < 1) {
                 requestAnimationFrame(step);

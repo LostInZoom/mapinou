@@ -38,6 +38,7 @@ class Application {
         this.header.setJustification('right');
 
         this.music = new Music({
+            app: this,
             parent: this.header,
             svg: this.options.svgs.music,
             src: 'menu',
@@ -45,7 +46,9 @@ class Application {
             loop: true
         });
 
+        this.soundpool = [];
         this.sounds = new SoundEffects({
+            app: this,
             parent: this.header,
             svg: this.options.svgs.sound
         });
@@ -170,6 +173,28 @@ class Application {
 
     loaded() {
         addClass(this.mask, 'loaded');
+    }
+
+    addSound(sound) {
+        this.soundpool.push(sound);
+        return this.soundpool.length - 1;
+    }
+
+    hasSounds() {
+        return this.soundpool.length > 0;
+    }
+
+    pauseSounds() {
+        this.soundpool.forEach(s => { s.pause(); });
+    }
+
+    playSounds() {
+        this.soundpool.forEach(s => { s.play(); });
+    }
+
+    destroySounds() {
+        this.soundpool.forEach(s => { s.destroy(); });
+        this.soundpool = [];
     }
 
     getProgression(previous) {

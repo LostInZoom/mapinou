@@ -102,6 +102,7 @@ class TierPanel extends Panel {
 
             const startLevel = () => {
                 if (this.page.listening()) {
+                    this.page.playSound('button');
                     minimapcontainer.removeEventListener('click', startLevel);
                     this.page.listen = false;
 
@@ -299,6 +300,7 @@ class ExperiencePanel extends Panel {
 
         const startExperience = () => {
             if (this.page.listening()) {
+                this.page.playSound('button');
                 this.experience.removeEventListener('click', startExperience);
                 this.page.listen = false;
                 this.page.hide(() => {
@@ -456,6 +458,7 @@ class TutorialPanel extends Panel {
 
         const startTutorial = () => {
             if (this.page.listening()) {
+                this.page.playSound('button');
                 this.minimapcontainer.removeEventListener('click', startTutorial);
                 this.page.listen = false;
                 // this.page.app.music.fadeOut(500, true);
@@ -561,8 +564,8 @@ class NavigationBar {
         const pos = this.page.getPosition();
 
         // Listeners to assign to navigation bar buttons
-        this.previousListener = () => { this.page.slide('previous'); };
-        this.nextListener = () => { this.page.slide('next'); };
+        this.previousListener = () => { this.page.playSound('slideleft'); this.page.slide('previous'); };
+        this.nextListener = () => { this.page.playSound('slideright'); this.page.slide('next'); };
 
         // Create the tier navigation bar
         this.container = makeDiv(null, 'levels-navigation-container');
