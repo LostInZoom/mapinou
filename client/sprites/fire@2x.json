@@ -1,0 +1,37 @@
+{
+    "fire_0": {
+    	"x": 0,
+        "y": 0,
+        "width": 64,
+        "height": 64,
+        "pixelRatio": 1
+    },
+    "fire_1": {
+    	"x": 64,
+        "y": 0,
+        "width": 64,
+        "height": 64,
+        "pixelRatio": 1
+    },
+    "fire_2": {
+    	"x": 128,
+        "y": 0,
+        "width": 64,
+        "height": 64,
+        "pixelRatio": 1
+    },
+    "fire_3": {
+    	"x": 192,
+        "y": 0,
+        "width": 64,
+        "height": 64,
+        "pixelRatio": 1
+    },
+    "fire_4": {
+    	"x": 256,
+        "y": 0,
+        "width": 64,
+        "height": 64,
+        "pixelRatio": 1
+    }
+}
