@@ -10,6 +10,7 @@
     "initialize": "run-func .database/manage.js initialize",
     "update": "run-func .database/manage.js update",
     "populate": "run-func .database/manage.js populate",
+    "name-sessions": "run-func .database/manage.js name",
     "clean-dist": "rm -rf dist && mkdir dist && mkdir dist/mapinou",
     "copy-img": "cp -vR ./client/img ./dist/mapinou",
     "copy-sounds": "cp -vR ./client/sounds ./dist/mapinou",

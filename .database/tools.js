@@ -437,4 +437,36 @@ async function populateResults() {
     }
 }
 
-export { clearDB, createTables, insertLevels, populateResults, checkVersion }
+async function nameMissingSessions() {
+    let query = `
+        SELECT id, name
+		FROM data.sessions;
+    `;
+
+    let result = await db.query(query);
+
+    if (result.rows.length > 0) {
+        for (let i = 0; i < result.rows.length; i++) {
+            const id = result.rows[i].id;
+            const name = result.rows[i].name;
+
+            if (!name) {
+                const animal = generateId(null, {
+                    numAdjectives: 1,
+                    caseStyle: 'titlecase',
+                    delimiter: ' '
+                });
+                translate.engine = "google";
+                const translation = await translate(animal, "fr");
+                let rename = `
+                    UPDATE data.sessions
+                    SET name = $1
+                    WHERE id = $2;
+                `
+                await db.query(rename, [translation, id]);
+            }
+        }
+    }
+}
+
+export { clearDB, createTables, insertLevels, populateResults, checkVersion, nameMissingSessions }

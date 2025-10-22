@@ -1,4 +1,4 @@
-import { insertLevels, populateResults } from './tools.js';
+import { insertLevels, nameMissingSessions, populateResults } from './tools.js';
 import { clearDB, createTables } from "./tools.js";
 
 function initialize() {
@@ -24,4 +24,10 @@ function populate() {
     })
 }
 
-export { initialize, update, populate }
+function name() {
+    nameMissingSessions().then(() => {
+        process.exit();
+    })
+}
+
+export { initialize, update, populate, name }
