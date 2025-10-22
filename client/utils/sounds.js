@@ -38,8 +38,14 @@ class Sound {
         if (play) this.play();
     }
 
-    play() {
-        if (this.audio.paused) { this.audio.play(); }
+    play(callback) {
+        callback = callback || function () { };
+        if (this.audio.paused) {
+            this.audio.play();
+            this.audio.addEventListener('ended', callback);
+        } else {
+            callback();
+        }
     }
 
     pause() {

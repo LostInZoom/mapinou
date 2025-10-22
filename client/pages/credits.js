@@ -2,6 +2,8 @@ import Page from "./page";
 import { addClass, makeDiv, remove, removeClass, wait } from "../utils/dom";
 import Title from "./title";
 import Sound from "../utils/sounds";
+import Campfire from "../game/campfire";
+import Woodpigeon from "../game/woodpigeon";
 
 class Credits extends Page {
     constructor(options, callback) {
@@ -17,14 +19,19 @@ class Credits extends Page {
         this.content = makeDiv(null, 'page-content page-content-credits pop');
         this.container.append(this.content);
 
+        let titlecontainer = makeDiv(null, 'credits-title-container');
         let title = makeDiv(null, 'credits-title', 'Crédits');
+        let woodpigeon = new Woodpigeon({ page: this, parent: titlecontainer });
+        titlecontainer.append(title);
+        let campfire = new Campfire({ page: this, parent: titlecontainer });
+
         this.scrollbox = makeDiv(null, 'credits-scrollbox no-scrollbar');
         let spacertop = makeDiv(null, 'credits-spacer');
         let text = makeDiv(null, 'credits-text');
         let spacerbottom = makeDiv(null, 'credits-spacer');
 
         this.scrollbox.append(spacertop, text, spacerbottom);
-        this.content.append(title, this.scrollbox);
+        this.content.append(titlecontainer, this.scrollbox);
 
         this.music = new Sound({ src: 'campfire', loop: true });
         this.app.addSound(this.music);
@@ -80,6 +87,8 @@ class Credits extends Page {
                     this.next = new Title({ app: this.app, position: 'next' });
                     this.slideNext();
                     wait(this.params.interface.transition.page, () => {
+                        woodpigeon.destroy();
+                        campfire.destroy();
                         this.stopScroll();
                     });
                 }

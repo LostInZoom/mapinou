@@ -1,36 +1,28 @@
 import { makeDiv, wait } from "../utils/dom";
 
-class Woodpigeon {
+class Campfire {
     constructor(options) {
         this.options = options;
         this.page = this.options.page;
         this.parent = this.options.parent;
 
         this.frame = 0;
-        this.framenumber = 2;
-        this.framerate = 500;
+        this.framenumber = 5;
+        this.framerate = 100;
 
-        this.character = makeDiv(null, 'credits-woodpigeon');
+        this.character = makeDiv(null, 'credits-campfire');
         this.charimage = document.createElement('img');
         this.reload();
-        this.charimage.alt = 'woody';
+        this.charimage.alt = 'campfire';
         this.character.append(this.charimage);
 
         this.parent.append(this.character);
         this.animateFrame();
         this.character.offsetWidth;
-
-        let sing = false;
-        this.character.addEventListener('click', () => {
-            if (!sing) {
-                sing = true;
-                this.page.app.sounds.playFile({ src: 'woodpigeon' }, () => { sing = false; });
-            }
-        });
     }
 
     reload() {
-        this.charimage.src = this.page.params.sprites[`woodpigeon:idle_east_${this.frame}`];
+        this.charimage.src = this.page.params.sprites[`campfire:${this.frame}`];
     }
 
     setFrame(frame) {
@@ -58,4 +50,4 @@ class Woodpigeon {
     }
 }
 
-export default Woodpigeon;
+export default Campfire;

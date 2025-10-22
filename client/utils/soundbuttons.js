@@ -131,9 +131,14 @@ class SoundEffects extends SoundButton {
         this.button.addEventListener('click', this.buttonListener);
     }
 
-    playFile(options) {
+    playFile(options, callback) {
+        callback = callback || function () { };
         if (this.active) {
-            return new Sound(options).play();
+            new Sound(options).play(() => {
+                callback();
+            });
+        } else {
+            callback();
         }
     }
 }

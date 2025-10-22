@@ -6,7 +6,7 @@ import { addClass, makeDiv, removeClass, wait, waitPromise } from "../utils/dom"
 import { easeInOutSine } from "../utils/math";
 import { TutorialMask } from "../utils/svg";
 import Hint from "./hint";
-import Woodpigeon from "./woodpigeon";
+import Paloma from "./paloma";
 
 class Tutorial extends Page {
     constructor(options, callback) {
@@ -36,7 +36,7 @@ class Tutorial extends Page {
         this.tutorialcontainer.offsetWidth;
 
         this.mask = new TutorialMask({ parent: this.tutorialcontainer });
-        this.paloma = new Woodpigeon({ level: this });
+        this.paloma = new Paloma({ level: this });
         this.hint = new Hint({ level: this });
 
         // if (this.app.music.isActive()) {
@@ -350,7 +350,7 @@ class Tutorial extends Page {
                 duration: 1000,
                 padding: { top: 100, bottom: 50, left: 50, right: 50 }
             }, async () => {
-                this.centerWoodpigeon();
+                this.centerPaloma();
                 this.paloma.unsetTransparent();
                 this.mask.reveal();
                 await this.displayTutorial();
@@ -440,7 +440,7 @@ class Tutorial extends Page {
             this.mask.hide();
 
             this.basemap.enemies.spawn(1000, async () => {
-                this.endWoodpigeon();
+                this.endPaloma();
                 this.paloma.setOrientation('south');
                 this.paloma.setTransparent();
                 await this.displayTutorial();
@@ -521,7 +521,7 @@ class Tutorial extends Page {
             this.tutorialcontainer.addEventListener('click', end2);
         }
 
-        this.centerWoodpigeon();
+        this.centerPaloma();
         this.paloma.setOrientation('south');
         await this.displayTutorial();
         this.paloma.setText("Bravo, vous avez retrouvé l'ami de Lapinou !");
@@ -610,11 +610,11 @@ class Tutorial extends Page {
         tasks.forEach(task => task(checkDone));
     }
 
-    endWoodpigeon() {
+    endPaloma() {
         addClass(this.tutorialcontainer, 'end');
     }
 
-    centerWoodpigeon() {
+    centerPaloma() {
         removeClass(this.tutorialcontainer, 'end');
     }
 

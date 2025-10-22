@@ -15,15 +15,51 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
 
-    overflow: hidden;
+.credits-title-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 5rem;
 }
 
 .credits-title {
     font-family: 'Vincendo';
     font-size: 2rem;
     text-align: center;
-    padding: 1rem;
+}
+
+.credits-campfire {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 4rem;
+    width: 4rem;
+
+    &>img {
+        position: absolute;
+        bottom: 1rem;
+        width: 3.5rem;
+        height: 3.5rem;
+        image-rendering: pixelated;
+    }
+}
+
+.credits-woodpigeon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 4rem;
+    width: 4rem;
+
+    &>img {
+        width: 4rem;
+        height: 4rem;
+        image-rendering: pixelated;
+    }
 }
 
 .credits-scrollbox {

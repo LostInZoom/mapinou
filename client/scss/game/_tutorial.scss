@@ -59,7 +59,7 @@
     }
 }
 
-.woodpigeon-container {
+.paloma-container {
     position: relative;
     display: flex;
     align-items: center;
@@ -70,7 +70,7 @@
     user-select: none;
 }
 
-.woodpigeon-character {
+.paloma-character {
     display: flex;
     justify-content: center;
     height: 8rem;
@@ -96,7 +96,7 @@
     }
 }
 
-.woodpigeon-bubble-container {
+.paloma-bubble-container {
     position: absolute;
     top: -.5rem;
     margin: 0 1rem;
@@ -118,7 +118,7 @@
     }
 }
 
-.woodpigeon-bubble {
+.paloma-bubble {
     position: relative;
     text-align: center;
     max-width: 80vw;
@@ -152,7 +152,7 @@
     }
 }
 
-.woodpigeon-infos {
+.paloma-infos {
     position: absolute;
     bottom: 0;
     margin: 0 1rem;

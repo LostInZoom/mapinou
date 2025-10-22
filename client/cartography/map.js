@@ -24,7 +24,7 @@ class Basemap {
         this.animationCurve = 2;
         this.animationSpeed = 5;
 
-        this.spritesheets = ['rabbits', 'enemies', 'vegetables', 'flower', 'ptsot', 'woodpigeon'];
+        this.spritesheets = ['rabbits', 'enemies', 'vegetables', 'flower', 'ptsot', 'woodpigeon', 'campfire'];
         this.protectedLayers = ['basemap'];
 
         this.parent = this.options.parent;
