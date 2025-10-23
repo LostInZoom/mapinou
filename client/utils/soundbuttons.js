@@ -138,8 +138,15 @@ class SoundEffects extends SoundButton {
         addClass(this.button, 'audio-button-sounds');
 
         this.birds = [
-            'parusmajor', 'cyanistescaeruleus', 'columbapalumbus'
+            'parusmajor', 'cyanistescaeruleus', 'columbapalumbus', 'apusapus', 'garrulusglandarius',
+            'corvuscorone', 'fringillacoelebs', 'erithacusrubecula', 'turdusmerula',
+            'troglodytestroglodytes', 'sylviaatricapilla', 'cuculuscanorus', 'streptopeliadecaocto'
         ];
+
+        // Interval in sec between each bird sound
+        this.birdinterval = 40;
+        // Variance in sec around the interval duration
+        this.birdvariance = 10;
 
         this.buttonListener = () => {
             if (this.active) {
@@ -176,7 +183,7 @@ class SoundEffects extends SoundButton {
     }
 
     enableBirdSounds() {
-        this.stopBirds = runWithVariance(30000, 10000, () => {
+        this.stopBirds = runWithVariance(this.birdinterval * 1000, this.birdvariance * 1000, () => {
             this.playFile({ src: this.birds[generateRandomInteger(0, this.birds.length - 1)] });
         });
     }
