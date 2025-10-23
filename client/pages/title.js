@@ -32,7 +32,10 @@ class Title extends Page {
         let delay = this.params.interface.transition.page;
 
         if (init) {
-            wait(delay, () => { addClass(this.letters, 'pop'); })
+            wait(delay, () => {
+                this.playSound('metal1');
+                addClass(this.letters, 'pop');
+            })
             // Add a delay of 300 milliseconds to make sure the title background is revealed
             delay += 300;
         } else {
@@ -71,14 +74,20 @@ class Title extends Page {
                 // Calculate the remapped easing
                 let easing = remap(easeOutCubic(remapped), 0, 1, 0, animationtime);
                 // Wait the easing value for each letter before the translation
-                wait(easing + delay, () => { l.style.transform = `translateX(0)`; });
+                wait(easing + delay, () => {
+                    wait(400, () => { this.playSound('letter'); })
+                    l.style.transform = `translateX(0)`;
+                });
                 j--;
             })
 
             // Increment the delay by the letters animation time
             delay += 400 + animationtime;
             // Bounce the whole title letters and add the time of the animation to the delay
-            wait(delay, () => { addClass(this.letters, 'horizontal-bounce'); })
+            wait(delay, () => {
+                this.playSound('metal2');
+                addClass(this.letters, 'horizontal-bounce');
+            })
         }
 
         // Create the start and credits buttons
@@ -110,9 +119,14 @@ class Title extends Page {
 
         delay += 300;
         // For each button slide and increment the delay
+        let i = 0;
+        let sounds = ['lapinou', 'metal3', 'metal4'];
         [this.start, this.credits, this.share].forEach((button) => {
             if (init) {
-                wait(delay, () => { addClass(button, 'pop'); });
+                wait(delay, () => {
+                    this.playSound(sounds[i++]);
+                    addClass(button, 'pop');
+                });
             } else {
                 addClass(button, 'pop');
             }
@@ -125,6 +139,7 @@ class Title extends Page {
             // Slide the build button
             wait(delay, () => {
                 removeClass(this.letters, 'horizontal-bounce');
+                this.playSound('metal5');
                 addClass(this.buildinfos, 'pop');
                 this.listen = true;
                 this.callback();
@@ -150,7 +165,7 @@ class Title extends Page {
         this.creditslabel.addEventListener('click', () => {
             if (this.listen) {
                 addClass(this.creditslabel, 'clicked');
-                this.playSound('button');
+                this.playButtonSound();
                 this.listen = false;
                 this.previous = new Credits({ app: this.app, position: 'previous' });
                 this.slidePrevious();
@@ -161,7 +176,7 @@ class Title extends Page {
             if (this.listen && navigator.share) {
                 addClass(this.share, 'clicked');
                 this.share.addEventListener('animationend', () => { removeClass(this.share, 'clicked'); });
-                this.playSound('button');
+                this.playButtonSound();
                 try {
                     await navigator.share({
                         title: 'Mapinou',
@@ -177,7 +192,7 @@ class Title extends Page {
         this.startlabel.addEventListener('click', async () => {
             if (this.listen) {
                 addClass(this.startlabel, 'clicked');
-                this.playSound('button');
+                this.playButtonSound();
                 this.listen = false;
                 if (this.options.app.options.session.consent) {
                     if (this.options.app.options.session.form) {

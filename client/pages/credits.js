@@ -78,7 +78,7 @@ class Credits extends Page {
                 if (this.listen) {
                     addClass(this.buttonTitle, 'clicked');
                     this.buttonTitle.addEventListener('animationend', () => { removeClass(this.buttonTitle, 'clicked'); });
-                    this.playSound('button');
+                    this.playButtonSound();
 
                     this.listen = false;
                     this.music.fadeOut(2000, () => { this.music.destroy(); });
@@ -100,7 +100,7 @@ class Credits extends Page {
                 addClass(this.buttonscroll, 'clicked');
                 this.buttonscroll.addEventListener('animationend', () => { removeClass(this.buttonscroll, 'clicked'); });
 
-                this.playSound('button');
+                this.playButtonSound();
 
                 if (this.scrolling) {
                     this.stopScroll();

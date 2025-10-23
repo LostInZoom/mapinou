@@ -1,5 +1,6 @@
 import { Content, Footer, Header } from "./elements.js";
 import { addClass, clearElement, makeDiv, removeClass } from "../utils/dom.js";
+import { generateRandomInteger } from "../utils/math.js";
 
 class Page {
     constructor(options, callback) {
@@ -58,6 +59,10 @@ class Page {
             position: 'next',
             page: this.previous
         });
+    }
+
+    playButtonSound() {
+        this.app.sounds.playFile({ src: this.app.uipool[generateRandomInteger(0, this.app.uipool.length - 1)] });
     }
 
     playSound(src) {

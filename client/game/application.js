@@ -46,6 +46,7 @@ class Application {
             loop: true
         });
 
+        this.uipool = ['lapinou', 'metal1', 'metal2', 'metal3', 'metal4', 'metal5', 'metal6', 'metal7'];
         this.soundpool = [];
         this.sounds = new SoundEffects({
             app: this,
@@ -69,24 +70,24 @@ class Application {
                 this.loaded();
                 this.allowed = true;
 
+                const audio = this.options.audio;
+                this.music.display(() => {
+                    if (audio.music && window.matchMedia('(display-mode: fullscreen)').matches) {
+                        this.music.play();
+                    }
+                });
+                this.sounds.display(() => {
+                    if (audio.sounds) {
+                        this.sounds.activate();
+                    }
+                });
+
                 // Create the current page
                 this.page = new Title({
                     app: this,
                     basemap: this.basemap,
                     position: 'current',
                     init: !this.debug
-                }, () => {
-                    const audio = this.options.audio;
-                    this.music.display(() => {
-                        if (audio.music && window.matchMedia('(display-mode: fullscreen)').matches) {
-                            this.music.play();
-                        }
-                    });
-                    this.sounds.display(() => {
-                        if (audio.sounds) {
-                            this.sounds.activate();
-                        }
-                    });
                 });
 
                 this.rabbits = new Rabbits({

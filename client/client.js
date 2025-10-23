@@ -155,13 +155,11 @@ window.addEventListener("DOMContentLoaded", async () => {
                         // YES
                         if (v === 0) {
                             if (deferredPrompt) {
-                                window.addEventListener('appinstalled', () => {
-                                    createValidation(document.body, `
-                                        Quittez ce navigateur et lancez Mapinou depuis votre téléphone.`,
-                                    );
-                                });
+                                // window.addEventListener('appinstalled', () => {
+                                //     createValidation(document.body, `Quittez ce navigateur et lancez Mapinou depuis votre téléphone.` );
+                                // });
                                 deferredPrompt.prompt();
-                                yes = await deferredPrompt.userChoice;
+                                await deferredPrompt.userChoice;
                                 deferredPrompt = null;
                             };
                         }

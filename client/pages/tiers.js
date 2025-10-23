@@ -102,7 +102,7 @@ class TierPanel extends Panel {
 
             const startLevel = () => {
                 if (this.page.listening()) {
-                    this.page.playSound('button');
+                    this.page.playButtonSound();
                     minimapcontainer.removeEventListener('click', startLevel);
                     this.page.listen = false;
 
@@ -300,7 +300,7 @@ class ExperiencePanel extends Panel {
 
         const startExperience = () => {
             if (this.page.listening()) {
-                this.page.playSound('button');
+                this.page.playButtonSound();
                 this.experience.removeEventListener('click', startExperience);
                 this.page.listen = false;
                 this.page.hide(() => {
@@ -458,7 +458,7 @@ class TutorialPanel extends Panel {
 
         const startTutorial = () => {
             if (this.page.listening()) {
-                this.page.playSound('button');
+                this.page.playButtonSound();
                 this.minimapcontainer.removeEventListener('click', startTutorial);
                 this.page.listen = false;
                 // this.page.app.music.fadeOut(500, true);

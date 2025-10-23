@@ -72,7 +72,7 @@ class Form extends Page {
 
         this.back.addEventListener('click', () => {
             if (this.listen) {
-                this.playSound('button');
+                this.playButtonSound();
                 this.listen = false;
                 this.saveAnswer();
                 if (this.options.question === 0) {
@@ -90,7 +90,7 @@ class Form extends Page {
 
         this.continue.addEventListener('click', () => {
             if (this.listen) {
-                this.playSound('button');
+                this.playButtonSound();
                 this.listen = false;
                 this.saveAnswer();
                 if (this.options.question === this.options.app.options.form.length - 1) {
