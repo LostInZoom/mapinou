@@ -14,7 +14,7 @@ class Application {
         this.options = options;
         this.progression = options.progression;
 
-        this.debug = false;
+        this.debug = true;
         // this.progression = { tier: 2, level: 2, finish: false };
 
         // Create the DOM Element

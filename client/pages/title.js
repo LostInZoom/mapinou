@@ -214,7 +214,7 @@ class Title extends Page {
                         this.slideNext();
                     }
                 } else {
-                    this.next = new Consent({ app: this.app, position: 'next' });
+                    this.next = new Custom({ app: this.app, position: 'next' });
                     this.slideNext();
                 }
             }

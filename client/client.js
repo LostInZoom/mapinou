@@ -36,6 +36,7 @@ window.addEventListener("DOMContentLoaded", async () => {
                     results.index = parseInt(sessionId);
                     results.consent = data.consent;
                     results.form = data.form;
+                    results.name = data.name;
                     callback(results);
                 } else {
                     ajaxPost('registration/', getInformation(), getData);

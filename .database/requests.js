@@ -31,7 +31,7 @@ async function createSession(options) {
 
 async function verifySession(index) {
     let verification = `
-        SELECT id, consent, form
+        SELECT id, name, consent, form
 		FROM data.sessions
 		WHERE id = ${index};
     `
@@ -40,6 +40,7 @@ async function verifySession(index) {
         if (result.rows.length > 0) {
             return {
                 isPresent: true,
+                name: result.rows[0].name,
                 consent: result.rows[0].consent,
                 form: result.rows[0].form,
             };
@@ -82,6 +83,20 @@ async function insertForm(data) {
     `
     try {
         await db.query(insertion);
+        return true
+    } catch {
+        return false;
+    }
+}
+
+async function renameSession(data) {
+    let rename = `
+        UPDATE data.sessions
+        SET name = $1
+        WHERE id = $2
+    `
+    try {
+        await db.query(rename, [data.name, data.session]);
         return true
     } catch {
         return false;
@@ -393,7 +408,7 @@ async function insertExperience(data, name, version) {
 }
 
 export {
-    createSession, verifySession,
+    createSession, verifySession, renameSession,
     giveConsent, insertForm,
     insertResults, insertPiaget, insertSBSOD, insertPTSOT, insertPurdue
 };
