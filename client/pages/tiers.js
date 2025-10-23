@@ -564,8 +564,18 @@ class NavigationBar {
         const pos = this.page.getPosition();
 
         // Listeners to assign to navigation bar buttons
-        this.previousListener = () => { this.page.playSound('slideleft'); this.page.slide('previous'); };
-        this.nextListener = () => { this.page.playSound('slideright'); this.page.slide('next'); };
+        this.previousListener = () => {
+            if (!this.page.app.isSliding()) {
+                this.page.playButtonSound();
+                this.page.slide('previous');
+            }
+        };
+        this.nextListener = () => {
+            if (!this.page.app.isSliding()) {
+                this.page.playButtonSound();
+                this.page.slide('next');
+            }
+        };
 
         // Create the tier navigation bar
         this.container = makeDiv(null, 'levels-navigation-container');

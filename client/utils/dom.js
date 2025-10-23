@@ -146,6 +146,22 @@ function waitPromise(duration) {
     return new Promise(resolve => setTimeout(resolve, duration));
 }
 
+function runWithVariance(interval, variance, callback) {
+    let stopped = false;
+    function following() {
+        if (stopped) return;
+        const delay = interval + (Math.random() * 2 - 1) * variance;
+        setTimeout(() => {
+            if (!stopped) {
+                callback();
+                following();
+            }
+        }, delay);
+    }
+    following();
+    return () => { stopped = true; };
+}
+
 /**
  * Returns true or false whether the provided element overflows
  * @param {DOMElement} element - DOM Element to check
@@ -232,5 +248,5 @@ export {
     makeDiv, hasClass, addClass, removeClass, addClassList, removeClassList,
     activate, deactivate,
     clearElement, addSVG, getCSSColors, remove, wait, waitPromise, isOverflown,
-    easingIncrement, createValidation, setStorage, getStorage, hasSameKeys
+    easingIncrement, createValidation, setStorage, getStorage, hasSameKeys, runWithVariance
 }

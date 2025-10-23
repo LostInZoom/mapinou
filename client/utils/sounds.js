@@ -23,6 +23,14 @@ class Sound {
         this.audio.autoplay = false;
     }
 
+    getVolume() {
+        return this.audio.volume;
+    }
+
+    setVolume(value) {
+        this.audio.volume = value;
+    }
+
     destroy() {
         this.audio.pause();
         this.audio.removeAttribute('src');

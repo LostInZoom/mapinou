@@ -1,5 +1,6 @@
 import Sound from "./sounds";
-import { addClass, makeDiv, removeClass, setStorage, wait } from "../utils/dom";
+import { addClass, makeDiv, removeClass, runWithVariance, setStorage, wait } from "../utils/dom";
+import { generateRandomInteger } from "./math";
 
 class SoundButton {
     constructor(options) {
@@ -12,8 +13,13 @@ class SoundButton {
         this.button.append(this.buttonchild);
         this.parent.append(this.button);
 
+        this.muted = false;
         this.active = false;
         this.pending = false;
+    }
+
+    isMute() {
+        return this.muted;
     }
 
     isActive() {
@@ -79,6 +85,22 @@ class Music extends SoundButton {
         this.sound.pause();
     }
 
+    mute() {
+        if (this.active) {
+            this.pause();
+            this.temp = true;
+        }
+        this.muted = true;
+    }
+
+    unmute() {
+        if (this.temp) {
+            this.play();
+            this.temp = false;
+        }
+        this.muted = false;
+    }
+
     enableListeners() {
         // Handle play and pause from the web app
         this.button.addEventListener('click', this.buttonListener);
@@ -115,25 +137,53 @@ class SoundEffects extends SoundButton {
         super(options);
         addClass(this.button, 'audio-button-sounds');
 
+        this.birds = [
+            'parusmajor', 'cyanistescaeruleus', 'columbapalumbus'
+        ];
+
         this.buttonListener = () => {
             if (this.active) {
                 this.app.pauseSounds();
                 removeClass(this.button, 'active');
-                this.active = false;
                 setStorage('sounds', false);
+                this.disableBirdSounds();
+                this.active = false;
             } else {
                 this.app.playSounds();
                 addClass(this.button, 'active');
-                this.active = true;
                 setStorage('sounds', true);
+                this.enableBirdSounds();
+                this.active = true;
             }
         }
         this.button.addEventListener('click', this.buttonListener);
     }
 
+    mute() {
+        this.app.pauseSounds();
+        this.muted = true;
+    }
+
+    unmute() {
+        if (this.active) {
+            this.app.playSounds();
+        }
+        this.muted = false;
+    }
+
+    disableBirdSounds() {
+        if (this.stopBirds) { this.stopBirds(); }
+    }
+
+    enableBirdSounds() {
+        this.stopBirds = runWithVariance(30000, 10000, () => {
+            this.playFile({ src: this.birds[generateRandomInteger(0, this.birds.length - 1)] });
+        });
+    }
+
     playFile(options, callback) {
         callback = callback || function () { };
-        if (this.active) {
+        if (this.active && !this.muted) {
             new Sound(options).play(() => {
                 callback();
             });

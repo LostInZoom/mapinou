@@ -24,7 +24,7 @@ class Woodpigeon {
         this.character.addEventListener('click', () => {
             if (!sing) {
                 sing = true;
-                this.page.app.sounds.playFile({ src: 'woodpigeon' }, () => { sing = false; });
+                this.page.app.sounds.playFile({ src: 'columbapalumbus' }, () => { sing = false; });
             }
         });
     }

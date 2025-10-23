@@ -48,6 +48,9 @@
   content:
   - role: Musique originale
     name: Justin Berli
+  - role: Clics boutons
+    name: floraphonic
+    link: https://pixabay.com/sound-effects/casual-click-pop-ui-7-262127/
   - role: Lapinou
     name: floraphonic
     link: https://pixabay.com/sound-effects/cute-animal-squeak-2-188095/
@@ -57,21 +60,24 @@
   - role: Coup de feu
     name: cedarstudios
     link: https://pixabay.com/sound-effects/22-ricochet-90225/
-  - role: Aigle de Bonelli
-    name: Timo Janhonen
-    link: https://xeno-canto.org/112654
   - role: Serpent
     name: quicksounds.com
     link: https://quicksounds.com/sound/4386/
   - role: Feu de camp
     name: RonKoster2023
     link: https://pixabay.com/sound-effects/fireplace-with-crackling-sounds-2-min-rk-178392/
-  - role: Clics boutons
-    name: floraphonic
-    link: https://pixabay.com/sound-effects/casual-click-pop-ui-7-262127/
-  - role: Pigeon ramier
+  - role: Aigle de Bonelli
+    name: Timo Janhonen
+    link: https://xeno-canto.org/112654
+  - role: Pigeon ramier (<i>Columba palumbus</i>)
     name: Grégoire Chauvot
     link: https://xeno-canto.org/1032301
+  - role: Mésange bleue (<i>Cyanistes caeruleus</i>)
+    name: Jacobo Ramil Millarengo 
+    link: https://xeno-canto.org/991723
+  - role: Mésange charbonnière (<i>Parus major</i>)
+    name: Joost van Bruggen 
+    link: https://xeno-canto.org/996274
 ###############
 #### FONTS ####
 ###############

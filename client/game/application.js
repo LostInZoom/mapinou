@@ -46,7 +46,10 @@ class Application {
             loop: true
         });
 
-        this.uipool = ['lapinou', 'metal1', 'metal2', 'metal3', 'metal4', 'metal5', 'metal6', 'metal7'];
+        this.uipool = [
+            'button1A', 'button2F', 'button3G', 'button4Bb',
+            'button5Bb', 'button6F', 'button7D', 'button8C'
+        ];
         this.soundpool = [];
         this.sounds = new SoundEffects({
             app: this,
@@ -79,6 +82,7 @@ class Application {
                 this.sounds.display(() => {
                     if (audio.sounds) {
                         this.sounds.activate();
+                        this.sounds.enableBirdSounds();
                     }
                 });
 
@@ -96,8 +100,22 @@ class Application {
                     protected: true
                 });
 
+                const mute = () => {
+                    this.music.mute();
+                    this.sounds.mute();
+                }
+
+                const unmute = () => {
+                    this.music.unmute();
+                    this.sounds.unmute();
+                }
+
+                window.addEventListener("focus", unmute);
+                window.addEventListener("blur", mute);
+
                 this.basemap.map.on('click', (e) => {
                     if (this.allowed) {
+                        this.sounds.playFile({ src: 'lapinou' });
                         this.allowed = false;
 
                         if (this.rabbits.getNumber() >= this.maxrabbit) {
@@ -121,6 +139,10 @@ class Application {
         });
     }
 
+    isSliding() {
+        return this.sliding;
+    }
+
     /**
      * 
      * @param {str} position - New position of the current page
@@ -131,7 +153,7 @@ class Application {
         callback = callback || function () { };
 
         // Make sure the page isn't sliding
-        if (!this.sliding) {
+        if (!this.isSliding()) {
             this.sliding = true;
 
             if (options.position === 'previous') { this.basemap.slide('right'); }

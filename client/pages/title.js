@@ -17,6 +17,9 @@ class Title extends Page {
         if (this.options.init === undefined) { this.options.init = false; }
         let init = this.options.init;
 
+        let index = 0;
+        let sounds = ['button2F', 'button4Bb', 'button8C', 'button7D', 'button6F', 'button8C']
+
         // Set the title name
         this.name = 'Mapinou';
 
@@ -33,7 +36,7 @@ class Title extends Page {
 
         if (init) {
             wait(delay, () => {
-                this.playSound('metal1');
+                this.playSound(sounds[index++]);
                 addClass(this.letters, 'pop');
             })
             // Add a delay of 300 milliseconds to make sure the title background is revealed
@@ -73,9 +76,10 @@ class Title extends Page {
                 let remapped = remap(j * lettertime, 0, animationtime);
                 // Calculate the remapped easing
                 let easing = remap(easeOutCubic(remapped), 0, 1, 0, animationtime);
+                let src = `letter${j + 1}`;
                 // Wait the easing value for each letter before the translation
                 wait(easing + delay, () => {
-                    wait(400, () => { this.playSound('letter'); })
+                    wait(400, () => { this.playSound(src); })
                     l.style.transform = `translateX(0)`;
                 });
                 j--;
@@ -85,7 +89,7 @@ class Title extends Page {
             delay += 400 + animationtime;
             // Bounce the whole title letters and add the time of the animation to the delay
             wait(delay, () => {
-                this.playSound('metal2');
+                this.playSound(sounds[index++]);
                 addClass(this.letters, 'horizontal-bounce');
             })
         }
@@ -119,12 +123,10 @@ class Title extends Page {
 
         delay += 300;
         // For each button slide and increment the delay
-        let i = 0;
-        let sounds = ['lapinou', 'metal3', 'metal4'];
         [this.start, this.credits, this.share].forEach((button) => {
             if (init) {
                 wait(delay, () => {
-                    this.playSound(sounds[i++]);
+                    this.playSound(sounds[index++]);
                     addClass(button, 'pop');
                 });
             } else {
@@ -139,7 +141,7 @@ class Title extends Page {
             // Slide the build button
             wait(delay, () => {
                 removeClass(this.letters, 'horizontal-bounce');
-                this.playSound('metal5');
+                this.playSound(sounds[index++]);
                 addClass(this.buildinfos, 'pop');
                 this.listen = true;
                 this.callback();
