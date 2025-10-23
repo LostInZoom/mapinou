@@ -576,7 +576,7 @@ class Basemap {
 
     async loadSprites() {
         let s = JSON.parse(localStorage.getItem('sprites'));
-        if (hasSameKeys(s, this.spritesheets)) {
+        if (s && hasSameKeys(s, this.spritesheets)) {
             this.addSprites(s);
         } else {
             let sprites = {};
