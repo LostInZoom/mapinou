@@ -1,5 +1,23 @@
 @use '../colors';
 
+.custom-text {
+    width: 100%;
+
+    pointer-events: all;
+    border-top-right-radius: .4rem;
+    border-bottom-left-radius: .4rem;
+
+    background-color: colors.$secondary-color-dark;
+    color: colors.$main-color-light;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    overflow: hidden;
+}
+
 .custom-rabbit-container {
     width: 100%;
     display: flex;

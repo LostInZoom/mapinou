@@ -82,7 +82,7 @@ class Application {
                 this.sounds.display(() => {
                     if (audio.sounds) {
                         this.sounds.activate();
-                        this.sounds.enableBirdSounds();
+                        // this.sounds.enableBirdSounds();
                     }
                 });
 

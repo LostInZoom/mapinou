@@ -1,11 +1,10 @@
 import Consent from "./consent";
-import Levels from "./levels";
 import Page from "./page";
 import Title from "./title";
 
 import { ajaxPost } from "../utils/ajax";
 import { addClass, makeDiv, hasClass, addClass, removeClass, wait } from "../utils/dom";
-import { easeInOutSine } from "../utils/math";
+import Custom from "./custom";
 
 class Form extends Page {
     constructor(options, callback) {
@@ -104,27 +103,14 @@ class Form extends Page {
 
                     ajaxPost('form/', { session: this.app.options.session.index, form: data }, (status) => {
                         if (status.done) { this.app.options.session.form = true; }
-                        this.levels();
+                        this.next = new Custom({ app: this.app, position: 'next' });
+                        this.slideNext();
                     });
                 } else {
                     this.next = new Form({ app: this.app, position: 'next', question: this.options.question + 1, });
                     this.slideNext();
                 }
             }
-        });
-    }
-
-    levels() {
-        removeClass(this.content, 'pop');
-        this.options.app.killRabbits();
-        this.options.app.forbidRabbits();
-        wait(300, () => {
-            this.destroy();
-            this.basemap.fit(this.params.interface.map.levels, {
-                easing: easeInOutSine
-            }, () => {
-                this.app.page = new Levels({ app: this.app, position: 'current', init: true });
-            });
         });
     }
 

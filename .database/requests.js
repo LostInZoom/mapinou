@@ -96,8 +96,8 @@ async function renameSession(data) {
         WHERE id = $2
     `
     try {
-        await db.query(rename, [data.name, data.session]);
-        return true
+        await db.query(rename, [data.name, data.index]);
+        return true;
     } catch {
         return false;
     }

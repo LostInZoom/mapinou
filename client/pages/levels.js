@@ -1,9 +1,11 @@
 import Page from "./page";
 import Title from "./title";
+import Selection from "./selection.js";
 
-import { addClass, makeDiv, addClass, removeClass, wait, hasClass } from "../utils/dom";
+import { addClass, makeDiv, addClass, removeClass, wait } from "../utils/dom";
 import { easeInOutSine } from '../utils/math.js';
 import { ExperiencePanel, NavigationBar, TierPanel, TutorialPanel } from "./tiers.js";
+import { ajaxPost } from "../utils/ajax.js";
 
 class Levels extends Page {
     constructor(options, callback) {
@@ -32,10 +34,6 @@ class Levels extends Page {
             update: this.update,
             finish: this.finish
         }, (t) => {
-            // if (this.app.music.isPending()) {
-            //     this.app.music.change('menu', true);
-            // }
-
             wait(600, () => {
                 this.listen = true;
                 if (this.update && !this.app.debug) {
@@ -71,50 +69,60 @@ class Levels extends Page {
             this.choose.addEventListener('animationend', () => { removeClass(this.choose, 'clicked'); });
             this.playButtonSound();
 
-            let choosecontainer = makeDiv(null, 'levels-rabbit-container');
-            let choosewindow = makeDiv(null, 'levels-rabbit-window');
-            choosecontainer.append(choosewindow);
-            let chooselabel = makeDiv(null, 'levels-rabbit-label', 'Choisissez votre lapin');
-            let chooserabbits = makeDiv(null, 'levels-rabbit-rabbits');
+            let content = makeDiv(null, 'page-content rabbits');
+            let back = makeDiv(null, 'page-button page-button-back', 'Annuler');
+            let pursue = makeDiv(null, 'page-button page-button-continue', 'Valider');
+            let text = makeDiv(null, 'custom-text');
+            content.append(back, text, pursue);
 
-            let rabbitlist = [];
-            this.params.game.colors.forEach(c => {
-                let chooserabbit = makeDiv(null, 'levels-rabbit-individual');
-                if (c === this.params.game.color) { addClass(chooserabbit, 'active'); }
-                let chooseimage = document.createElement('img');
-                let src = this.params.sprites[`rabbits:${c}_idle_east_0`]
-                chooseimage.src = src;
-                chooseimage.alt = 'Lapinou';
-                chooserabbit.append(chooseimage);
-                chooserabbits.append(chooserabbit);
-                rabbitlist.push(chooserabbit);
+            this.container.append(content);
+            let selection = new Selection({ page: this, parent: text });
 
-                chooserabbit.addEventListener('click', () => {
-                    if (!hasClass(chooserabbit)) {
-                        this.playSound('lapinou');
-                        rabbitlist.forEach(r => { removeClass(r, 'active'); })
-                        addClass(chooserabbit, 'active');
-                        this.image.src = src;
-                        this.params.game.color = c;
-                        localStorage.setItem('color', c);
+            content.offsetWidth;
+            addClass(content, 'pop');
+
+            wait(300, () => {
+                addClass(back, 'pop');
+                addClass(pursue, 'pop');
+
+                const closeWindow = () => {
+                    removeClass(content, 'pop');
+                    wait(300, () => {
+                        content.remove();
+                        this.listen = true;
+                        this.choose.addEventListener('click', chooseRabbit);
+                    });
+                };
+
+                back.addEventListener('click', () => {
+                    if (this.listen) {
+                        this.listen = false;
+                        this.playButtonSound();
+                        closeWindow();
                     }
-                });
+                }, { once: true });
+
+                pursue.addEventListener('click', () => {
+                    if (this.listen) {
+                        this.listen = false;
+                        this.playButtonSound();
+                        const [color, name] = selection.getValues();
+                        this.params.game.color = color;
+                        localStorage.setItem('color', color);
+                        this.image.src = this.params.sprites[`rabbits:${color}_idle_east_0`];
+
+                        if (name !== this.params.session.name) {
+                            ajaxPost('rename/', { index: this.params.session.index, name: name }, (data) => {
+                                if (data.done) {
+                                    this.params.session.name = name;
+                                    localStorage.setItem('name', name);
+                                }
+                                closeWindow();
+                            });
+                        } else { closeWindow(); }
+                    }
+                }, { once: true });
             });
-            let choosebutton = makeDiv(null, 'levels-rabbit-button', 'Valider');
-            choosewindow.append(chooselabel, chooserabbits, choosebutton);
-            this.app.container.append(choosecontainer);
-
-            choosewindow.offsetHeight;
-            addClass(choosewindow, 'pop');
-
-            choosebutton.addEventListener('click', () => {
-                this.playButtonSound();
-                removeClass(choosewindow, 'pop');
-                wait(300, () => {
-                    choosecontainer.remove();
-                    this.choose.addEventListener('click', chooseRabbit);
-                });
-            }, { once: true });
         }
 
         this.choose.addEventListener('click', chooseRabbit);

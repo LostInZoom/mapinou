@@ -53,6 +53,10 @@
         height: calc(100% - 10vh);
         justify-content: flex-start;
     }
+
+    &.rabbits {
+        position: absolute;
+    }
 }
 
 .banner {

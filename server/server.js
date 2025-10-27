@@ -64,7 +64,7 @@ app.post('/mapinou/form', jsonParser, (req, res) => {
 });
 
 app.post('/mapinou/rename', jsonParser, (req, res) => {
-	renameSession(req.body.session).then((done) => {
+	renameSession(req.body).then((done) => {
 		res.send(JSON.stringify({ done: done }));
 	});
 });
