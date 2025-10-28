@@ -113,6 +113,7 @@ class Enemy extends Character {
             src: this.soundSrc,
             format: 'mp3',
             amount: this.soundAmount,
+            volume: 0.8
         });
     }
 }

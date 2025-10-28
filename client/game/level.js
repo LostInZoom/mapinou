@@ -95,6 +95,8 @@ class Level extends Page {
                 }
 
                 if (within(target, player, this.params.game.tolerance.click)) {
+                    this.playSound({ src: 'lapinou-end', volume: 0.8 });
+
                     this.score.stop();
                     clic.correct = true;
                     this.basemap.recorder.insertCustomClic(clic);
@@ -115,6 +117,7 @@ class Level extends Page {
                         clic.correct = false;
                         this.basemap.recorder.insertCustomClic(clic);
 
+                        this.playSound({ src: 'lapinou-hurt', volume: 0.8 });
                         addClass(this.basemap.getContainer(), 'wrong');
                         this.score.addModifier('position');
                         wait(500, () => { removeClass(this.basemap.getContainer(), 'wrong'); });
@@ -152,6 +155,7 @@ class Level extends Page {
         this.canceler = makeDiv(null, 'level-cancel-button', this.params.svgs.helm);
         this.container.append(this.canceler);
         this.canceler.addEventListener('click', () => {
+            this.playButtonSound();
             if (this.basemap.player.traveling) {
                 this.basemap.player.stop();
                 this.score.start();
@@ -189,6 +193,8 @@ class Level extends Page {
                             this.basemap.recorder.on();
                             this.basemap.enableMovement(win => {
                                 if (win) {
+                                    this.playSound({ src: 'lapinou-end', volume: 0.8 });
+
                                     const end = Date.now();
                                     this.basemap.recorder.off();
                                     this.results.phase2 = this.basemap.recorder.get();

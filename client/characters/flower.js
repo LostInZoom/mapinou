@@ -22,6 +22,11 @@ class Flower extends Character {
         this.feature.properties.opacity = this.opacity;
 
         this.layer.addCharacter(this);
+
+        this.layer.basemap.app.sounds.playFile({
+            src: 'flower', amount: 3, volume: 0.4
+        });
+
         this.animateFrame(() => {
             this.setFrame(0);
             this.setState('live');

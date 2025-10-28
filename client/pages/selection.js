@@ -37,7 +37,7 @@ class Selection {
 
             rabbit.addEventListener('click', () => {
                 if (!hasClass(rabbit)) {
-                    this.page.playSound('lapinou');
+                    this.page.playSound({ src: 'lapinou-happy', volume: 0.6 });
                     rabbitlist.forEach(r => { removeClass(r, 'active'); })
                     addClass(rabbit, 'active');
                     this.selectedColor = c;

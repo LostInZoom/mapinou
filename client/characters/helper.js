@@ -56,6 +56,7 @@ class Helper extends Character {
             src: 'crounch',
             format: 'mp3',
             amount: 3,
+            volume: 0.5
         });
 
         this.animateScale({

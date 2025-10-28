@@ -35,7 +35,7 @@ class Title extends Page {
 
         if (init) {
             wait(delay, () => {
-                this.playSound(sounds[index++]);
+                this.playSound({ src: sounds[index++], volume: 0.8 });
                 addClass(this.letters, 'pop');
             })
             // Add a delay of 300 milliseconds to make sure the title background is revealed
@@ -78,7 +78,7 @@ class Title extends Page {
                 let src = `letter${j + 1}`;
                 // Wait the easing value for each letter before the translation
                 wait(easing + delay, () => {
-                    wait(400, () => { this.playSound(src); })
+                    wait(400, () => { this.playSound({ src: src, volume: 0.8 }); })
                     l.style.transform = `translateX(0)`;
                 });
                 j--;
@@ -88,7 +88,7 @@ class Title extends Page {
             delay += 400 + animationtime;
             // Bounce the whole title letters and add the time of the animation to the delay
             wait(delay, () => {
-                this.playSound(sounds[index++]);
+                this.playSound({ src: sounds[index++], volume: 0.8 });
                 addClass(this.letters, 'horizontal-bounce');
             })
         }
@@ -125,7 +125,7 @@ class Title extends Page {
         [this.start, this.credits, this.share].forEach((button) => {
             if (init) {
                 wait(delay, () => {
-                    this.playSound(sounds[index++]);
+                    this.playSound({ src: sounds[index++], volume: 0.8 });
                     addClass(button, 'pop');
                 });
             } else {
@@ -140,7 +140,7 @@ class Title extends Page {
             // Slide the build button
             wait(delay, () => {
                 removeClass(this.letters, 'horizontal-bounce');
-                this.playSound(sounds[index++]);
+                this.playSound({ src: sounds[index++], volume: 0.8 });
                 addClass(this.buildinfos, 'pop');
                 this.listen = true;
                 this.callback();

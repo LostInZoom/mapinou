@@ -62,11 +62,11 @@ class Page {
     }
 
     playButtonSound() {
-        this.app.sounds.playFile({ src: this.app.uipool[generateRandomInteger(0, this.app.uipool.length - 1)] });
+        this.app.sounds.playFile({ src: this.app.uipool[generateRandomInteger(0, this.app.uipool.length - 1)], volume: 0.6 });
     }
 
-    playSound(src) {
-        return this.app.sounds.playFile({ src: src });
+    playSound(options) {
+        return this.app.sounds.playFile(options);
     }
 
     clear() {

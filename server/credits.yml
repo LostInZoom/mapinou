@@ -53,7 +53,7 @@
     link: https://pixabay.com/sound-effects/casual-click-pop-ui-7-262127/
   - role: Lapinou
     name: floraphonic
-    link: https://pixabay.com/sound-effects/cute-animal-squeak-2-188095/
+    link: https://pixabay.com/sound-effects/search/user%3afloraphonic%20cute%20animal/
   - role: Crounch légumes
     name: StarNinjas
     link: https://opengameart.org/content/7-eating-crunches
@@ -63,51 +63,54 @@
   - role: Serpent
     name: quicksounds.com
     link: https://quicksounds.com/sound/4386/
+  - role: Fleur
+    name: oscaraudiogeek
+    link: https://pixabay.com/sound-effects/boot-scuffle-small-rocks-83368/
   - role: Feu de camp
     name: RonKoster2023
     link: https://pixabay.com/sound-effects/fireplace-with-crackling-sounds-2-min-rk-178392/
   - role: Aigle de Bonelli
     name: Timo Janhonen
     link: https://xeno-canto.org/112654
-  - role: Corneille noir (<i>Corvus corone</i>)
-    name: Martin Billard
-    link: https://xeno-canto.org/929596
-  - role: Coucou gris (<i>Cuculus canorus</i>)
-    name: SonoNatura
-    link: https://xeno-canto.org/1016095
-  - role: Fauvette à tête noire (<i>Sylvia atricapilla</i>)
-    name: Jacobo Ramil Millarengo
-    link: https://xeno-canto.org/1045421
-  - role: Geai des chênes (<i>Garrulus glandarius</i>)
-    name: João Tomás
-    link: https://xeno-canto.org/1031502
-  - role: Martinet noir (<i>Apus apus</i>)
-    name: AFR
-    link: https://xeno-canto.org/384545
-  - role: Merle noir (<i>Turdus merula</i>)
-    name: Jack Berteau
-    link: https://xeno-canto.org/1047850
-  - role: Mésange bleue (<i>Cyanistes caeruleus</i>)
-    name: Jacobo Ramil Millarengo 
-    link: https://xeno-canto.org/991723
-  - role: Mésange charbonnière (<i>Parus major</i>)
-    name: Joost van Bruggen
-    link: https://xeno-canto.org/996274
+  # - role: Corneille noir (<i>Corvus corone</i>)
+  #   name: Martin Billard
+  #   link: https://xeno-canto.org/929596
+  # - role: Coucou gris (<i>Cuculus canorus</i>)
+  #   name: SonoNatura
+  #   link: https://xeno-canto.org/1016095
+  # - role: Fauvette à tête noire (<i>Sylvia atricapilla</i>)
+  #   name: Jacobo Ramil Millarengo
+  #   link: https://xeno-canto.org/1045421
+  # - role: Geai des chênes (<i>Garrulus glandarius</i>)
+  #   name: João Tomás
+  #   link: https://xeno-canto.org/1031502
+  # - role: Martinet noir (<i>Apus apus</i>)
+  #   name: AFR
+  #   link: https://xeno-canto.org/384545
+  # - role: Merle noir (<i>Turdus merula</i>)
+  #   name: Jack Berteau
+  #   link: https://xeno-canto.org/1047850
+  # - role: Mésange bleue (<i>Cyanistes caeruleus</i>)
+  #   name: Jacobo Ramil Millarengo 
+  #   link: https://xeno-canto.org/991723
+  # - role: Mésange charbonnière (<i>Parus major</i>)
+  #   name: Joost van Bruggen
+  #   link: https://xeno-canto.org/996274
   - role: Pigeon ramier (<i>Columba palumbus</i>)
     name: Grégoire Chauvot
     link: https://xeno-canto.org/1032301
-  - role: Pinson des arbres (<i>Fringilla coelebs</i>)
-    name: Manuel Grosselet
-    link: https://xeno-canto.org/1031051
-  - role: Rougegorge familier (<i>Erithacus rubecula</i>)
-    name: Jack Berteau
-    link: https://xeno-canto.org/1046136
-  - role: Tourterelle turque (<i>Streptopelia decaocto</i>)
-    name: Olivier SWIFT
-    link: https://xeno-canto.org/801231
-  - role: Troglodytes mignon (<i>Troglodytes troglodytes</i>)
-    name: Lars Lachmann
-    link: https://xeno-canto.org/1040474
+  # - role: Pinson des arbres (<i>Fringilla coelebs</i>)
+  #   name: Manuel Grosselet
+  #   link: https://xeno-canto.org/1031051
+  # - role: Rougegorge familier (<i>Erithacus rubecula</i>)
+  #   name: Jack Berteau
+  #   link: https://xeno-canto.org/1046136
+  # - role: Tourterelle turque (<i>Streptopelia decaocto</i>)
+  #   name: Olivier SWIFT
+  #   link: https://xeno-canto.org/801231
+  # - role: Troglodytes mignon (<i>Troglodytes troglodytes</i>)
+  #   name: Lars Lachmann
+  #   link: https://xeno-canto.org/1040474
 ###############
 #### FONTS ####
 ###############

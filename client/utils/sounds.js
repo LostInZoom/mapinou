@@ -5,9 +5,11 @@ class Sound {
         this.options = options || {};
         this.prefix = './sounds/';
         this.src = options.src;
-        this.format = options.format !== undefined ? options.format : 'mp3';
-        this.loop = options.loop !== undefined ? options.loop : false;
-        this.amount = options.amount !== undefined ? options.amount : 1;
+
+        this.format = options.format ?? 'mp3';
+        this.loop = options.loop ?? false;
+        this.amount = options.amount ?? 1;
+        this.volume = options.volume ?? 1;
         this.loadAudio();
     }
 
@@ -19,6 +21,8 @@ class Sound {
         }
 
         this.audio = new Audio(this.file);
+        if (this.volume !== 1) { this.audio.volume = this.volume; }
+
         this.audio.loop = this.loop;
         this.audio.autoplay = false;
     }
@@ -72,7 +76,7 @@ class Sound {
     fadeIn(duration, callback) {
         callback = callback || function () { };
         const audio = this.audio;
-        const targetVolume = this.targetVolume || 1;
+        const targetVolume = this.volume;
         const startTime = performance.now();
 
         if (audio.paused) {

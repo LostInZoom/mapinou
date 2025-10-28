@@ -33,7 +33,7 @@ class Credits extends Page {
         this.scrollbox.append(spacertop, text, spacerbottom);
         this.content.append(titlecontainer, this.scrollbox);
 
-        this.music = new Sound({ src: 'campfire', loop: true });
+        this.music = new Sound({ src: 'campfire', loop: true, volume: 0.4 });
         this.app.addSound(this.music);
         if (this.app.sounds.isActive()) { this.music.fadeIn(2000); }
 

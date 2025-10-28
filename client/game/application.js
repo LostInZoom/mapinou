@@ -82,7 +82,7 @@ class Application {
                 this.sounds.display(() => {
                     if (audio.sounds) {
                         this.sounds.activate();
-                        // this.sounds.enableBirdSounds();
+                        this.sounds.enableBirdSounds();
                     }
                 });
 
@@ -115,7 +115,7 @@ class Application {
 
                 this.basemap.map.on('click', (e) => {
                     if (this.allowed) {
-                        this.sounds.playFile({ src: 'lapinou' });
+                        this.sounds.playFile({ src: 'lapinou-happy', volume: 0.6 });
                         this.allowed = false;
 
                         if (this.rabbits.getNumber() >= this.maxrabbit) {

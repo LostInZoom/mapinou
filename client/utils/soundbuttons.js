@@ -183,9 +183,9 @@ class SoundEffects extends SoundButton {
     }
 
     enableBirdSounds() {
-        this.stopBirds = runWithVariance(this.birdinterval * 1000, this.birdvariance * 1000, () => {
-            this.playFile({ src: this.birds[generateRandomInteger(0, this.birds.length - 1)] });
-        });
+        // this.stopBirds = runWithVariance(this.birdinterval * 1000, this.birdvariance * 1000, () => {
+        //     this.playFile({ src: this.birds[generateRandomInteger(0, this.birds.length - 1)] });
+        // });
     }
 
     playFile(options, callback) {

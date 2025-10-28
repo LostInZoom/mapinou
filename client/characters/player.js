@@ -282,7 +282,7 @@ class Player extends Rabbit {
 
     playSound() {
         this.layer.basemap.app.sounds.playFile({
-            src: 'lapinou',
+            src: 'lapinou-hurt',
             format: 'mp3'
         });
     }
