@@ -565,13 +565,13 @@ class NavigationBar {
 
         // Listeners to assign to navigation bar buttons
         this.previousListener = () => {
-            if (!this.page.app.isSliding()) {
+            if (!this.page.app.isSliding() && this.page.listen) {
                 this.page.playButtonSound();
                 this.page.slide('previous');
             }
         };
         this.nextListener = () => {
-            if (!this.page.app.isSliding()) {
+            if (!this.page.app.isSliding() && this.page.listen) {
                 this.page.playButtonSound();
                 this.page.slide('next');
             }

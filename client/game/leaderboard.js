@@ -69,14 +69,12 @@ class Leaderboard {
                 });
                 let hsTarget = new Target({
                     layer: hsRabbits,
-                    colors: ['brown', 'sand', 'grey'],
-                    color: 'random',
+                    color: this.page.basemap.player.getColor(),
                     coordinates: randomPointInCircle(c, r)
                 });
                 let hsPlayer = new Target({
                     layer: hsRabbits,
-                    colors: ['brown', 'sand', 'grey'],
-                    color: 'random',
+                    color: this.page.basemap.target.getColor(),
                     coordinates: randomPointInCircle(c, r)
                 });
 

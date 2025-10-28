@@ -13,37 +13,60 @@ class Selection {
 
         this.classics = ['white', 'sand', 'brown', 'grey'];
         this.specials = ['pink', 'neon', 'cyan', 'yellow'];
+        this.unlocks = [2, 4, 6, 8];
+        this.tier = this.page.app.getProgression().tier;
 
         let rabbitcontainer = makeDiv(null, 'custom-rabbit-container');
         this.parent.append(rabbitcontainer);
-
-        let rabbits = makeDiv(null, 'custom-rabbits classics');
-        rabbitcontainer.append(rabbits);
 
         this.selectedName = this.params.session.name;
         this.selectedColor = this.params.game.color;
 
         let rabbitlist = [];
-        this.classics.forEach(c => {
-            let rabbit = makeDiv(null, 'custom-rabbit-individual');
-            if (c === this.params.game.color) { addClass(rabbit, 'active'); }
-            let image = document.createElement('img');
-            let src = this.params.sprites[`rabbits:${c}_idle_east_0`]
-            image.src = src;
-            image.alt = 'Lapinou';
-            rabbit.append(image);
-            rabbits.append(rabbit);
-            rabbitlist.push(rabbit);
 
-            rabbit.addEventListener('click', () => {
-                if (!hasClass(rabbit)) {
-                    this.page.playSound({ src: 'lapinou-happy', volume: 0.6 });
-                    rabbitlist.forEach(r => { removeClass(r, 'active'); })
-                    addClass(rabbit, 'active');
-                    this.selectedColor = c;
+        const createRabbits = (array, className) => {
+            let rabbits = makeDiv(null, `custom-rabbits ${className}`);
+            rabbitcontainer.append(rabbits);
+
+            let index = 0;
+            array.forEach(c => {
+                let rabbit = makeDiv(null, 'custom-rabbit-individual');
+                if (c === this.params.game.color) { addClass(rabbit, 'active'); }
+                let image = document.createElement('img');
+                let src = this.params.sprites[`rabbits:${c}_idle_east_0`];
+                image.src = src;
+                image.alt = 'Lapinou';
+                rabbit.append(image);
+
+                if (className === 'specials' && this.tier < this.unlocks[index]) {
+                    let lock = makeDiv(null, 'custom-rabbit-lock', this.params.svgs.lock);
+                    rabbit.append(lock);
+                    addClass(rabbit, 'locked');
                 }
+
+                rabbits.append(rabbit);
+                rabbitlist.push(rabbit);
+
+                rabbit.addEventListener('click', () => {
+                    if (!hasClass(rabbit, 'active')) {
+                        if (hasClass(rabbit, 'locked')) {
+                            this.page.playSound({ src: 'lapinou-hurt', volume: 0.6 });
+                        } else {
+                            this.page.playSound({ src: 'lapinou-happy', volume: 0.6 });
+                            rabbitlist.forEach(r => { removeClass(r, 'active'); })
+                            addClass(rabbit, 'active');
+                            this.selectedColor = c;
+                        }
+
+                    }
+                });
+
+                ++index;
             });
-        });
+        };
+
+        createRabbits(this.classics, 'classics');
+        createRabbits(this.specials, 'specials');
 
         let pseudocontainer = makeDiv(null, 'custom-pseudo-container');
         this.parent.append(pseudocontainer);

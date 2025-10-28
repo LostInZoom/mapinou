@@ -64,6 +64,8 @@ class Levels extends Page {
 
         const chooseRabbit = () => {
             this.choose.removeEventListener('click', chooseRabbit);
+            this.listen = false;
+            this.listenRabbit = true;
 
             addClass(this.choose, 'clicked');
             this.choose.addEventListener('animationend', () => { removeClass(this.choose, 'clicked'); });
@@ -95,16 +97,16 @@ class Levels extends Page {
                 };
 
                 back.addEventListener('click', () => {
-                    if (this.listen) {
-                        this.listen = false;
+                    if (this.listenRabbit) {
+                        this.listenRabbit = false;
                         this.playButtonSound();
                         closeWindow();
                     }
                 }, { once: true });
 
                 pursue.addEventListener('click', () => {
-                    if (this.listen) {
-                        this.listen = false;
+                    if (this.listenRabbit) {
+                        this.listenRabbit = false;
                         this.playButtonSound();
                         const [color, name] = selection.getValues();
                         this.params.game.color = color;
@@ -195,34 +197,32 @@ class Levels extends Page {
     }
 
     slide(direction) {
-        if (this.listen) {
-            // Flag to know direction
-            const isPrevious = direction === 'previous';
+        // Flag to know direction
+        const isPrevious = direction === 'previous';
 
-            // Return if we're at the first or last position (shouldn't be reached as buttons shouldn't be available)
-            if (isPrevious && this.position === 0) { return; }
-            else if (!isPrevious && this.position >= this.levels.length - 1) { return; }
+        // Return if we're at the first or last position (shouldn't be reached as buttons shouldn't be available)
+        if (isPrevious && this.position === 0) { return; }
+        else if (!isPrevious && this.position >= this.levels.length - 1) { return; }
 
-            this.listen = false;
+        this.listen = false;
 
-            if (this.current.getType() === 'tier') { this.current.unobserveSize(); }
-            this.position = isPrevious ? this.position - 1 : this.position + 1;
-            const obj = this.createTier({
-                type: this.getTierContent().type,
-                position: direction,
-                animate: false,
-                update: false,
-                finish: this.finish
-            });
-            obj.slideIn();
+        if (this.current.getType() === 'tier') { this.current.unobserveSize(); }
+        this.position = isPrevious ? this.position - 1 : this.position + 1;
+        const obj = this.createTier({
+            type: this.getTierContent().type,
+            position: direction,
+            animate: false,
+            update: false,
+            finish: this.finish
+        });
+        obj.slideIn();
 
-            this.navigation.slide(direction);
-            this.current.slideOut(isPrevious ? 'next' : 'previous', () => {
-                this.current.destroy();
-                this.current = obj;
-                this.listen = true;
-            });
-        }
+        this.navigation.slide(direction);
+        this.current.slideOut(isPrevious ? 'next' : 'previous', () => {
+            this.current.destroy();
+            this.current = obj;
+            this.listen = true;
+        });
     }
 
     createTier(options, callback) {
