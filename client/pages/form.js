@@ -50,6 +50,7 @@ class Form extends Page {
             this.answerscontainer.append(answer);
 
             answer.addEventListener('click', () => {
+                this.playButtonSound();
                 if (hasClass(answer, 'selected')) {
                     removeClass(answer, 'selected');
                 } else {

@@ -43,8 +43,7 @@
 .levels-navigation-container {
     margin-top: auto;
     margin-bottom: 2rem;
-    width: calc(100% - 4rem);
-    max-width: 25rem;
+    width: min(calc(100% - 4rem), 25rem);
 
     display: flex;
 
@@ -58,7 +57,7 @@
 }
 
 .levels-navigation-entry {
-    height: 3.5rem;
+    height: sizes.$button-size;
 
     border-radius: sizes.$border-radius;
     pointer-events: all;
@@ -67,7 +66,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 3.5rem;
+    border-radius: sizes.$button-size;
 
     font-family: 'Vincendo';
     font-size: 1.2rem;
@@ -84,12 +83,12 @@
 
     &>svg {
         margin: 0 .3rem;
-        width: 3.5rem;
-        height: 3.5rem;
+        width: sizes.$button-size;
+        height: sizes.$button-size;
     }
 
     &.previous {
-        flex: 0 0 3.5rem;
+        flex: 0 0 sizes.$button-size;
         margin-right: 1rem;
     }
 
@@ -98,7 +97,7 @@
     }
 
     &.next {
-        flex: 0 0 3.5rem;
+        flex: 0 0 sizes.$button-size;
         margin-left: 1rem;
     }
 

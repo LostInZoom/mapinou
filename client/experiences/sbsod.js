@@ -32,6 +32,7 @@ class SantaBarbara extends Page {
             });
         }
         else if (this.stage === 'form') {
+            addClass(this.text, 'sbsod');
             this.createForm();
         }
     }

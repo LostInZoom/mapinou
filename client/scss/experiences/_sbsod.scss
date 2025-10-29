@@ -11,12 +11,13 @@ $point-size: 2rem;
     margin: 1rem;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: min(2rem, 5vh);
 }
 
 .sbsod-question {
     text-align: center;
     margin-bottom: .6rem;
+    font-size: sizes.$font-size-regular;
 }
 
 .sbsod-answers {
@@ -65,7 +66,7 @@ $point-size: 2rem;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: .9rem;
+    font-size: sizes.$font-size-regular;
 
     transition: color .2s ease-in-out;
 
@@ -101,7 +102,7 @@ $point-size: 2rem;
     display: flex;
     justify-content: space-between;
     gap: 1rem;
-    font-size: .9rem;
+    font-size: sizes.$font-size-small;
     font-style: italic;
 }
 
@@ -111,7 +112,7 @@ $point-size: 2rem;
     flex-grow: 0;
     flex-shrink: 0;
     overflow: hidden;
-    font-size: .9rem;
+    font-size: sizes.$font-size-regular;
     line-height: 1.5rem;
     text-align: center;
 
@@ -121,11 +122,5 @@ $point-size: 2rem;
 
     &.active {
         height: 1.5rem;
-    }
-}
-
-@media screen and (min-width: 500px) {
-    .sbsod-questions {
-        margin: 2rem;
     }
 }

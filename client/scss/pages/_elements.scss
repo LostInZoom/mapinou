@@ -1,3 +1,4 @@
+@use '../sizes';
 @use '../colors';
 
 .page {
@@ -31,10 +32,15 @@
     }
 }
 
+$margin: 1rem;
+$margin-top: calc(sizes.$button-size + 2rem - 1.9rem);
+
 .page-content {
-    max-width: 30rem;
-    max-height: calc(100% - 6rem);
-    width: calc(100% - 20vw);
+    margin-top: $margin-top;
+    margin-bottom: $margin;
+
+    max-height: min(calc(100% - $margin-top - $margin), sizes.$max-height);
+    width: min(calc(100% - 2rem), sizes.$max-width);
 
     display: flex;
     flex-direction: column;

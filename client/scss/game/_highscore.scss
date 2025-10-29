@@ -5,12 +5,10 @@
     position: relative;
     pointer-events: all;
 
-    width: calc(100% - 2rem);
-    height: calc(100% - 8rem - min(20vw, 12.5vh, 5rem));
+    width: min(calc(100% - 2rem), sizes.$max-width);
+    height: mint(calc(100% - 8rem - min(20vw, 12.5vh, 5rem)), sizes.$max-height);
     margin-top: calc(5rem + min(20vw, 12.5vh, 5rem));
     margin-bottom: 3rem;
-    max-width: 20rem;
-    max-height: 30rem;
 
     background-color: colors.$secondary-color-dark;
     border-radius: .4rem .4rem 0 .4rem;
@@ -42,10 +40,8 @@
     position: absolute;
     top: max(-20vw, -12.5vh, -5rem);
     left: 50%;
-    width: min(40vw, 25vh);
-    height: min(40vw, 25vh);
-    max-width: 10rem;
-    max-height: 10rem;
+    width: min(40vw, 25vh, 10rem);
+    height: min(40vw, 25vh, 10rem);
 
     z-index: 2;
 

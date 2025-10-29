@@ -13,6 +13,7 @@
 }
 
 .experience-content {
+    max-height: calc(50% - (sizes.$gap1rem / 2));
     width: 100%;
 
     display: flex;
@@ -29,24 +30,42 @@
     }
 
     &.top {
-        margin-bottom: 1rem;
+        margin-bottom: calc(sizes.$gap1rem / 2);
+    }
+
+    &.bottom {
+        margin-top: calc(sizes.$gap1rem / 2);
+    }
+
+    &.piaget {
+        &.top {
+            max-height: calc(45% - (sizes.$gap1rem / 2));
+        }
+
+        &.bottom {
+            max-height: calc(55% - (sizes.$gap1rem / 2));
+        }
+
     }
 }
 
 .experience-text {
     width: 100%;
+
     pointer-events: all;
-    border-top-right-radius: .4rem;
-    border-bottom-left-radius: .4rem;
+    border-top-right-radius: sizes.$border-radius;
+    border-bottom-left-radius: sizes.$border-radius;
 
     background-color: colors.$secondary-color-dark;
     color: colors.$main-color-light;
 
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: stretch;
     align-items: center;
-    gap: 1rem;
+
+    padding: sizes.$gap1rem 0;
+    gap: sizes.$gap1rem;
 
     overflow: hidden;
 
@@ -63,11 +82,11 @@
     }
 
     &.top {
-        border-radius: 0 .4rem .4rem .4rem;
+        border-radius: 0 sizes.$border-radius sizes.$border-radius sizes.$border-radius;
     }
 
     &.bottom {
-        border-radius: .4rem .4rem 0 .4rem;
+        border-radius: sizes.$border-radius sizes.$border-radius 0 sizes.$border-radius;
     }
 
     &.nobutton {
@@ -75,26 +94,32 @@
     }
 
     &.noback {
-        border-top-left-radius: .4rem;
+        border-top-left-radius: sizes.$border-radius;
     }
 
     &.nocontinue {
-        border-bottom-right-radius: .4rem;
+        border-bottom-right-radius: sizes.$border-radius;
+    }
+
+    &.sbsod {
+        padding: 0;
+        gap: 0;
     }
 }
 
 .experience-presentation {
-    padding: 1rem;
+    padding: 0 sizes.$gap1rem;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: sizes.$gap1rem;
 }
 
 .experience-presentation-paragraph {
     text-align: center;
+    font-size: sizes.$font-size-regular;
 }
 
 .experience-presentation-title {
     font-family: 'Vincendo';
-    font-size: 1.2rem;
+    font-size: sizes.$font-size-title;
 }

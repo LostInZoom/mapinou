@@ -13,7 +13,7 @@ class Piaget extends Page {
         this.answers = [];
         this.testnumber = 5;
 
-        this.content = makeDiv(null, 'page-content pop');
+        this.content = makeDiv(null, 'page-content piaget pop');
         this.container.append(this.content);
 
         if (this.stage === 'presentation') {
@@ -28,7 +28,7 @@ class Piaget extends Page {
             });
         }
         else {
-            this.topcontent = makeDiv(null, 'experience-content top pop');
+            this.topcontent = makeDiv(null, 'experience-content piaget top pop');
             this.back = makeDiv(null, 'page-button page-button-back', 'Retour');
             this.toptext = makeDiv(null, 'experience-text top nobutton pop');
             this.topcontent.append(this.back, this.toptext);
@@ -36,9 +36,10 @@ class Piaget extends Page {
 
             let toplabel = makeDiv(null, 'piaget-tutorial', this.elements.top);
             this.topbottle = makeDiv(null, 'piaget-bottle reference', this.app.options.svgs.piaget);
+
             this.toptext.append(toplabel, this.topbottle);
 
-            this.bottomcontent = makeDiv(null, 'experience-content bottom pop');
+            this.bottomcontent = makeDiv(null, 'experience-content piaget bottom pop');
             this.content.append(this.bottomcontent);
 
             this.start = Date.now();
