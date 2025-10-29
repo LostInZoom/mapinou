@@ -1,4 +1,5 @@
 @use '../colors';
+@use '../sizes';
 
 .page-content-credits {
     pointer-events: all;
@@ -6,7 +7,7 @@
 
     background-color: colors.$secondary-color-dark;
     color: colors.$main-color-light;
-    border-radius: .4rem;
+    border-radius: sizes.$border-radius;
 
     margin: 5.5rem 0 5rem 0;
     height: calc(100% - 9.5rem);
@@ -156,7 +157,7 @@
 .credits-scroll {
     height: 2.5rem;
     width: 2.5rem;
-    border-radius: .4rem;
+    border-radius: sizes.$border-radius;
     pointer-events: all;
 
     color: colors.$main-color-light;
@@ -187,7 +188,7 @@
     align-items: center;
 
     padding: 0 1rem;
-    border-radius: .4rem;
+    border-radius: sizes.$border-radius;
     pointer-events: all;
 
     font-family: 'Vincendo';

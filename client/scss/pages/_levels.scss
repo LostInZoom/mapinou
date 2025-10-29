@@ -1,4 +1,5 @@
 @use '../colors';
+@use '../sizes';
 
 @property --angle {
     syntax: '<angle>';
@@ -59,7 +60,7 @@
 .levels-navigation-entry {
     height: 3.5rem;
 
-    border-radius: .4rem;
+    border-radius: sizes.$border-radius;
     pointer-events: all;
     overflow: hidden;
 
@@ -218,7 +219,7 @@
         transform: translate(-50%, -50%) scale(0);
         font-family: 'Vincendo';
         font-size: .9rem;
-        border-radius: .4rem;
+        border-radius: sizes.$border-radius;
 
         padding: .4rem .6rem;
         background-color: colors.$main-color-light;
@@ -301,7 +302,7 @@
     font-family: 'Vincendo';
     font-size: .8rem;
 
-    border-radius: .4rem;
+    border-radius: sizes.$border-radius;
     padding: .4rem .6rem;
     background-color: colors.$main-color-dark;
     color: colors.$main-color-light;
@@ -412,7 +413,7 @@
     justify-content: center;
     align-items: center;
     gap: 1rem;
-    border-radius: .4rem;
+    border-radius: sizes.$border-radius;
 
     width: min(15rem, calc(100% - 2rem));
     margin: 1rem;
@@ -479,7 +480,7 @@
     font-family: 'Vincendo';
     font-size: .9rem;
     pointer-events: all;
-    border-radius: .4rem;
+    border-radius: sizes.$border-radius;
 
     display: flex;
     justify-content: center;

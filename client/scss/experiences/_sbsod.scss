@@ -1,4 +1,5 @@
 @use '../colors';
+@use '../sizes';
 
 $point-size: 2rem;
 
@@ -21,7 +22,7 @@ $point-size: 2rem;
 .sbsod-answers {
     position: relative;
     height: $point-size;
-    border-radius: .4rem;
+    border-radius: sizes.$border-radius;
     overflow: hidden;
 }
 

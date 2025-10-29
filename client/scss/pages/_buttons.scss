@@ -1,10 +1,9 @@
 @use '../colors';
-
-$button-size: min(3.5rem, 15vw, 15vh);
+@use '../sizes';
 
 .audio-button-container {
-    height: $button-size;
-    width: $button-size;
+    height: sizes.$button-size;
+    width: sizes.$button-size;
 
     border-radius: 50%;
     pointer-events: all;
@@ -39,8 +38,8 @@ $button-size: min(3.5rem, 15vw, 15vh);
 }
 
 .audio-button {
-    height: $button-size;
-    width: $button-size;
+    height: sizes.$button-size;
+    width: sizes.$button-size;
 
     background-color: colors.$secondary-color-dark;
     border-radius: 50%;
@@ -55,8 +54,8 @@ $button-size: min(3.5rem, 15vw, 15vh);
 }
 
 .header-button {
-    height: $button-size;
-    width: $button-size;
+    height: sizes.$button-size;
+    width: sizes.$button-size;
 
     border-radius: 50%;
     pointer-events: all;
@@ -91,8 +90,8 @@ $button-size: min(3.5rem, 15vw, 15vh);
 }
 
 .rabbit-button {
-    height: calc($button-size - .4rem);
-    width: calc($button-size - .4rem);
+    height: calc(sizes.$button-size - .4rem);
+    width: calc(sizes.$button-size - .4rem);
     padding: .2rem;
 }
 

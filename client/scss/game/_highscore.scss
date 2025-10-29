@@ -1,4 +1,5 @@
 @use '../colors';
+@use '../sizes';
 
 .highscore-container {
     position: relative;
@@ -83,7 +84,7 @@
 
     overflow: hidden;
 
-    border-radius: .4rem;
+    border-radius: sizes.$border-radius;
     background-color: colors.$main-color-dark;
     color: colors.$main-color-light;
 
@@ -111,7 +112,7 @@
     width: 100%;
     display: flex;
     overflow: hidden;
-    border-radius: .4rem;
+    border-radius: sizes.$border-radius;
 }
 
 .highscore-tab {
@@ -173,7 +174,7 @@
     position: absolute;
 
     padding: .2rem .5rem;
-    border-radius: .4rem;
+    border-radius: sizes.$border-radius;
 
     background-color: colors.$main-color-dark;
     color: colors.$main-color-light;
@@ -210,7 +211,7 @@
     position: absolute;
 
     padding: .2rem .5rem;
-    border-radius: .4rem;
+    border-radius: sizes.$border-radius;
 
     color: colors.$main-color-light;
 

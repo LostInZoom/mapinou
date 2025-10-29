@@ -1,4 +1,5 @@
 @use '../colors';
+@use '../sizes';
 
 .title-name {
     position: absolute;
@@ -111,7 +112,7 @@
 
 .title-button-label {
     padding: .3rem .8rem;
-    border-radius: .4rem;
+    border-radius: sizes.$border-radius;
     pointer-events: all;
 
     font-family: 'Vincendo';
@@ -143,7 +144,7 @@
     font-family: 'Vincendo';
     font-size: 3vw;
     padding: .2rem .4rem;
-    border-radius: .4rem;
+    border-radius: sizes.$border-radius;
 
     color: colors.$main-color-light;
     background-color: colors.$secondary-color-dark;

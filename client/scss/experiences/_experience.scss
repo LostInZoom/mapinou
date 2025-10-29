@@ -1,4 +1,5 @@
 @use '../colors';
+@use '../sizes';
 
 .experience-container {
     position: absolute;
@@ -70,7 +71,7 @@
     }
 
     &.nobutton {
-        border-radius: .4rem;
+        border-radius: sizes.$border-radius;
     }
 
     &.noback {

@@ -1,4 +1,5 @@
 @use '../colors';
+@use '../sizes';
 
 $color-thought : colors.$main-color-dark;
 $color-lost : #a77822;
@@ -51,7 +52,7 @@ $color-wrong : #c44343;
 
     background-color: $color-thought;
     color: colors.$main-color-light;
-    border-radius: .4rem;
+    border-radius: sizes.$border-radius;
 
     margin: auto 2rem auto 1rem;
     padding: .6rem .8rem;

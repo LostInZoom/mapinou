@@ -1,4 +1,5 @@
 @use '../colors';
+@use '../sizes';
 
 .map {
     width: 100%;
@@ -157,7 +158,7 @@
 }
 
 .level-routing-label {
-    border-radius: .4rem;
+    border-radius: sizes.$border-radius;
     color: colors.$main-color-light;
     background-color: colors.$main-color-dark;
     text-align: center;

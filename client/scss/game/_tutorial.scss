@@ -1,4 +1,5 @@
 @use '../colors';
+@use '../sizes';
 
 .tutorial-container {
     z-index: 100;
@@ -126,7 +127,7 @@
     padding: .6rem .8rem;
     color: colors.$grey-dark;
     background-color: colors.$grey-light;
-    border-radius: .4rem;
+    border-radius: sizes.$border-radius;
 
     transition: background-color .3s linear, color .3s linear;
 
@@ -160,7 +161,7 @@
 
     color: colors.$grey-extralight;
     padding: .4rem .6rem;
-    border-radius: .4rem;
+    border-radius: sizes.$border-radius;
 
     opacity: 1;
     transition: opacity .3s ease-in-out, background-color .3s linear, color .3s linear;

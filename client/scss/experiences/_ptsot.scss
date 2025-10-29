@@ -1,4 +1,5 @@
 @use '../colors';
+@use '../sizes';
 
 $answer-color: #b9b9b9;
 $solution-color: #90b2d1;
@@ -10,7 +11,7 @@ $timer-color-quarter: #e69797;
 .ptsot-characters-container {
     position: relative;
     background-color: colors.$main-color-light;
-    border-radius: .4rem;
+    border-radius: sizes.$border-radius;
 
     width: calc(100% - 2rem);
     height: 25vh;
@@ -130,7 +131,7 @@ $timer-color-quarter: #e69797;
 .ptsot-svg-container {
     position: relative;
     background-color: colors.$main-color-light;
-    border-radius: .4rem;
+    border-radius: sizes.$border-radius;
 
     height: 25vh;
     aspect-ratio: 1/1;

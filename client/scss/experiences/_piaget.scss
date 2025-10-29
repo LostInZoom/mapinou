@@ -1,4 +1,5 @@
 @use '../colors';
+@use '../sizes';
 
 $water-color: #90b2d1;
 $stroke-width: .4rem;
@@ -30,7 +31,7 @@ $circle-radius: .6rem;
     position: relative;
     margin: 0 1rem 1rem 1rem;
     background-color: colors.$main-color-light;
-    border-radius: .4rem;
+    border-radius: sizes.$border-radius;
 
     &>svg {
         aspect-ratio: 1 / 1;
