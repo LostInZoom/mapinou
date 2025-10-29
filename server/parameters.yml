@@ -7,10 +7,16 @@ game:
   name: Mapinou
   description: Naviguez dans des cartes et trouvez des lapins.
   colors:
-    - white
-    - sand
-    - brown
-    - grey
+    classics:
+      - white
+      - sand
+      - brown
+      - grey
+    specials: 
+      - [pink, 2]
+      - [neon, 4]
+      - [yellow, 6]
+      - [cyan, 8]
   score:
     increment:
       default: 1

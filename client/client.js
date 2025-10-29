@@ -78,7 +78,7 @@ window.addEventListener("DOMContentLoaded", async () => {
                 let color = getStorage('color');
                 if (!color) {
                     // Create a random rabbit color if none is found
-                    color = params.game.colors[generateRandomInteger(0, params.game.colors.length - 1)];
+                    color = params.game.colors.classics[generateRandomInteger(0, params.game.colors.classics.length - 1)];
                     setStorage('color', color);
                 }
                 params.game.color = color;

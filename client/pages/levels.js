@@ -2,7 +2,7 @@ import Page from "./page";
 import Title from "./title";
 import Selection from "./selection.js";
 
-import { addClass, makeDiv, addClass, removeClass, wait } from "../utils/dom";
+import { addClass, makeDiv, addClass, removeClass, wait, clearElement } from "../utils/dom";
 import { easeInOutSine } from '../utils/math.js';
 import { ExperiencePanel, NavigationBar, TierPanel, TutorialPanel } from "./tiers.js";
 import { ajaxPost } from "../utils/ajax.js";
@@ -39,13 +39,19 @@ class Levels extends Page {
                 if (this.update && !this.app.debug) {
                     if (this.isLast()) {
                         if (this.finish) {
-                            t.progress(true);
+                            t.progress(true, () => {
+                                // END GAME HERE
+                            });
                         } else {
-                            this.slide('next');
+                            this.slide('next', () => {
+                                this.unlockRabbit();
+                            });
                         }
                     } else {
                         if (this.type === 'tier') {
-                            t.progress(false);
+                            t.progress(false, () => {
+                                this.unlockRabbit();
+                            });
                         }
                     }
                 }
@@ -196,7 +202,9 @@ class Levels extends Page {
         }
     }
 
-    slide(direction) {
+    slide(direction, callback) {
+        callback = callback || function () { };
+
         // Flag to know direction
         const isPrevious = direction === 'previous';
 
@@ -222,6 +230,7 @@ class Levels extends Page {
             this.current.destroy();
             this.current = obj;
             this.listen = true;
+            callback();
         });
     }
 
@@ -261,6 +270,47 @@ class Levels extends Page {
             }, (e) => { callback(e); });
             return experience;
         }
+    }
+
+    unlockRabbit() {
+        this.listen = false;
+
+        this.params.game.colors.specials.forEach(s => {
+            const [color, threshold] = s;
+            if (this.getProgression().tier === threshold) {
+                let container = makeDiv(null, 'unlock-container');
+                let window = makeDiv(null, 'unlock-window');
+                let text = makeDiv(null, 'unlock-text', "Vous avez débloqué un nouveau pelage pour Lapinou !");
+
+                let rabbit = makeDiv(null, 'unlock-rabbit');
+                let lock = makeDiv(null, 'unlock-rabbit-lock', this.params.svgs.lock);
+                rabbit.append(lock);
+                let image = document.createElement('img');
+                let src = this.params.sprites[`rabbits:${color}_idle_east_0`];
+                image.src = src;
+                image.alt = 'Lapinou';
+                rabbit.append(image);
+
+                let button = makeDiv(null, 'unlock-button', 'Super !');
+
+                window.append(text, rabbit, button);
+                container.append(window);
+                this.container.append(container);
+                container.offsetWidth;
+
+                addClass(window, 'pop');
+                wait(600, () => {
+                    addClass(lock, 'unlock');
+                    button.addEventListener('click', () => {
+                        this.playButtonSound();
+                        removeClass(window, 'pop');
+                        wait(300, () => {
+                            container.remove();
+                        });
+                    }, { once: true });
+                });
+            }
+        });
     }
 }
 

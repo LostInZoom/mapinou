@@ -75,6 +75,7 @@ class Piaget extends Page {
 
             back.addEventListener('click', () => {
                 this.listen = false;
+                this.playButtonSound();
                 if (this.topcontent) { removeClass(this.topcontent, 'pop'); }
                 if (this.bottomcontent) { removeClass(this.bottomcontent, 'pop'); }
                 else { removeClass(this.content, 'pop'); }
@@ -89,6 +90,7 @@ class Piaget extends Page {
             }, { once: true });
 
             pursue.addEventListener('click', () => {
+                this.playButtonSound();
                 this.listen = false;
                 let o = this.options;
                 o.stage = 'tutorial';
@@ -232,6 +234,7 @@ class Piaget extends Page {
         bottombottle.addEventListener('mousedown', down);
 
         pursue.addEventListener('click', () => {
+            this.playButtonSound();
             this.answers.push(this.answer);
             if (index >= this.testnumber) {
                 this.app.progress();

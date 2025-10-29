@@ -11,9 +11,11 @@ class Selection {
         this.params = this.page.params;
         this.parent = this.options.parent;
 
-        this.classics = ['white', 'sand', 'brown', 'grey'];
+        this.colors = this.params.game.colors;
+
         this.specials = ['pink', 'neon', 'cyan', 'yellow'];
         this.unlocks = [2, 4, 6, 8];
+
         this.tier = this.page.app.getProgression().tier;
 
         let rabbitcontainer = makeDiv(null, 'custom-rabbit-container');
@@ -31,19 +33,24 @@ class Selection {
             let index = 0;
             array.forEach(c => {
                 let rabbit = makeDiv(null, 'custom-rabbit-individual');
-                if (c === this.params.game.color) { addClass(rabbit, 'active'); }
+
+                let color = c;
+                if (className === 'specials') {
+                    if (this.tier < c[1]) {
+                        let lock = makeDiv(null, 'custom-rabbit-lock', this.params.svgs.lock);
+                        rabbit.append(lock);
+                        addClass(rabbit, 'locked');
+                    }
+                    color = c[0];
+                }
+
+                if (color === this.params.game.color) { addClass(rabbit, 'active'); }
+
                 let image = document.createElement('img');
-                let src = this.params.sprites[`rabbits:${c}_idle_east_0`];
+                let src = this.params.sprites[`rabbits:${color}_idle_east_0`];
                 image.src = src;
                 image.alt = 'Lapinou';
                 rabbit.append(image);
-
-                if (className === 'specials' && this.tier < this.unlocks[index]) {
-                    let lock = makeDiv(null, 'custom-rabbit-lock', this.params.svgs.lock);
-                    rabbit.append(lock);
-                    addClass(rabbit, 'locked');
-                }
-
                 rabbits.append(rabbit);
                 rabbitlist.push(rabbit);
 
@@ -55,7 +62,7 @@ class Selection {
                             this.page.playSound({ src: 'lapinou-happy', volume: 0.6 });
                             rabbitlist.forEach(r => { removeClass(r, 'active'); })
                             addClass(rabbit, 'active');
-                            this.selectedColor = c;
+                            this.selectedColor = color;
                         }
 
                     }
@@ -65,8 +72,8 @@ class Selection {
             });
         };
 
-        createRabbits(this.classics, 'classics');
-        createRabbits(this.specials, 'specials');
+        createRabbits(this.colors.classics, 'classics');
+        createRabbits(this.colors.specials, 'specials');
 
         let pseudocontainer = makeDiv(null, 'custom-pseudo-container');
         this.parent.append(pseudocontainer);

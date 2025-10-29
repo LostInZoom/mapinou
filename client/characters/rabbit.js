@@ -7,7 +7,7 @@ class Rabbit extends Character {
 
         this.speed = options.speed || 20;
         this.framenumber = 4;
-        this.colors = options.colors || this.params.game.colors;
+        this.colors = options.colors || this.params.game.colors.classics;
         this.color = options.color || this.params.game.color;
 
         if (this.color === 'random') {

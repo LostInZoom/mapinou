@@ -14,8 +14,8 @@ class Application {
         this.options = options;
         this.progression = options.progression;
 
-        this.debug = true;
-        // this.progression = { tier: 2, level: 2, finish: false };
+        this.debug = false;
+        this.progression = { tier: 1, level: 0, finish: false };
 
         // Create the DOM Element
         this.container = makeDiv('application', null);
@@ -115,7 +115,6 @@ class Application {
 
                 this.basemap.map.on('click', (e) => {
                     if (this.allowed) {
-                        this.sounds.playFile({ src: 'lapinou-happy', volume: 0.6 });
                         this.allowed = false;
 
                         if (this.rabbits.getNumber() >= this.maxrabbit) {
@@ -123,10 +122,20 @@ class Application {
                             first.despawn(() => { first.destroy(); });
                         }
 
+                        // Display a special rabbit once out of 50 time
+                        let color = 'random';
+                        if (Math.random() < 1 / 50) {
+                            let s = this.options.game.colors.specials;
+                            color = s[generateRandomInteger(0, s.length - 1)][0];
+                            this.sounds.playFile({ src: 'lapinou-end', volume: 0.6 });
+                        } else {
+                            this.sounds.playFile({ src: 'lapinou-happy', volume: 0.6 });
+                        }
+
                         let roamer = new Roamer({
                             layer: this.rabbits,
                             coordinates: e.lngLat.toArray(),
-                            color: 'random',
+                            color: color,
                         });
 
                         roamer.spawn(() => {

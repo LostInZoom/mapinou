@@ -24,7 +24,7 @@ class Basemap {
         this.animationCurve = 2;
         this.animationSpeed = 5;
 
-        this.spritesheets = ['rabbits', 'enemies', 'vegetables', 'flower', 'ptsot', 'woodpigeon', 'campfire'];
+        this.spritesheets = ['rabbits', 'enemies', 'vegetables', 'flower', 'ptsot', 'woodpigeon', 'fire'];
         this.protectedLayers = ['basemap'];
 
         this.parent = this.options.parent;
@@ -409,7 +409,7 @@ class Basemap {
 
         this.target = new Target({
             layer: this.rabbits,
-            colors: this.params.game.colors.filter(c => c !== this.params.game.color),
+            colors: this.params.game.colors.classics.filter(c => c !== this.params.game.color),
             color: 'random',
             coordinates: options.target
         });

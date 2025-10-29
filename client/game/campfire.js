@@ -22,7 +22,7 @@ class Campfire {
     }
 
     reload() {
-        this.charimage.src = this.page.params.sprites[`campfire:${this.frame}`];
+        this.charimage.src = this.page.params.sprites[`fire:${this.frame}`];
     }
 
     setFrame(frame) {
