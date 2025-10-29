@@ -57,6 +57,7 @@ class SantaBarbara extends Page {
             addClass(this.continue, 'pop');
 
             this.back.addEventListener('click', () => {
+                this.playButtonSound();
                 removeClass(this.content, 'pop');
                 wait(500, () => {
                     this.destroy();
@@ -69,6 +70,7 @@ class SantaBarbara extends Page {
             }, { once: true });
 
             this.continue.addEventListener('click', () => {
+                this.playButtonSound();
                 let o = this.options;
                 o.stage = 'form';
                 o.position = 'next';
@@ -107,6 +109,7 @@ class SantaBarbara extends Page {
                 }
 
                 p.addEventListener('click', () => {
+                    this.playButtonSound();
                     let pointList = numbers.childNodes;
                     pointList.forEach(child => { removeClass(child, 'active'); });
                     addClass(pointList[i], 'active');
@@ -186,6 +189,7 @@ class SantaBarbara extends Page {
             }).observe(this.container);
 
             this.scrollindicator.addEventListener('click', () => {
+                this.playButtonSound();
                 questions.scrollBy({
                     top: 100,
                     behavior: 'smooth'
@@ -193,6 +197,7 @@ class SantaBarbara extends Page {
             });
 
             this.back.addEventListener('click', () => {
+                this.playButtonSound();
                 if (this.observer) this.observer.unobserve(this.container);
                 let o = this.options;
                 o.stage = 'presentation';
@@ -203,6 +208,7 @@ class SantaBarbara extends Page {
             }, { once: true });
 
             this.continue.addEventListener('click', () => {
+                this.playButtonSound();
                 this.app.progress();
                 removeClass(this.content, 'pop');
 

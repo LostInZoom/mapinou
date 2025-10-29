@@ -78,10 +78,12 @@ class SpatialOrientation extends Page {
             this.listen = true;
 
             back.addEventListener('click', () => {
+                this.playButtonSound();
                 this.toLevels(false);
             }, { once: true });
 
             pursue.addEventListener('click', () => {
+                this.playButtonSound();
                 this.listen = false;
                 let o = this.options;
                 o.stage = 'tutorial';
@@ -101,6 +103,7 @@ class SpatialOrientation extends Page {
 
         const backListener = () => {
             this.back.removeEventListener('click', backListener);
+            this.playButtonSound();
             if (this.index === 0) {
                 this.listen = false;
                 let o = this.options;
@@ -182,6 +185,8 @@ class SpatialOrientation extends Page {
 
             this.back.addEventListener('click', backListener);
             this.continue.addEventListener('click', () => {
+                this.playButtonSound();
+
                 if (!this.tutorial) {
                     this.answer.difference = Math.abs(this.answer.trueAngle - this.answer.drawAngle);
                     this.answer.elapsed = Math.round(this.elapsed);

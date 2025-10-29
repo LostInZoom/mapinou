@@ -59,10 +59,12 @@ class Purdue extends Page {
             this.listen = true;
 
             back.addEventListener('click', () => {
+                this.playButtonSound();
                 this.toLevels(false);
             }, { once: true });
 
             pursue.addEventListener('click', () => {
+                this.playButtonSound();
                 this.listen = false;
                 let o = this.options;
                 o.stage = 'tutorial';
@@ -131,6 +133,7 @@ class Purdue extends Page {
 
         const answering = (e) => {
             if (this.listen) {
+                this.playButtonSound();
                 const t = e.target;
                 const value = parseInt(t.getAttribute('value'));
                 if (hasClass(t, 'active')) {
@@ -193,6 +196,7 @@ class Purdue extends Page {
                 addClass(back, 'pop');
                 removeClass(text, 'noback');
                 const backListener = () => {
+                    this.playButtonSound();
                     back.removeEventListener('click', backListener);
                     if (this.index === 0) {
                         this.listen = false;
@@ -213,6 +217,7 @@ class Purdue extends Page {
             }
 
             pursue.addEventListener('click', () => {
+                this.playButtonSound();
                 this.listen = false;
                 if (this.stage === 'test') {
                     this.answers.push(this.answer);

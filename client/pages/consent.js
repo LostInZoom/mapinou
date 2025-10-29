@@ -82,6 +82,7 @@ class Consent extends Page {
             }).observe(this.elements);
 
             this.scrollindicator.addEventListener('click', () => {
+                this.playButtonSound();
                 this.elements.scrollBy({
                     top: this.elements.scrollHeight,
                     behavior: 'smooth'
