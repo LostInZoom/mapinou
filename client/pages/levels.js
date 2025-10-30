@@ -273,11 +273,15 @@ class Levels extends Page {
     }
 
     unlockRabbit() {
+        let prog = this.app.getProgression(false);
+
         this.listen = false;
+        let found = false;
 
         this.params.game.colors.specials.forEach(s => {
             const [color, threshold] = s;
-            if (this.getProgression().tier === threshold) {
+            if (prog.tier === threshold && prog.level === 0) {
+                found = true;
                 let container = makeDiv(null, 'unlock-container');
                 let window = makeDiv(null, 'unlock-window');
                 let text = makeDiv(null, 'unlock-text', "Vous avez débloqué un nouveau pelage pour Lapinou !");
@@ -306,11 +310,14 @@ class Levels extends Page {
                         removeClass(window, 'pop');
                         wait(300, () => {
                             container.remove();
+                            this.listen = true;
                         });
                     }, { once: true });
                 });
             }
         });
+
+        if (!found) { this.listen = true; }
     }
 }
 
