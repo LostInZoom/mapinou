@@ -42,8 +42,8 @@
 
 .levels-navigation-container {
     margin-top: auto;
-    margin-bottom: 2rem;
-    width: min(calc(100% - 4rem), 25rem);
+    margin-bottom: sizes.$gap2rem;
+    width: min(calc(100% - 2 * sizes.$gap2rem), 25rem);
 
     display: flex;
 
@@ -69,7 +69,7 @@
     border-radius: sizes.$button-size;
 
     font-family: 'Vincendo';
-    font-size: 1.2rem;
+    font-size: sizes.$font-size-title;
     white-space: nowrap;
 
     background-color: colors.$main-color-dark;
@@ -89,7 +89,7 @@
 
     &.previous {
         flex: 0 0 sizes.$button-size;
-        margin-right: 1rem;
+        margin-right: sizes.$gap1rem;
     }
 
     &.current {
@@ -98,7 +98,7 @@
 
     &.next {
         flex: 0 0 sizes.$button-size;
-        margin-left: 1rem;
+        margin-left: sizes.$gap1rem;
     }
 
     &.shrink {
@@ -121,7 +121,7 @@
     &.active {
         &>.levels-minimap {
             transform: scale(1);
-            border: solid .4rem #0000;
+            border: solid min(.5rem, 2vh, 2vw) #0000;
             background: conic-gradient(from var(--angle),
                     colors.$main-color-medium,
                     colors.$main-color-dark,
@@ -186,11 +186,11 @@
 
 .levels-minimap {
     position: relative;
-    width: 4rem;
-    height: 4rem;
+    width: min(4rem, 10vh, 20vw);
+    height: min(4rem, 10vh, 20vw);
 
-    border: solid .5rem colors.$main-color-dark;
-    border-radius: 4rem;
+    border: solid min(.5rem, 2vh, 2vw) colors.$main-color-dark;
+    border-radius: min(4rem, 10vh, 20vw);
     box-shadow: 0 0 1rem grey;
 
     transform: scale(0.8);
@@ -198,10 +198,8 @@
 
     &.tutorial {
         transform: scale(1);
-        max-height: 10rem;
-        width: 50vw;
-        max-width: 10rem;
-        height: unset;
+        width: min(10rem, 30vh, 40vw);
+        height: min(10rem, 30vh, 40vw);
         aspect-ratio: 1/1;
         border-radius: 50%;
     }
@@ -217,7 +215,7 @@
         left: 50%;
         transform: translate(-50%, -50%) scale(0);
         font-family: 'Vincendo';
-        font-size: .9rem;
+        font-size: sizes.$font-size-small;
         border-radius: sizes.$border-radius;
 
         padding: .4rem .6rem;
@@ -273,7 +271,7 @@
 
         &>line {
             stroke: colors.$main-color-dark;
-            stroke-width: .5rem;
+            stroke-width: min(.5rem, 2vh, 2vw);
             transition: stroke-width .2s cubic-bezier(0.36, 0, 0.66, -0.56);
 
             &.appear {
@@ -293,13 +291,13 @@
 
 .levels-continue-indicator {
     position: absolute;
-    top: calc(100% + 1rem);
+    top: calc(100% + sizes.$gap1rem);
     left: 50%;
 
     width: max-content;
 
     font-family: 'Vincendo';
-    font-size: .8rem;
+    font-size: sizes.$font-size-extrasmall;
 
     border-radius: sizes.$border-radius;
     padding: .4rem .6rem;
@@ -342,12 +340,11 @@
     position: relative;
     pointer-events: all;
 
-    max-height: 10rem;
-    width: 50vw;
-    max-width: 10rem;
+    width: min(10rem, 30vh, 40vw);
+    height: min(10rem, 30vh, 40vw);
     aspect-ratio: 1/1;
     border-radius: 50%;
-    border: solid .5rem colors.$main-color-dark;
+    border: solid min(.5rem, 2vh, 2vw) colors.$main-color-dark;
 
     box-shadow: 0 0 1rem grey;
 
@@ -411,12 +408,12 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 1rem;
+    gap: sizes.$gap1rem;
     border-radius: sizes.$border-radius;
 
     width: min(15rem, calc(100% - 2rem));
-    margin: 1rem;
-    padding: 1rem;
+    margin: sizes.$gap1rem;
+    padding: sizes.$gap1rem;
     background-color: colors.$secondary-color-dark;
 
     transform: scale(0);
@@ -442,12 +439,12 @@
     justify-content: center;
     align-items: center;
 
-    height: 5rem;
-    width: 5rem;
+    height: min(5rem, 12vh, 25vw);
+    width: min(5rem, 12vh, 25vw);
 
     &>img {
-        height: calc(100% - .5rem);
-        width: calc(100% - .5rem);
+        height: calc(100% - min(.5rem, 2vh, 2vw));
+        width: calc(100% - min(.5rem, 2vh, 2vw));
         image-rendering: pixelated;
     }
 }
@@ -477,7 +474,7 @@
 
 .unlock-button {
     font-family: 'Vincendo';
-    font-size: .9rem;
+    font-size: sizes.$font-size-small;
     pointer-events: all;
     border-radius: sizes.$border-radius;
 

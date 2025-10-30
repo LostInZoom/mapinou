@@ -1,25 +1,20 @@
 @use '../colors';
 @use '../sizes';
 
-.experience-container {
-    position: absolute;
-    bottom: 0;
-    height: calc(100% - 4.5rem);
-    width: 100%;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 .experience-content {
     max-height: calc(50% - (sizes.$gap1rem / 2));
     width: 100%;
+
+
 
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    justify-content: stretch;
+    align-items: stretch;
+    height: 100%;
 
     transform: scale(0);
     transition: transform .3s cubic-bezier(0.545, -0.215, 1.000, 0.470);
@@ -47,6 +42,20 @@
         }
 
     }
+
+    &.ptsot {
+        &.top {
+            max-height: calc(40% - (sizes.$gap1rem / 2));
+        }
+
+        &.bottom {
+            max-height: calc(60% - (sizes.$gap1rem / 2));
+        }
+
+        &>.experience-text {
+            padding: 0;
+        }
+    }
 }
 
 .experience-text {
@@ -61,7 +70,9 @@
 
     display: flex;
     flex-direction: column;
-    justify-content: stretch;
+
+    flex: 1;
+    justify-content: center;
     align-items: center;
 
     padding: sizes.$gap1rem 0;
@@ -104,6 +115,10 @@
     &.sbsod {
         padding: 0;
         gap: 0;
+    }
+
+    &.purdue {
+        padding: 0;
     }
 }
 

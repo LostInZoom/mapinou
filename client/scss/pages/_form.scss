@@ -3,10 +3,11 @@
 
 .form-text {
     width: 100%;
+    font-size: sizes.$font-size-regular;
 
     pointer-events: all;
-    border-top-right-radius: .4rem;
-    border-bottom-left-radius: .4rem;
+    border-top-right-radius: sizes.$border-radius;
+    border-bottom-left-radius: sizes.$border-radius;
 
     background-color: colors.$secondary-color-dark;
     color: colors.$main-color-light;
@@ -22,15 +23,15 @@
 .form-question {
     font-weight: bolder;
     text-align: center;
-    padding: 1rem;
+    padding: sizes.$gap1rem;
 }
 
 .form-answers {
-    padding: 0 1rem 1rem 1rem;
+    padding: 0 sizes.$gap1rem sizes.$gap1rem sizes.$gap1rem;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: .5rem;
+    gap: calc(sizes.$gap1rem/2);
     flex-wrap: wrap;
 }
 

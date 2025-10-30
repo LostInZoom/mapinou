@@ -3,6 +3,7 @@ import Page from "../pages/page";
 import { ajaxPost } from "../utils/ajax";
 import { addClass, addClassList, hasClass, makeDiv, removeClass, removeClassList, wait } from "../utils/dom";
 import { easeInOutSine, generateRandomInteger } from "../utils/math";
+import { remToPx } from "../utils/parse";
 
 class SpatialOrientation extends Page {
     constructor(options, callback) {
@@ -34,7 +35,7 @@ class SpatialOrientation extends Page {
             });
         }
         else {
-            this.topcontent = makeDiv(null, 'experience-content top pop');
+            this.topcontent = makeDiv(null, 'experience-content ptsot top pop');
             this.back = makeDiv(null, 'page-button page-button-back', 'Retour');
             this.toptext = makeDiv(null, 'experience-text top nobutton pop');
             this.topcontent.append(this.back, this.toptext);
@@ -120,7 +121,7 @@ class SpatialOrientation extends Page {
             }
         }
 
-        this.bottomcontent = makeDiv(null, 'experience-content bottom');
+        this.bottomcontent = makeDiv(null, 'experience-content ptsot bottom');
         if (first) { addClass(this.bottomcontent, 'pop'); }
         this.continue = makeDiv(null, 'page-button page-button-continue', 'Continuer');
         this.bottomtext = makeDiv(null, 'experience-text bottom nobutton pop');
@@ -485,7 +486,7 @@ class SpatialOrientation extends Page {
         name1.textContent = characters[options.character1].name;
         name1.setAttribute('class', 'hidden');
         name1.setAttribute('x', c.x);
-        name1.setAttribute('y', c.y + 18);
+        name1.setAttribute('y', c.y + remToPx(1));
         name1.setAttribute('text-anchor', 'middle');
 
         const path = document.createElementNS(this.namespace, 'path');

@@ -19,11 +19,9 @@ $color-wrong : #c44343;
 }
 
 .level-hint-character {
-    height: min(25vw, 25vh);
-    width: min(25vw, 25vh);
-    max-width: 10rem;
-    max-height: 10rem;
-    margin: 1rem 0 1rem 1rem;
+    height: min(25vw, 25vh, 10rem);
+    width: min(25vw, 25vh, 10rem);
+    margin: sizes.$gap1rem 0 sizes.$gap1rem sizes.$gap1rem;
 
     transform: translateX(0);
     transition: transform .6s ease-out;
@@ -31,13 +29,11 @@ $color-wrong : #c44343;
     &>img {
         width: inherit;
         height: inherit;
-        max-width: 10rem;
-        max-height: 10rem;
         image-rendering: pixelated;
     }
 
     &.hidden {
-        transform: translateX(calc(-100% - 2rem));
+        transform: translateX(calc(-100% - 2*sizes.$gap1rem));
         transition: transform .6s ease-in;
     }
 }
@@ -50,11 +46,12 @@ $color-wrong : #c44343;
     justify-content: center;
     align-items: center;
 
+    font-size: sizes.$font-size-regular;
     background-color: $color-thought;
     color: colors.$main-color-light;
     border-radius: sizes.$border-radius;
 
-    margin: auto 2rem auto 1rem;
+    margin: auto calc(sizes.$gap1rem * 2) auto sizes.$gap1rem;
     padding: .6rem .8rem;
 
     transform: scale(0);
@@ -77,7 +74,7 @@ $color-wrong : #c44343;
         position: absolute;
         top: calc(50% - .3rem);
         left: -1rem;
-        height: 1rem;
+        height: sizes.$gap1rem;
         width: 1.1rem;
         clip-path: polygon(0 50%, 100% 100%, 100% 0);
         background-color: $color-thought;
@@ -99,53 +96,4 @@ $color-wrong : #c44343;
             background-color: colors.$score-enemies-dark;
         }
     }
-
-    // &.lost,
-    // &.wrong {
-    //     transform: scale(0);
-    //     transition: transform .2s cubic-bezier(0.36, 0, 0.66, -0.56);
-
-    //     &.pop {
-    //         transform: scale(1);
-    //         transition: transform .2s cubic-bezier(0.34, 1.56, 0.64, 1);
-    //     }
-    // }
-
-
-}
-
-.level-hint-vector {
-    position: absolute;
-    z-index: 5;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-
-    &>svg {
-        stroke-width: 0;
-        stroke: colors.$main-color-light;
-        fill: colors.$main-color-dark;
-        height: inherit;
-        width: inherit;
-    }
-}
-
-.level-hint-text {
-    position: absolute;
-    z-index: 10;
-    top: 0;
-    left: 0;
-    width: calc(100% - 3rem);
-    height: calc(100% - 3rem);
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    text-align: center;
-    font-family: 'Vincendo';
-    font-size: .9rem;
-    color: colors.$main-color-light;
-    padding: 1.5rem;
 }

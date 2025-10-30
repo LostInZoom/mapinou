@@ -1,9 +1,10 @@
 @use '../colors';
+@use '../sizes';
 
 .score-container {
     pointer-events: none;
     position: relative;
-    height: 3.5rem;
+    height: sizes.$button-size;
     margin: 0 auto;
     color: colors.$main-color-light;
 
@@ -46,12 +47,12 @@
 
 .score-text {
     height: inherit;
-    border-radius: 3.5rem;
+    border-radius: sizes.$button-size;
 
     font-family: 'Cabin';
     font-weight: bold;
-    font-size: 1.6rem;
-    line-height: 1.6rem;
+    font-size: sizes.$font-size-score;
+    line-height: sizes.$font-size-score;
 
     background-color: colors.$main-color-dark;
 
@@ -87,7 +88,7 @@
     z-index: 1;
     top: 50%;
 
-    font-size: 1rem;
+    font-size: sizes.$font-size-regular;
     border-radius: 2.5rem;
     padding: .2rem .4rem;
 

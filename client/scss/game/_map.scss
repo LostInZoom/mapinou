@@ -117,10 +117,10 @@
 
 .level-position {
     position: relative;
-    height: 3rem;
-    width: 3rem;
+    height: sizes.$button-size;
+    width: sizes.$button-size;
 
-    border-radius: 0 3rem 3rem 3rem;
+    border-radius: 0 sizes.$button-size sizes.$button-size sizes.$button-size;
     background-color: colors.$main-color-dark;
 
     transform: scale(0);
@@ -137,10 +137,10 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        height: 1rem;
-        width: 1rem;
-        border-radius: 0 1rem 1rem 1rem;
-        border: solid .5rem colors.$main-color-light;
+        height: min(1rem, 5vw, 5vh);
+        width: min(1rem, 5vw, 5vh);
+        border-radius: 0 min(1rem, 5vw, 5vh) min(1rem, 5vw, 5vh) min(1rem, 5vw, 5vh);
+        border: solid calc(min(1rem, 5vw, 5vh)/2) colors.$main-color-light;
         background-color: colors.$secondary-color-dark;
     }
 }
@@ -150,8 +150,8 @@
     pointer-events: none;
     bottom: 0;
     left: 0;
-    width: calc(100% - 2rem);
-    margin: 1rem;
+    width: calc(100% - 2*sizes.$gap1rem);
+    margin: sizes.$gap1rem;
 
     display: flex;
     justify-content: center;
@@ -165,6 +165,7 @@
 
     padding: .5rem .8rem;
     font-style: italic;
+    font-size: sizes.$font-size-regular;
 
     opacity: 0;
     transition: opacity .3s ease-in-out;

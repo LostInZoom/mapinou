@@ -5,17 +5,18 @@
     position: relative;
     pointer-events: all;
 
-    width: min(calc(100% - 2rem), sizes.$max-width);
-    height: mint(calc(100% - 8rem - min(20vw, 12.5vh, 5rem)), sizes.$max-height);
-    margin-top: calc(5rem + min(20vw, 12.5vh, 5rem));
-    margin-bottom: 3rem;
+    width: min(calc(100% - sizes.$gap1rem * 2), sizes.$max-width);
+    height: min(calc(100% - sizes.$button-size - 3*sizes.$gap1rem - sizes.$font-size-small - 1rem - min(20vw, 12.5vh, 5rem)), sizes.$max-height);
+    margin-top: calc(sizes.$button-size + 2*sizes.$gap1rem + min(20vw, 12.5vh, 5rem));
+    margin-bottom: calc(sizes.$font-size-small + 1rem + sizes.$gap1rem);
 
     background-color: colors.$secondary-color-dark;
-    border-radius: .4rem .4rem 0 .4rem;
+    border-radius: sizes.$border-radius sizes.$border-radius 0 sizes.$border-radius;
 
     display: flex;
     flex-direction: column;
     align-items: center;
+    font-size: sizes.$font-size-regular;
 
     transform: scale(0);
     transition: transform .3s cubic-bezier(0.545, -0.215, 1.000, 0.470);
@@ -28,10 +29,10 @@
 
 .highscore-continue {
     position: absolute;
-    bottom: -2rem;
+    bottom: calc(-1 * (sizes.$font-size-small + 1rem));
 
-    border-bottom-right-radius: .4rem;
-    border-bottom-left-radius: .4rem;
+    border-bottom-right-radius: sizes.$border-radius;
+    border-bottom-left-radius: sizes.$border-radius;
     align-self: end;
     transform-origin: right top;
 }
@@ -46,37 +47,37 @@
     z-index: 2;
 
     border-radius: 50%;
-    border: solid .5rem colors.$secondary-color-dark;
+    border: solid min(.5rem, 2vh, 2vw) colors.$secondary-color-dark;
     overflow: hidden;
 
     transform: translateX(-50%);
 }
 
 .highscore-tabs-container {
-    height: calc(100% - min(20vw, 12.5vh, 5rem) - 2.5rem);
-    margin-top: calc(min(20vw, 12.5vh, 5rem) + 1.5rem);
-    margin-bottom: 1rem;
+    overflow: hidden;
+    margin-top: calc(min(20vw, 12.5vh, 5rem) + sizes.$gap1rem + min(.5rem, 2vh, 2vw));
+    margin-bottom: sizes.$gap1rem;
 
-    width: calc(100% - 2rem);
+    width: calc(100% - 2*sizes.$gap1rem);
     z-index: 1;
 
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: sizes.$gap1rem;
 }
 
 .highscore-buttons {
     display: flex;
     width: 100%;
-    gap: 1rem;
+    gap: sizes.$gap1rem;
 }
 
 .highscore-button {
     flex: 1;
     pointer-events: all;
 
-    height: 2rem;
-    width: 2rem;
+    height: min(2rem, 5vh);
+    width: min(2rem, 5vh);
 
     overflow: hidden;
 

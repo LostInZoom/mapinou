@@ -6,23 +6,24 @@ $answer-color: #537ca3;
 $answer-color-light: #bed3e6;
 
 .purdue-text {
-    gap: 1rem;
+    gap: sizes.$gap1rem;
 }
 
 .purdue-title {
     text-align: center;
     font-family: 'Vincendo';
-    font-size: 1.2rem;
+    font-size: sizes.$font-size-title;
 }
 
 .purdue-test-container {
     display: flex;
     flex-direction: column;
+    font-size: sizes.$font-size-regular;
 
-    height: calc(100% - 2rem);
-    width: calc(100% - 2rem);
-    padding: 1rem;
-    gap: 1rem;
+    height: calc(100% - 2 * sizes.$gap1rem);
+    width: calc(100% - 2 * sizes.$gap1rem);
+    padding: sizes.$gap1rem;
+    gap: sizes.$gap1rem;
 }
 
 .purdue-test-text {
@@ -35,7 +36,7 @@ $answer-color-light: #bed3e6;
     justify-content: center;
     align-items: center;
     flex: 1;
-    gap: 1rem;
+    gap: sizes.$gap1rem;
     min-height: 0;
     max-width: 100%;
     margin: 0 auto;
@@ -73,12 +74,6 @@ $answer-color-light: #bed3e6;
 .purdue-label {
     flex: 1;
     color: $answer-color-light;
-    font-size: min(4vw, 3vh);
+    font-size: sizes.$font-size-regular;
     text-align: center;
-}
-
-@media screen and (min-width: 500px) {
-    .purdue-label {
-        font-size: 1.2rem;
-    }
 }

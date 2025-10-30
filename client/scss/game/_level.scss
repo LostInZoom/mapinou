@@ -1,14 +1,15 @@
 @use '../colors';
+@use '../sizes';
 
 .level-cancel-button {
     pointer-events: all;
     position: relative;
 
     margin-top: auto;
-    margin-bottom: 4rem;
+    margin-bottom: sizes.$gap2rem;
 
-    height: 15vw;
-    width: 15vw;
+    height: min(5rem, 15vh, 15vw);
+    width: min(5rem, 15vh, 15vw);
     overflow: hidden;
 
     display: flex;
@@ -61,6 +62,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    font-size: sizes.$font-size-regular;
 
     transform: scale(0);
     opacity: 1;
@@ -78,7 +80,7 @@
 }
 
 .level-phase-title {
-    font-size: 16vw;
+    font-size: min(16vw, 5rem);
     padding: .2rem 1.2rem;
     border-radius: .8rem;
 
@@ -89,14 +91,14 @@
 }
 
 .level-phase-subtitle {
-    margin: 1rem;
+    margin: sizes.$gap1rem;
 
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
 
-    border-radius: .8rem;
+    border-radius: sizes.$border-radius;
     padding: .3rem .6rem;
     background-color: colors.$main-color-light;
     color: colors.$main-color-dark;
@@ -111,9 +113,10 @@
 
 .level-phase-continue {
     position: absolute;
-    bottom: 1rem;
+    bottom: sizes.$gap1rem;
 
     font-style: italic;
+    font-size: sizes.$font-size-regular;
     color: colors.$main-color-dark;
 
     opacity: 0;
@@ -122,18 +125,5 @@
 
     &.reveal {
         opacity: 1;
-    }
-}
-
-@media screen and (min-width: 380px) {
-    .level-cancel-button {
-        height: 4rem;
-        width: 4rem;
-    }
-}
-
-@media screen and (min-width: 500px) {
-    .level-phase-title {
-        font-size: 5rem;
     }
 }

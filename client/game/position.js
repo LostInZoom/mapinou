@@ -44,7 +44,7 @@ class Position {
             }
         })
 
-        this.padding = [72, 20, 20, 20];
+        this.padding = [90, 20, 20, 20];
         let width = this.basemap.getWidth();
         let height = this.basemap.getHeight();
 

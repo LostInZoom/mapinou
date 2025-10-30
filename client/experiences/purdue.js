@@ -1,7 +1,7 @@
 import Levels from "../pages/levels";
 import Page from "../pages/page";
 import { ajaxPost } from "../utils/ajax";
-import { addClass, addClassList, hasClass, makeDiv, removeClass, removeClassList, wait } from "../utils/dom";
+import { addClass, hasClass, makeDiv, removeClass, removeClassList, wait } from "../utils/dom";
 import { easeInOutSine, generateRandomInteger } from "../utils/math";
 
 class Purdue extends Page {
@@ -81,7 +81,7 @@ class Purdue extends Page {
         let back = makeDiv(null, 'page-button page-button-back', 'Retour');
         let pursue = makeDiv(null, 'page-button page-button-continue', 'Continuer');
 
-        let text = makeDiv(null, 'experience-text purdue-text pop noback nocontinue');
+        let text = makeDiv(null, 'experience-text purdue pop noback nocontinue');
         this.content.append(back, text, pursue);
         this.content.offsetWidth;
 

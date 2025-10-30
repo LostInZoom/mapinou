@@ -13,38 +13,39 @@ $timer-color-quarter: #e69797;
     background-color: colors.$main-color-light;
     border-radius: sizes.$border-radius;
 
-    width: calc(100% - 2rem);
-    height: 25vh;
+    width: calc(100% - (sizes.$gap1rem * 2));
+    height: 100%;
 
     &:last-child {
-        margin-bottom: 1rem;
+        margin-bottom: sizes.$gap1rem;
     }
 
     &:first-child {
-        margin-top: 1rem;
+        margin-top: sizes.$gap1rem;
     }
 }
 
 .ptsot-characters-text {
     text-align: center;
-    padding: 0 1rem;
+    padding: 0 sizes.$gap1rem;
+    font-size: sizes.$font-size-regular;
 
     &:last-child {
-        margin-bottom: 1rem;
+        margin-bottom: sizes.$gap1rem;
     }
 
     &:first-child {
-        margin-top: 1rem;
+        margin-top: sizes.$gap1rem;
     }
 
     &.title {
         font-family: 'Vincendo';
-        font-size: .9rem;
+        font-size: sizes.$font-size-small;
     }
 
     &>span {
         font-family: 'Vincendo';
-        font-size: .9rem;
+        font-size: sizes.$font-size-small;
         color: colors.$grey-extralight;
     }
 }
@@ -86,7 +87,7 @@ $timer-color-quarter: #e69797;
     position: absolute;
     color: colors.$main-color-dark;
 
-    font-size: .9rem;
+    font-size: sizes.$font-size-small;
     text-transform: capitalize;
 
     &.rabbit {
@@ -121,8 +122,8 @@ $timer-color-quarter: #e69797;
 .ptsot-characters-point {
     position: absolute;
     transform: translate(-50%, -50%);
-    height: .5rem;
-    width: .5rem;
+    height: calc(sizes.$gap1rem / 2);
+    width: calc(sizes.$gap1rem / 2);
     background-color: white;
     outline: solid .2rem colors.$grey-extradark;
     border-radius: 50%;
@@ -130,22 +131,20 @@ $timer-color-quarter: #e69797;
 
 .ptsot-svg-container {
     position: relative;
+    overflow: hidden;
+
     background-color: colors.$main-color-light;
     border-radius: sizes.$border-radius;
 
-    height: 25vh;
+    height: 100%;
     aspect-ratio: 1/1;
 
-    &.tutorial {
-        height: 25vh;
-    }
-
     &:last-child {
-        margin-bottom: 1rem;
+        margin-bottom: sizes.$gap1rem;
     }
 
     &:first-child {
-        margin-top: 1rem;
+        margin-top: sizes.$gap1rem;
     }
 
     &>svg {
@@ -184,7 +183,7 @@ $timer-color-quarter: #e69797;
         }
 
         &>text {
-            font-size: 1rem;
+            font-size: sizes.$font-size-regular;
             fill: colors.$main-color-dark;
             opacity: 1;
             transition: opacity .2s linear;

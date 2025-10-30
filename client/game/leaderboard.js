@@ -88,6 +88,7 @@ class Leaderboard {
                     this.continue.addEventListener('click', () => {
                         if (this.listen) {
                             this.listen = false;
+                            this.page.playButtonSound();
                             removeClass(this.container, 'pop');
                             hsRabbits.despawnCharacters(() => {
                                 hsRabbits.destroy();
@@ -106,6 +107,7 @@ class Leaderboard {
         const el = e.target;
         if (!hasClass(el, 'active') && this.listen) {
             this.listen = false;
+            this.page.playButtonSound();
             const v = el.getAttribute('value');
             Array.from(this.tabs.children).forEach(t => {
                 if (hasClass(t, v)) { addClass(t, 'active'); }
@@ -434,7 +436,7 @@ class Leaderboard {
             parent: tab,
             class: 'highscores',
             extent: bbox,
-            padding: { top: 10, left: 10, right: 10, bottom: 30 },
+            padding: { top: 10, left: 10, right: 10, bottom: 40 },
             interactive: false
         }, () => {
             let labels = makeDiv(null, 'highscore-journey-labels');

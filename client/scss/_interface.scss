@@ -74,7 +74,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    max-width: calc(90% - 2rem);
+    font-size: sizes.$font-size-regular;
+    max-width: calc(90% - sizes.$gap1rem*2);
 
     background-color: colors.$secondary-color-dark;
     color: colors.$main-color-light;
@@ -82,7 +83,7 @@
 
     transform: scale(0);
     transition: transform .3s cubic-bezier(0.545, -0.215, 1.000, 0.470);
-    padding: 1rem;
+    padding: sizes.$gap1rem;
 
     &.pop {
         transform: scale(1);
@@ -93,7 +94,7 @@
 
 .app-validation-text {
     text-align: center;
-    margin-bottom: 1rem;
+    margin-bottom: sizes.$gap1rem;
 }
 
 .app-validation-buttons {
@@ -101,13 +102,13 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 1rem;
+    gap: sizes.$gap1rem;
 }
 
 .app-validation-button {
     font-family: 'Vincendo';
     font-weight: normal;
-    font-size: .9rem;
+    font-size: sizes.$font-size-small;
     pointer-events: all;
 
     display: flex;

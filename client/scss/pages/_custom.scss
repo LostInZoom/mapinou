@@ -5,8 +5,8 @@
     width: 100%;
 
     pointer-events: all;
-    border-top-right-radius: .4rem;
-    border-bottom-left-radius: .4rem;
+    border-top-right-radius: sizes.$border-radius;
+    border-bottom-left-radius: sizes.$border-radius;
 
     background-color: colors.$secondary-color-dark;
     color: colors.$main-color-light;
@@ -20,12 +20,12 @@
 }
 
 .custom-rabbit-container {
-    width: calc(100% - 2rem);
+    width: calc(100% - 2*sizes.$gap1rem);
     display: flex;
     flex-direction: column;
 
-    margin: 1rem;
-    gap: 1rem;
+    margin: sizes.$gap1rem;
+    gap: sizes.$gap1rem;
 
     justify-content: center;
     align-items: center;
@@ -46,10 +46,10 @@
     align-items: center;
     width: 100%;
 
-    gap: 1rem;
+    gap: sizes.$gap1rem;
 
     background-color: colors.$secondary-color-dark;
-    border-radius: 0 .4rem 0 .4rem;
+    border-radius: 0 sizes.$border-radius 0 sizes.$border-radius;
 }
 
 .custom-rabbit-individual {
@@ -94,17 +94,17 @@
 
 .custom-pseudo-container {
     width: 100%;
-    margin-bottom: 1rem;
+    margin-bottom: sizes.$gap1rem;
 
     display: flex;
-    gap: 1rem;
+    gap: sizes.$gap1rem;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
 .custom-pseudo-back {
-    width: calc(100% - 2rem);
+    width: calc(100% - 2*sizes.$gap1rem);
     border-radius: sizes.$border-radius;
 
     overflow: hidden;
@@ -119,8 +119,9 @@
 
 .custom-pseudo-label {
     font-family: 'Vincendo';
-    padding: 0 1rem;
-    width: calc(100% - 2rem);
+    font-size: sizes.$font-size-regular;
+    padding: 0 sizes.$gap1rem;
+    width: calc(100% - 2*sizes.$gap1rem);
 
     text-align: center;
     transform: translateX(0);
@@ -137,8 +138,8 @@
 
 .custom-pseudo-randomizer {
     border-radius: 50%;
-    height: 3rem;
-    width: 3rem;
+    height: min(3rem, 8vh, 12vw);
+    width: min(3rem, 8vh, 12vw);
     background-color: colors.$main-color-dark;
 
     &>svg {
