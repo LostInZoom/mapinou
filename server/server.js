@@ -39,6 +39,11 @@ app.get('/mapinou/configuration', (req, res) => {
 	return res;
 });
 
+app.get('/mapinou/ping', (req, res) => {
+	res.json({ value: true });
+	return res;
+});
+
 app.post('/mapinou/registration', jsonParser, (req, res) => {
 	createSession(req.body).then((infos) => {
 		res.send(JSON.stringify(infos));

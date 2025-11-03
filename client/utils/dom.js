@@ -244,9 +244,17 @@ function hasSameKeys(obj, keys) {
     );
 }
 
+function isOnline(callback) {
+    callback = callback || function () { };
+    ajaxGet('ping/',
+        (r) => { callback(true); },
+        (r) => { callback(false); }
+    );
+}
+
 export {
     makeDiv, hasClass, addClass, removeClass, addClassList, removeClassList,
-    activate, deactivate,
+    activate, deactivate, isOnline,
     clearElement, addSVG, getCSSColors, remove, wait, waitPromise, isOverflown,
     easingIncrement, createValidation, setStorage, getStorage, hasSameKeys, runWithVariance
 }

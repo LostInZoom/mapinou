@@ -6,7 +6,7 @@ import SantaBarbara from "../experiences/sbsod";
 import Level from "../game/level";
 import Tutorial from "../game/tutorial";
 
-import { addClass, makeDiv, removeClass, wait, waitPromise } from "../utils/dom";
+import { addClass, createValidation, isOnline, makeDiv, removeClass, wait, waitPromise } from "../utils/dom";
 import { LevelEdges } from "../utils/svg";
 
 class Panel {
@@ -102,20 +102,28 @@ class TierPanel extends Panel {
 
             const startLevel = () => {
                 if (this.page.listening()) {
-                    this.page.playButtonSound();
-                    minimapcontainer.removeEventListener('click', startLevel);
-                    this.page.listen = false;
-
-                    // this.page.app.music.fadeOut(500, true);
-                    this.page.hide(() => {
-                        this.page.destroy();
-                        this.page.app.page = new Level({
-                            app: this.page.app,
-                            levels: this.page,
-                            position: 'current',
-                            tier: this.page.getPosition(),
-                            level: i
-                        });
+                    isOnline(online => {
+                        if (online) {
+                            this.page.playButtonSound();
+                            minimapcontainer.removeEventListener('click', startLevel);
+                            this.page.listen = false;
+                            // this.page.app.music.fadeOut(500, true);
+                            this.page.hide(() => {
+                                this.page.destroy();
+                                this.page.app.page = new Level({
+                                    app: this.page.app,
+                                    levels: this.page,
+                                    position: 'current',
+                                    tier: this.page.getPosition(),
+                                    level: i
+                                });
+                            });
+                        } else {
+                            createValidation(document.body,
+                                `Impossible de démarrer la partie, vérifiez votre connexion internet.`,
+                                ["D'accord"]
+                            );
+                        }
                     });
                 }
             }
@@ -300,42 +308,51 @@ class ExperiencePanel extends Panel {
 
         const startExperience = () => {
             if (this.page.listening()) {
-                this.page.playButtonSound();
-                this.experience.removeEventListener('click', startExperience);
-                this.page.listen = false;
-                this.page.hide(() => {
-                    wait(100, () => {
-                        this.page.destroy();
-                        if (content.index === 'sbsod') {
-                            this.page.app.page = new SantaBarbara({
-                                app: this.page.app,
-                                position: 'current',
-                                elements: content,
-                                stage: 'presentation'
+                isOnline(online => {
+                    if (online) {
+                        this.page.playButtonSound();
+                        this.experience.removeEventListener('click', startExperience);
+                        this.page.listen = false;
+                        this.page.hide(() => {
+                            wait(100, () => {
+                                this.page.destroy();
+                                if (content.index === 'sbsod') {
+                                    this.page.app.page = new SantaBarbara({
+                                        app: this.page.app,
+                                        position: 'current',
+                                        elements: content,
+                                        stage: 'presentation'
+                                    });
+                                } else if (content.index === 'piaget') {
+                                    this.page.app.page = new Piaget({
+                                        app: this.page.app,
+                                        position: 'current',
+                                        elements: content,
+                                        stage: 'presentation'
+                                    });
+                                } else if (content.index === 'ptsot') {
+                                    this.page.app.page = new SpatialOrientation({
+                                        app: this.page.app,
+                                        position: 'current',
+                                        elements: content,
+                                        stage: 'presentation'
+                                    });
+                                } else if (content.index === 'purdue') {
+                                    this.page.app.page = new Purdue({
+                                        app: this.page.app,
+                                        position: 'current',
+                                        elements: content,
+                                        stage: 'presentation'
+                                    });
+                                }
                             });
-                        } else if (content.index === 'piaget') {
-                            this.page.app.page = new Piaget({
-                                app: this.page.app,
-                                position: 'current',
-                                elements: content,
-                                stage: 'presentation'
-                            });
-                        } else if (content.index === 'ptsot') {
-                            this.page.app.page = new SpatialOrientation({
-                                app: this.page.app,
-                                position: 'current',
-                                elements: content,
-                                stage: 'presentation'
-                            });
-                        } else if (content.index === 'purdue') {
-                            this.page.app.page = new Purdue({
-                                app: this.page.app,
-                                position: 'current',
-                                elements: content,
-                                stage: 'presentation'
-                            });
-                        }
-                    });
+                        });
+                    } else {
+                        createValidation(document.body,
+                            `Impossible de démarrer la partie, vérifiez votre connexion internet.`,
+                            ["D'accord"]
+                        );
+                    }
                 });
             }
         }
@@ -458,21 +475,30 @@ class TutorialPanel extends Panel {
 
         const startTutorial = () => {
             if (this.page.listening()) {
-                this.page.playButtonSound();
-                this.minimapcontainer.removeEventListener('click', startTutorial);
-                this.page.listen = false;
-                // this.page.app.music.fadeOut(500, true);
-                this.page.hide(() => {
-                    wait(100, () => {
-                        this.page.destroy();
-                        this.page.app.page = new Tutorial({
-                            app: this.page.app,
-                            levels: this.page,
-                            position: 'current',
-                            tier: this.page.getPosition(),
-                            first: this.number === prognumber ? true : false
+                isOnline(online => {
+                    if (online) {
+                        this.page.playButtonSound();
+                        this.minimapcontainer.removeEventListener('click', startTutorial);
+                        this.page.listen = false;
+                        // this.page.app.music.fadeOut(500, true);
+                        this.page.hide(() => {
+                            wait(100, () => {
+                                this.page.destroy();
+                                this.page.app.page = new Tutorial({
+                                    app: this.page.app,
+                                    levels: this.page,
+                                    position: 'current',
+                                    tier: this.page.getPosition(),
+                                    first: this.number === prognumber ? true : false
+                                });
+                            });
                         });
-                    });
+                    } else {
+                        createValidation(document.body,
+                            `Impossible de démarrer la partie, vérifiez votre connexion internet.`,
+                            ["D'accord"]
+                        );
+                    }
                 });
             }
         }
