@@ -4,7 +4,7 @@ import { angle, within } from "../cartography/analysis.js";
 import Rabbit from "./rabbit.js";
 import Router from "../cartography/routing.js";
 import Flower from "./flower.js";
-import { wait } from "../utils/dom.js";
+import { checkAvailability, createValidation, wait } from "../utils/dom.js";
 
 class Player extends Rabbit {
     constructor(options) {
@@ -20,6 +20,7 @@ class Player extends Rabbit {
 
         this.destination = undefined;
         this.traveling = false;
+        this.listen = true;
 
         this.distance = 0;
         this.position = this.coordinates;
@@ -209,7 +210,7 @@ class Player extends Rabbit {
                                 if (this.clic) { this.clic.state = 'won'; }
                                 this.stop();
                                 this.router.setProvider('ign');
-                                callback(true);
+                                callback('win');
                             }
                         }
                         requestAnimationFrame(animation);
@@ -218,7 +219,7 @@ class Player extends Rabbit {
                         this.setCoordinates(vertexes[vertexes.length - 1]);
                         if (this.clic) { this.clic.state = 'reached'; }
                         this.stop();
-                        callback(false);
+                        callback('continue');
                     }
                 }
             };
@@ -230,54 +231,81 @@ class Player extends Rabbit {
         callback = callback || function () { };
 
         if (this.traveling) { this.stop(); }
-        this.traveling = true;
 
-        this.clic = {
-            start: Date.now(),
-            pixel: this.layer.basemap.getPixelAtCoordinates(destination),
-            coordinates: destination,
-            provider: this.router.getProvider(),
-            state: 'initial'
-        }
+        if (this.listen) {
+            this.listen = false;
+            checkAvailability(online => {
+                this.listen = true;
+                if (online.internet && online.server) {
+                    this.traveling = true;
 
-        this.start = performance.now();
-        let start = this.start;
-        this.destination = destination;
-
-        // Show the routing button and set it to routing mode
-        this.level.activateMovementButton();
-        this.level.routing();
-        this.level.score.stop();
-
-        let success = false;
-        const calculate = () => {
-            // Calculate the route using the router (AJAX)
-            this.router.calculateRoute(destination,
-                (route) => {
-                    success = true;
-                    // Make sure the map hasn't been clicked while fetching the route
-                    if (destination === this.destination) {
-                        this.clic.state = 'computed';
-                        this.clic.route = route.geometry.coordinates;
-                        this.clic.provider = this.router.getProvider();
-                        this.clic.computing = performance.now() - start;
-                        this.move(route, start, callback);
+                    this.clic = {
+                        start: Date.now(),
+                        pixel: this.layer.basemap.getPixelAtCoordinates(destination),
+                        coordinates: destination,
+                        provider: this.router.getProvider(),
+                        state: 'initial'
                     }
-                },
-                () => { this.stop(); }
-            );
-        }
-        calculate();
 
-        let provider = this.router.getProvider();
-        wait(this.router.getWaitingThreshold(), () => {
-            if (!success && destination === this.destination && provider === this.router.getProvider() && start === this.start) {
-                this.router.switchProvider();
-                this.clic.state = 'switched';
-                this.stop();
-                this.travel(destination, callback);
-            }
-        });
+                    this.start = performance.now();
+                    let start = this.start;
+                    this.destination = destination;
+
+                    // Show the routing button and set it to routing mode
+                    this.level.activateMovementButton();
+                    this.level.routing();
+                    this.level.score.stop();
+
+                    let success = false;
+                    const calculate = () => {
+                        // Calculate the route using the router (AJAX)
+                        this.router.calculateRoute(destination,
+                            (route) => {
+                                success = true;
+                                // Make sure the map hasn't been clicked while fetching the route
+                                if (destination === this.destination) {
+                                    this.clic.state = 'computed';
+                                    this.clic.route = route.geometry.coordinates;
+                                    this.clic.provider = this.router.getProvider();
+                                    this.clic.computing = performance.now() - start;
+                                    this.move(route, start, callback);
+                                }
+                            },
+                            () => { this.stop(); }
+                        );
+                    }
+                    calculate();
+
+                    let provider = this.router.getProvider();
+                    wait(this.router.getWaitingThreshold(), () => {
+                        if (!success && destination === this.destination && provider === this.router.getProvider() && start === this.start) {
+                            this.router.switchProvider();
+                            this.clic.state = 'switched';
+                            this.stop();
+                            this.travel(destination, callback);
+                        }
+                    });
+                } else {
+                    let text = 'Impossible de continuer, ';
+                    if (!online.internet) {
+                        text += 'vérifiez votre connexion internet.'
+                    } else {
+                        if (!online.server) {
+                            text += 'le serveur Mapinou rencontre un problème.'
+                        }
+                    }
+
+                    createValidation(document.body, text,
+                        ['Réessayer', 'Arrêter'],
+                        choice => {
+                            if (choice === 1) {
+                                callback('canceled');
+                            }
+                        }
+                    )
+                }
+            });
+        }
     }
 
     playSound() {

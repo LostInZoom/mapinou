@@ -191,8 +191,8 @@ class Level extends Page {
                             this.listening = true;
                             this.basemap.enableInteractions();
                             this.basemap.recorder.on();
-                            this.basemap.enableMovement(win => {
-                                if (win) {
+                            this.basemap.enableMovement(state => {
+                                if (state === 'win') {
                                     this.playSound({ src: 'lapinou-end', volume: 0.8 });
 
                                     const end = Date.now();
@@ -213,6 +213,8 @@ class Level extends Page {
                                     this.score.stop();
                                     this.score.unpop(() => { this.score.destroy(); });
                                     this.clear(callback);
+                                } else if (state === 'canceled') {
+                                    this.back.click();
                                 }
                             });
                         });

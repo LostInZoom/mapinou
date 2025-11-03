@@ -244,17 +244,29 @@ function hasSameKeys(obj, keys) {
     );
 }
 
-function isOnline(callback) {
+async function checkAvailability(callback) {
     callback = callback || function () { };
-    ajaxGet('ping/',
-        (r) => { callback(true); },
-        (r) => { callback(false); }
-    );
+    let result = {
+        internet: false,
+        server: false
+    }
+
+    try {
+        const r = await fetch("https://1.1.1.1/cdn-cgi/trace", { method: "HEAD", cache: "no-store" });
+        result.internet = r.ok;
+    } catch { }
+
+    try {
+        const r = await fetch("ping/");
+        result.server = r.ok;
+    } catch { }
+
+    callback(result);
 }
 
 export {
     makeDiv, hasClass, addClass, removeClass, addClassList, removeClassList,
-    activate, deactivate, isOnline,
+    activate, deactivate, checkAvailability,
     clearElement, addSVG, getCSSColors, remove, wait, waitPromise, isOverflown,
     easingIncrement, createValidation, setStorage, getStorage, hasSameKeys, runWithVariance
 }

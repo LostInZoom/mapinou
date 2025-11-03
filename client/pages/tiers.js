@@ -6,7 +6,7 @@ import SantaBarbara from "../experiences/sbsod";
 import Level from "../game/level";
 import Tutorial from "../game/tutorial";
 
-import { addClass, createValidation, isOnline, makeDiv, removeClass, wait, waitPromise } from "../utils/dom";
+import { addClass, checkAvailability, createValidation, makeDiv, removeClass, wait, waitPromise } from "../utils/dom";
 import { LevelEdges } from "../utils/svg";
 
 class Panel {
@@ -102,11 +102,11 @@ class TierPanel extends Panel {
 
             const startLevel = () => {
                 if (this.page.listening()) {
-                    isOnline(online => {
-                        if (online) {
+                    this.page.listen = false;
+                    checkAvailability(online => {
+                        if (online.internet && online.server) {
                             this.page.playButtonSound();
                             minimapcontainer.removeEventListener('click', startLevel);
-                            this.page.listen = false;
                             // this.page.app.music.fadeOut(500, true);
                             this.page.hide(() => {
                                 this.page.destroy();
@@ -119,10 +119,13 @@ class TierPanel extends Panel {
                                 });
                             });
                         } else {
-                            createValidation(document.body,
-                                `Impossible de démarrer la partie, vérifiez votre connexion internet.`,
-                                ["D'accord"]
-                            );
+                            let text = 'Impossible de continuer, ';
+                            if (!online.internet) {
+                                text += 'vérifiez votre connexion internet.'
+                            } else {
+                                if (!online.server) { text += 'le serveur Mapinou rencontre un problème.' }
+                            }
+                            createValidation(document.body, text, ["D'accord"], () => { this.page.listen = true; });
                         }
                     });
                 }
@@ -308,11 +311,11 @@ class ExperiencePanel extends Panel {
 
         const startExperience = () => {
             if (this.page.listening()) {
-                isOnline(online => {
-                    if (online) {
+                this.page.listen = false;
+                checkAvailability(online => {
+                    if (online.internet && online.server) {
                         this.page.playButtonSound();
                         this.experience.removeEventListener('click', startExperience);
-                        this.page.listen = false;
                         this.page.hide(() => {
                             wait(100, () => {
                                 this.page.destroy();
@@ -348,10 +351,13 @@ class ExperiencePanel extends Panel {
                             });
                         });
                     } else {
-                        createValidation(document.body,
-                            `Impossible de démarrer la partie, vérifiez votre connexion internet.`,
-                            ["D'accord"]
-                        );
+                        let text = 'Impossible de continuer, ';
+                        if (!online.internet) {
+                            text += 'vérifiez votre connexion internet.'
+                        } else {
+                            if (!online.server) { text += 'le serveur Mapinou rencontre un problème.' }
+                        }
+                        createValidation(document.body, text, ["D'accord"], () => { this.page.listen = true; });
                     }
                 });
             }
@@ -475,11 +481,11 @@ class TutorialPanel extends Panel {
 
         const startTutorial = () => {
             if (this.page.listening()) {
-                isOnline(online => {
-                    if (online) {
+                this.page.listen = false;
+                checkAvailability(online => {
+                    if (online.internet && online.server) {
                         this.page.playButtonSound();
                         this.minimapcontainer.removeEventListener('click', startTutorial);
-                        this.page.listen = false;
                         // this.page.app.music.fadeOut(500, true);
                         this.page.hide(() => {
                             wait(100, () => {
@@ -494,10 +500,13 @@ class TutorialPanel extends Panel {
                             });
                         });
                     } else {
-                        createValidation(document.body,
-                            `Impossible de démarrer la partie, vérifiez votre connexion internet.`,
-                            ["D'accord"]
-                        );
+                        let text = 'Impossible de continuer, ';
+                        if (!online.internet) {
+                            text += 'vérifiez votre connexion internet.'
+                        } else {
+                            if (!online.server) { text += 'le serveur Mapinou rencontre un problème.' }
+                        }
+                        createValidation(document.body, text, ["D'accord"], () => { this.page.listen = false; });
                     }
                 });
             }

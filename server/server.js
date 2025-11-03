@@ -40,7 +40,7 @@ app.get('/mapinou/configuration', (req, res) => {
 });
 
 app.get('/mapinou/ping', (req, res) => {
-	res.json({ value: true });
+	res.json({ ok: true });
 	return res;
 });
 

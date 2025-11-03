@@ -350,7 +350,7 @@ class Leaderboard {
                 .attr("height", this.height)
                 .attr("viewBox", [0, 0, this.width, this.height])
                 .attr("preserveAspectRatio", "none")
-                .attr("style", "height: auto;");
+                .attr("style", "height: 100%;");
 
             this.chartmask = svg.append("rect")
                 .attr("x", 0)
