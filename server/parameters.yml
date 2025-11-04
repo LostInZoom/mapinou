@@ -62,7 +62,7 @@ interface:
   transition:
     page: 500
   map:
-    levels: [ -7, 42, 12, 52 ]
+    levels: [ -7, 40, 12, 54 ]
     animation:
       minspeed: 500
       maxspeed: 1500
