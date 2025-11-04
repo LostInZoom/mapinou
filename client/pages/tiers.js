@@ -8,6 +8,7 @@ import Tutorial from "../game/tutorial";
 
 import { addClass, checkAvailability, createValidation, makeDiv, removeClass, wait, waitPromise } from "../utils/dom";
 import { LevelEdges } from "../utils/svg";
+import Levels from "./levels";
 
 class Panel {
     constructor(options, callback) {
@@ -15,6 +16,7 @@ class Panel {
         this.callback = callback ?? function () { };
 
         this.page = this.options.page;
+        this.app = this.page.app;
         this.animate = this.options.animate ?? false;
         this.position = this.options.position ?? 'current';
 
@@ -103,13 +105,21 @@ class TierPanel extends Panel {
             const startLevel = () => {
                 if (this.page.listening()) {
                     this.page.listen = false;
-                    checkAvailability(online => {
-                        if (online.internet && online.server) {
-                            this.page.playButtonSound();
-                            minimapcontainer.removeEventListener('click', startLevel);
-                            // this.page.app.music.fadeOut(500, true);
-                            this.page.hide(() => {
-                                this.page.destroy();
+                    this.page.playButtonSound();
+                    minimapcontainer.removeEventListener('click', startLevel);
+
+                    let online;
+                    const tasks = [
+                        cb => { this.page.hide(() => { wait(100, () => { this.page.destroy(); cb(); }) }); },
+                        cb => { checkAvailability(o => { online = o; cb(); }); }
+                    ]
+
+                    let cleared = 0;
+                    const clearing = tasks.length;
+
+                    const pursue = async () => {
+                        if (++cleared === clearing) {
+                            if (online.internet && online.server) {
                                 this.page.app.page = new Level({
                                     app: this.page.app,
                                     levels: this.page,
@@ -117,17 +127,25 @@ class TierPanel extends Panel {
                                     tier: this.page.getPosition(),
                                     level: i
                                 });
-                            });
-                        } else {
-                            let text = 'Impossible de continuer, ';
-                            if (!online.internet) {
-                                text += 'vérifiez votre connexion internet.'
                             } else {
-                                if (!online.server) { text += 'le serveur Mapinou rencontre un problème.' }
+                                let text = 'Impossible de continuer, ';
+                                if (!online.internet) {
+                                    text += 'vérifiez votre connexion internet.'
+                                } else {
+                                    if (!online.server) { text += 'le serveur Mapinou rencontre un problème.' }
+                                }
+                                createValidation(document.body, text, ["D'accord"], () => {
+                                    this.app.page = new Levels({
+                                        app: this.app,
+                                        position: 'current',
+                                        update: false
+                                    });
+                                });
                             }
-                            createValidation(document.body, text, ["D'accord"], () => { this.page.listen = true; });
                         }
-                    });
+                    }
+
+                    tasks.forEach(task => task(pursue));
                 }
             }
 
@@ -312,54 +330,69 @@ class ExperiencePanel extends Panel {
         const startExperience = () => {
             if (this.page.listening()) {
                 this.page.listen = false;
-                checkAvailability(online => {
-                    if (online.internet && online.server) {
-                        this.page.playButtonSound();
-                        this.experience.removeEventListener('click', startExperience);
-                        this.page.hide(() => {
-                            wait(100, () => {
-                                this.page.destroy();
-                                if (content.index === 'sbsod') {
-                                    this.page.app.page = new SantaBarbara({
-                                        app: this.page.app,
-                                        position: 'current',
-                                        elements: content,
-                                        stage: 'presentation'
-                                    });
-                                } else if (content.index === 'piaget') {
-                                    this.page.app.page = new Piaget({
-                                        app: this.page.app,
-                                        position: 'current',
-                                        elements: content,
-                                        stage: 'presentation'
-                                    });
-                                } else if (content.index === 'ptsot') {
-                                    this.page.app.page = new SpatialOrientation({
-                                        app: this.page.app,
-                                        position: 'current',
-                                        elements: content,
-                                        stage: 'presentation'
-                                    });
-                                } else if (content.index === 'purdue') {
-                                    this.page.app.page = new Purdue({
-                                        app: this.page.app,
-                                        position: 'current',
-                                        elements: content,
-                                        stage: 'presentation'
-                                    });
-                                }
-                            });
-                        });
-                    } else {
-                        let text = 'Impossible de continuer, ';
-                        if (!online.internet) {
-                            text += 'vérifiez votre connexion internet.'
+                this.page.playButtonSound();
+                this.experience.removeEventListener('click', startExperience);
+
+                let online;
+                const tasks = [
+                    cb => { this.page.hide(() => { wait(100, () => { this.page.destroy(); cb(); }) }); },
+                    cb => { checkAvailability(o => { online = o; cb(); }); }
+                ]
+
+                let cleared = 0;
+                const clearing = tasks.length;
+
+                const pursue = async () => {
+                    if (++cleared === clearing) {
+                        if (online.internet && online.server) {
+                            if (content.index === 'sbsod') {
+                                this.page.app.page = new SantaBarbara({
+                                    app: this.page.app,
+                                    position: 'current',
+                                    elements: content,
+                                    stage: 'presentation'
+                                });
+                            } else if (content.index === 'piaget') {
+                                this.page.app.page = new Piaget({
+                                    app: this.page.app,
+                                    position: 'current',
+                                    elements: content,
+                                    stage: 'presentation'
+                                });
+                            } else if (content.index === 'ptsot') {
+                                this.page.app.page = new SpatialOrientation({
+                                    app: this.page.app,
+                                    position: 'current',
+                                    elements: content,
+                                    stage: 'presentation'
+                                });
+                            } else if (content.index === 'purdue') {
+                                this.page.app.page = new Purdue({
+                                    app: this.page.app,
+                                    position: 'current',
+                                    elements: content,
+                                    stage: 'presentation'
+                                });
+                            }
                         } else {
-                            if (!online.server) { text += 'le serveur Mapinou rencontre un problème.' }
+                            let text = 'Impossible de continuer, ';
+                            if (!online.internet) {
+                                text += 'vérifiez votre connexion internet.'
+                            } else {
+                                if (!online.server) { text += 'le serveur Mapinou rencontre un problème.' }
+                            }
+                            createValidation(document.body, text, ["D'accord"], () => {
+                                this.app.page = new Levels({
+                                    app: this.app,
+                                    position: 'current',
+                                    update: false
+                                });
+                            });
                         }
-                        createValidation(document.body, text, ["D'accord"], () => { this.page.listen = true; });
                     }
-                });
+                }
+
+                tasks.forEach(task => task(pursue));
             }
         }
 
@@ -482,33 +515,47 @@ class TutorialPanel extends Panel {
         const startTutorial = () => {
             if (this.page.listening()) {
                 this.page.listen = false;
-                checkAvailability(online => {
-                    if (online.internet && online.server) {
-                        this.page.playButtonSound();
-                        this.minimapcontainer.removeEventListener('click', startTutorial);
-                        // this.page.app.music.fadeOut(500, true);
-                        this.page.hide(() => {
-                            wait(100, () => {
-                                this.page.destroy();
-                                this.page.app.page = new Tutorial({
-                                    app: this.page.app,
-                                    levels: this.page,
+                this.page.playButtonSound();
+                this.minimapcontainer.removeEventListener('click', startTutorial);
+
+                let online;
+                const tasks = [
+                    cb => { this.page.hide(() => { wait(100, () => { this.page.destroy(); cb(); }) }); },
+                    cb => { checkAvailability(o => { online = o; cb(); }); }
+                ]
+
+                let cleared = 0;
+                const clearing = tasks.length;
+
+                const pursue = async () => {
+                    if (++cleared === clearing) {
+                        if (online.internet && online.server) {
+                            this.page.app.page = new Tutorial({
+                                app: this.page.app,
+                                levels: this.page,
+                                position: 'current',
+                                tier: this.page.getPosition(),
+                                first: this.number === prognumber ? true : false
+                            });
+                        } else {
+                            let text = 'Impossible de continuer, ';
+                            if (!online.internet) {
+                                text += 'vérifiez votre connexion internet.'
+                            } else {
+                                if (!online.server) { text += 'le serveur Mapinou rencontre un problème.' }
+                            }
+                            createValidation(document.body, text, ["D'accord"], () => {
+                                this.app.page = new Levels({
+                                    app: this.app,
                                     position: 'current',
-                                    tier: this.page.getPosition(),
-                                    first: this.number === prognumber ? true : false
+                                    update: false
                                 });
                             });
-                        });
-                    } else {
-                        let text = 'Impossible de continuer, ';
-                        if (!online.internet) {
-                            text += 'vérifiez votre connexion internet.'
-                        } else {
-                            if (!online.server) { text += 'le serveur Mapinou rencontre un problème.' }
                         }
-                        createValidation(document.body, text, ["D'accord"], () => { this.page.listen = false; });
                     }
-                });
+                }
+
+                tasks.forEach(task => task(pursue));
             }
         }
 
