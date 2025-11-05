@@ -38,7 +38,7 @@
 
     &.horizontal-bounce {
         transform-origin: center right;
-        animation: horizontal-bounce .4s linear;
+        animation: horizontal-bounce .6s ease-out;
     }
 
     &.pop {
@@ -188,5 +188,5 @@
     width: 0;
     background-color: colors.$secondary-color-extradark;
 
-    transition: width .3s ease-in-out;
+    transition: width 1s ease-in-out;
 }

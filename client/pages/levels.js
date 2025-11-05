@@ -35,9 +35,8 @@ class Levels extends Page {
             update: this.update,
             finish: this.finish
         }, (t) => {
-            wait(600, () => {
-                this.listen = true;
-                if (this.update && !this.app.debug) {
+            if (this.update && !this.app.debug) {
+                wait(600, () => {
                     if (this.isLast()) {
                         if (this.finish) {
                             t.progress(true, () => {
@@ -59,8 +58,10 @@ class Levels extends Page {
                             });
                         }
                     }
-                }
-            });
+                });
+            } else {
+                this.listen = true;
+            }
         });
 
         this.choose = makeDiv(null, 'header-button rabbit-button left');

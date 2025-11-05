@@ -17,7 +17,7 @@ class Title extends Page {
         let init = this.options.init;
 
         let index = 0;
-        let sounds = ['button2F', 'button4Bb', 'button8C', 'button7D', 'button6F', 'button8C']
+        let sounds = ['button2F', 'button4Bb', 'button8C', 'button7D', 'button6F', 'button8C', 'button2F']
 
         // Set the title name
         this.name = this.params.game.name;
@@ -85,18 +85,19 @@ class Title extends Page {
                 let src = `letter${j + 1}`;
                 // Wait the easing value for each letter before the translation
                 wait(easing + delay, () => {
-                    wait(400, () => { this.playSound({ src: src, volume: 0.8 }); })
+                    wait(300, () => { this.playSound({ src: src, volume: 0.8 }); })
                     l.style.transform = `translateX(0)`;
                 });
                 j--;
             })
 
             // Increment the delay by the letters animation time
-            delay += 400 + animationtime;
+            delay += 300 + animationtime;
             // Bounce the whole title letters and add the time of the animation to the delay
             wait(delay, () => {
                 this.playSound({ src: sounds[index++], volume: 0.8 });
                 addClass(this.letters, 'horizontal-bounce');
+                this.letters.addEventListener('animationend', () => { removeClass(this.letters, 'horizontal-bounce'); }, { once: true });
             })
         }
 
@@ -128,26 +129,48 @@ class Title extends Page {
         this.buildinfos.offsetWidth;
 
         delay += 300;
-        // For each button slide and increment the delay
-        [this.start, this.credits, this.share].forEach((button) => {
-            if (init) {
-                wait(delay, () => {
-                    this.playSound({ src: sounds[index++], volume: 0.8 });
-                    addClass(button, 'pop');
-                });
-            } else {
-                addClass(button, 'pop');
-            }
-            delay += 300;
-        });
 
         if (init) {
             wait(delay, () => {
-                addClass(this.progression, 'pop');
+                this.playSound({ src: sounds[index++], volume: 0.8 });
+                addClass(this.start, 'pop');
             });
-            delay += 300;
+        } else { addClass(this.start, 'pop'); }
+        delay += 350;
+
+        if (init) {
             wait(delay, () => {
-                this.filler.style.width = `${100 * this.prog.position / this.prog.total}%`;
+                this.playSound({ src: sounds[index++], volume: 0.8 });
+                addClass(this.credits, 'pop');
+            });
+        } else { addClass(this.credits, 'pop'); }
+        delay += 150;
+
+        if (init) {
+            wait(delay, () => {
+                this.playSound({ src: sounds[index++], volume: 0.8 });
+                addClass(this.share, 'pop');
+            });
+        } else { addClass(this.share, 'pop'); }
+        delay += 350;
+
+        if (init) {
+            wait(delay, () => {
+                this.playSound({ src: sounds[index++], volume: 0.8 });
+                addClass(this.buildinfos, 'pop');
+            });
+        } else { addClass(this.buildinfos, 'pop'); }
+        delay += 400;
+
+        if (init) {
+            wait(delay, () => {
+                this.playSound({ src: sounds[index++], volume: 0.8 });
+                addClass(this.progression, 'pop');
+                wait(300, () => {
+                    this.filler.style.width = `${100 * this.prog.position / this.prog.total}%`;
+                    this.listen = true;
+                    this.callback();
+                });
             });
         } else {
             if (this.position !== 'current') {
@@ -161,26 +184,11 @@ class Title extends Page {
                 });
             } else {
                 addClass(this.progression, 'pop');
-                wait(300, () => { this.filler.style.width = `${100 * this.prog.position / this.prog.total}%`; });
-            }
-        }
-
-        if (init) {
-            // Delay the build infos by 200 milliseconds for dramatic effects
-            delay += 200;
-            // Slide the build button
-            wait(delay, () => {
-                removeClass(this.letters, 'horizontal-bounce');
-                this.playSound({ src: sounds[index++], volume: 0.8 });
-                addClass(this.buildinfos, 'pop');
-                this.listen = true;
-                this.callback();
-            });
-        } else {
-            addClass(this.buildinfos, 'pop');
-            if (this.position === 'current') {
-                this.listen = true;
-                this.callback();
+                wait(300, () => {
+                    this.filler.style.width = `${100 * this.prog.position / this.prog.total}%`;
+                    this.listen = true;
+                    this.callback();
+                });
             }
         }
 

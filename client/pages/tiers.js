@@ -208,7 +208,9 @@ class TierPanel extends Panel {
                     state.innerHTML = this.page.app.options.svgs.lock;
                 }
 
-                if (!this.update && this.animate && i <= this.level) { await waitPromise(300); }
+                if (!this.update && this.animate && i <= this.level) {
+                    await waitPromise(300);
+                }
 
                 let drawLine = false;
                 if (this.finish && i < this.level) { drawLine = true; }
@@ -219,7 +221,9 @@ class TierPanel extends Panel {
                     this.svg.addLine(px[0], px[1], nextpx[0], nextpx[1], i, i + 1);
                 }
 
-                if (!this.update && this.animate && i < this.level) { await waitPromise(300); }
+                if (!this.update && this.animate && i < this.level) {
+                    await waitPromise(300);
+                }
             }
         }
     }
