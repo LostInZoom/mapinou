@@ -232,12 +232,12 @@ async function insertResults(data) {
             );
 
             query = `
-                INSERT INTO data.games (session, level, version, score, enemies, helpers, journey)
-                VALUES ($1, $2, $3, $4, $5, $6, ST_SetSRID(ST_GeomFromText($7), 4326))
+                INSERT INTO data.games (session, level, version, score, enemies, helpers, distance, journey)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, ST_SetSRID(ST_GeomFromText($8), 4326))
                 RETURNING id;
             `
             const wkt = 'LINESTRING(' + data.phase2.journey.map(p => `${p[0]} ${p[1]}`).join(', ') + ')';
-            values = [data.session, level, version, data.score, data.enemies, data.helpers, wkt];
+            values = [data.session, level, version, data.score, data.enemies, data.helpers, data.phase2.distance, wkt];
             returning = await db.query(query, values);
             const gameIndex = returning.rows[0].id;
 
@@ -390,6 +390,75 @@ async function insertResults(data) {
     }
 }
 
+async function getEnding() {
+    let query = `
+        SELECT
+            g.session,
+            COUNT(g.id) AS games,
+            SUM(g.distance) AS distance,
+            SUM(g.score) AS score,
+            SUM(g.enemies) AS enemies,
+            SUM(g.helpers) AS helpers,
+            COALESCE(p.total_duration, 0) AS duration,
+            COALESCE(i.total_investigations, 0) AS clics1,
+            COALESCE(r.total_interactions, 0) AS clics2,
+            COALESCE(r.zoom_in, 0) AS zoom_in,
+            COALESCE(r.zoom_out, 0) AS zoom_out,
+            COALESCE(r.pan, 0) AS pan
+        FROM data.games g
+
+        LEFT JOIN (
+            SELECT
+                gm.session,
+                SUM(ph.duration) AS total_duration
+            FROM data.phases ph
+            JOIN data.games gm ON ph.game = gm.id
+            GROUP BY gm.session
+        ) p ON g.session = p.session
+
+        LEFT JOIN (
+            SELECT
+                gm.session,
+                COUNT(inv.id) AS total_investigations
+            FROM data.investigation inv
+            JOIN data.phases ph ON inv.phase = ph.id
+            JOIN data.games gm ON ph.game = gm.id
+            GROUP BY gm.session
+        ) i ON g.session = i.session
+
+        LEFT JOIN (
+            SELECT
+                gm.session,
+                COUNT(inter.id) AS total_interactions,
+                COUNT(*) FILTER (WHERE inter.type = 'zoom in') AS zoom_in,
+                COUNT(*) FILTER (WHERE inter.type = 'zoom out') AS zoom_out,
+                COUNT(*) FILTER (WHERE inter.type = 'pan') AS pan
+            FROM data.interactions inter
+            JOIN data.phases ph ON inter.phase = ph.id
+            JOIN data.games gm ON ph.game = gm.id
+            GROUP BY gm.session
+        ) r ON g.session = r.session
+
+        GROUP BY
+            g.session,
+            p.total_duration,
+            i.total_investigations,
+            r.total_interactions,
+            r.zoom_in,
+            r.zoom_out,
+            r.pan
+        ORDER BY score;
+    `
+
+    try {
+        let results = await db.query(query);
+        return results.rows;
+    }
+    catch {
+        return {};
+    }
+}
+
 async function insertExperience(data, name, version) {
     await db.query(
         `DELETE FROM data.experiences WHERE session = $1 AND name = $2`,
@@ -409,6 +478,6 @@ async function insertExperience(data, name, version) {
 
 export {
     createSession, verifySession, renameSession,
-    giveConsent, insertForm,
+    giveConsent, insertForm, getEnding,
     insertResults, insertPiaget, insertSBSOD, insertPTSOT, insertPurdue
 };

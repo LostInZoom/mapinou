@@ -1,7 +1,7 @@
 $border-radius: min(.4rem, 2vh, 2vw);
 
 // BUTTONS
-$button-size: min(3.5rem, 15vw, 15vh);
+$button-size: min(3.5rem, 15vw, 12vh);
 
 // PAGES
 $max-height: 40rem;
@@ -13,5 +13,5 @@ $font-size-regular: min(4vw, 4vh, 1rem);
 $font-size-title: min(5vw, 5vh, 1.2rem);
 $font-size-score: min(6vw, 6vh, 1.6rem);
 
-$gap1rem: min(1rem, 2vh, 2vw);
-$gap2rem: min(2rem, 4vh, 4vw);
+$gap1rem: min(1rem, 2vh, 4vw);
+$gap2rem: min(2rem, 4vh, 8vw);

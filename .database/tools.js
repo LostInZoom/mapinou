@@ -186,6 +186,7 @@ async function createTables() {
             score integer,
             enemies integer,
             helpers integer,
+            distance double precision,
             journey geometry(LineString, 4326),
             CONSTRAINT games_pkey PRIMARY KEY (id),
             CONSTRAINT games_sessions_key FOREIGN KEY (session) REFERENCES data.sessions(id),

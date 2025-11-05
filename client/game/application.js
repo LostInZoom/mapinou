@@ -1,21 +1,22 @@
-import Page from '../pages/page.js';
-import { makeDiv, addClass, removeClass, wait } from '../utils/dom.js';
 import Basemap from '../cartography/map.js';
+import Roamer from '../characters/roamer.js';
+import Rabbits from '../layers/rabbits.js';
+
+import Page from '../pages/page.js';
+import Title from '../pages/title.js';
+
+import { makeDiv, addClass, removeClass, wait } from '../utils/dom.js';
 import { generateRandomInteger } from '../utils/math.js';
 import { Header } from '../pages/elements.js';
-
-import Title from '../pages/title.js';
-import Roamer from '../characters/roamer.js';
 import { Music, SoundEffects } from '../utils/soundbuttons.js';
-import Rabbits from '../layers/rabbits.js';
 
 class Application {
     constructor(options) {
         this.options = options;
         this.progression = options.progression;
 
-        this.debug = false;
-        this.progression = { tier: 8, level: 3, finish: false };
+        this.debug = true;
+        // this.progression = { tier: 8, level: 3, finish: false };
 
         // Create the DOM Element
         this.container = makeDiv('application', null);

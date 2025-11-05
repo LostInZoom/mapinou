@@ -150,13 +150,17 @@
     background-color: colors.$secondary-color-dark;
 }
 
+$progsize: min(2.5rem, 10vw, 10vh);
+
 .title-progression-container {
     pointer-events: all;
     position: relative;
 
-    height: sizes.$button-size;
+    height: $progsize;
     width: calc(sizes.$button-size * 2);
-    border-radius: sizes.$button-size;
+    margin-left: calc((sizes.$button-size - $progsize) / 2);
+
+    border-radius: sizes.$border-radius;
     background-color: colors.$secondary-color-dark;
     overflow: hidden;
 
@@ -177,7 +181,7 @@
 
     color: colors.$main-color-light;
 
-    font-size: sizes.$font-size-small;
+    font-size: sizes.$font-size-title;
     font-weight: bold;
     padding: .3rem .6rem;
     border-radius: sizes.$button-size;
@@ -188,5 +192,5 @@
     width: 0;
     background-color: colors.$secondary-color-extradark;
 
-    transition: width 1s ease-in-out;
+    transition: width .6s cubic-bezier(0.33, 1, 0.68, 1);
 }

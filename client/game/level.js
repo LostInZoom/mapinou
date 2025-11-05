@@ -1,3 +1,5 @@
+import * as turf from "@turf/turf";
+
 import Page from "../pages/page";
 import Levels from '../pages/levels';
 import Score from "../cartography/score";
@@ -205,7 +207,10 @@ class Level extends Page {
                                     this.results.phase2.duration = end - start;
                                     this.results.phase2.start = new Date(start).toISOString();
                                     this.results.phase2.end = new Date(end).toISOString();
-                                    this.results.phase2.journey = this.basemap.player.getJourney();
+
+                                    const j = this.basemap.player.getJourney();
+                                    this.results.phase2.journey = j;
+                                    this.results.phase2.distance = turf.length(turf.lineString(j), { units: 'meters' });
                                     this.results.phase2.score = this.score.get();
 
                                     this.basemap.recorder.reset();

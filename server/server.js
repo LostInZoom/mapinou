@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import { load } from "js-yaml";
 import express from 'express';
 import bodyParser from 'body-parser';
-import { createSession, giveConsent, insertForm, insertPiaget, insertPTSOT, insertPurdue, insertResults, insertSBSOD, renameSession, verifySession } from "../.database/requests.js";
+import { createSession, getEnding, giveConsent, insertForm, insertPiaget, insertPTSOT, insertPurdue, insertResults, insertSBSOD, renameSession, verifySession } from "../.database/requests.js";
 
 const parametersFile = fs.readFileSync('./server/parameters.yml', { encoding: 'utf-8' });
 const parameters = load(parametersFile);
@@ -42,6 +42,12 @@ app.get('/mapinou/configuration', (req, res) => {
 app.get('/mapinou/ping', (req, res) => {
 	res.json({ ok: true });
 	return res;
+});
+
+app.get('/mapinou/statistics', (req, res) => {
+	getEnding().then(results => {
+		res.send(JSON.stringify(results));
+	});
 });
 
 app.post('/mapinou/registration', jsonParser, (req, res) => {

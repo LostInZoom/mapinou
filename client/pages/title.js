@@ -3,10 +3,11 @@ import Form from "./form";
 import Levels from "./levels";
 import Page from "./page";
 
-import { addClass, makeDiv, removeClass, removeClassList, wait, waitPromise } from "../utils/dom";
+import { addClass, makeDiv, removeClass, removeClassList, wait } from "../utils/dom";
 import { remap, easeOutCubic, easeInOutSine } from "../utils/math";
 import { capitalizeFirstLetter, pxToRem } from "../utils/parse";
 import Credits from "./credits";
+import Ending from "./ending";
 
 class Title extends Page {
     constructor(options, callback) {
@@ -249,7 +250,8 @@ class Title extends Page {
                             this.basemap.fit(this.params.interface.map.levels, {
                                 easing: easeInOutSine
                             }, () => {
-                                this.app.page = new Levels({ app: this.app, position: 'current', init: true });
+                                this.app.page = new Ending({ app: this.app, position: 'current' });
+                                // this.app.page = new Levels({ app: this.app, position: 'current', init: true });
                             });
                         });
                     } else {

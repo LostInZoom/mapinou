@@ -76,8 +76,8 @@
     flex: 1;
     pointer-events: all;
 
-    height: min(2rem, 5vh);
-    width: min(2rem, 5vh);
+    height: min(2rem, 6vh);
+    width: min(2rem, 6vh);
 
     overflow: hidden;
 
@@ -171,6 +171,7 @@
     position: absolute;
 
     padding: .2rem .5rem;
+    font-size: sizes.$font-size-small;
     border-radius: sizes.$border-radius;
 
     background-color: colors.$main-color-dark;
@@ -208,6 +209,7 @@
     position: absolute;
 
     padding: .2rem .5rem;
+    font-size: sizes.$font-size-small;
     border-radius: sizes.$border-radius;
 
     color: colors.$main-color-light;
@@ -242,7 +244,7 @@
     justify-content: space-between;
     align-items: center;
 
-    font-size: .9rem;
+    font-size: sizes.$font-size-small;
     padding: .5rem .5rem;
 
     color: colors.$main-color-dark;

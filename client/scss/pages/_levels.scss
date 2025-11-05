@@ -186,11 +186,11 @@
 
 .levels-minimap {
     position: relative;
-    width: min(4rem, 10vh, 20vw);
-    height: min(4rem, 10vh, 20vw);
+    width: min(4rem, 15vh, 20vw);
+    height: min(4rem, 15vh, 20vw);
 
     border: solid min(.5rem, 2vh, 2vw) colors.$main-color-dark;
-    border-radius: min(4rem, 10vh, 20vw);
+    border-radius: min(4rem, 15vh, 20vw);
     box-shadow: 0 0 1rem grey;
 
     transform: scale(0.8);
@@ -271,7 +271,7 @@
 
         &>line {
             stroke: colors.$main-color-dark;
-            stroke-width: min(.5rem, 2vh, 2vw);
+            stroke-width: min(.4rem, 1.8vh, 1.8vw);
             transition: stroke-width .2s cubic-bezier(0.36, 0, 0.66, -0.56);
 
             &.appear {
