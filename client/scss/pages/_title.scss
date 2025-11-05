@@ -21,7 +21,7 @@
     align-items: center;
 
     font-family: 'Vincendo';
-    font-size: 16vw;
+    font-size: min(16vw, 16vh, 5rem);
     text-transform: uppercase;
     color: colors.$main-color-light;
 
@@ -68,7 +68,7 @@
 
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: min(2rem, 2vh, 4vw);
 }
 
 .title-button {
@@ -89,8 +89,8 @@
 
 .title-button-share {
     pointer-events: all;
-    height: min(11vw, 10vh);
-    width: min(11vw, 10vh);
+    height: min(12vw, 10vh, 3rem);
+    width: min(12vw, 10vh, 3rem);
     align-self: center;
 
     background-color: colors.$grey-medium;
@@ -116,7 +116,7 @@
     pointer-events: all;
 
     font-family: 'Vincendo';
-    font-size: 7vw;
+    font-size: min(8vw, 5vh, 1.8rem);
     text-transform: uppercase;
     color: colors.$main-color-light;
     background-color: colors.$secondary-color-dark;
@@ -125,7 +125,7 @@
 .title-build {
     position: absolute;
     z-index: 150;
-    bottom: 1rem;
+    bottom: sizes.$gap2rem;
 
     display: flex;
     justify-content: center;
@@ -142,7 +142,7 @@
 .title-build-label {
     pointer-events: all;
     font-family: 'Vincendo';
-    font-size: 3vw;
+    font-size: sizes.$font-size-extrasmall;
     padding: .2rem .4rem;
     border-radius: sizes.$border-radius;
 
@@ -150,21 +150,43 @@
     background-color: colors.$secondary-color-dark;
 }
 
-@media screen and (min-width: 500px) {
-    .title-letters {
-        font-size: 5rem;
-    }
+.title-progression-container {
+    pointer-events: all;
+    position: relative;
 
-    .title-button-label {
-        font-size: 2rem;
-    }
+    height: sizes.$button-size;
+    width: calc(sizes.$button-size * 2);
+    border-radius: sizes.$button-size;
+    background-color: colors.$secondary-color-dark;
+    overflow: hidden;
 
-    .title-build-label {
-        font-size: .9rem;
-    }
+    transform: scale(0);
+    transition: transform .3s cubic-bezier(0.36, 0, 0.66, -0.56);
 
-    .title-button-share {
-        height: 3rem;
-        width: 3rem;
+    &.pop {
+        transform: scale(1);
+        transition: transform .3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
+}
+
+.title-progression-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    color: colors.$main-color-light;
+
+    font-size: sizes.$font-size-small;
+    font-weight: bold;
+    padding: .3rem .6rem;
+    border-radius: sizes.$button-size;
+}
+
+.title-progression-filler {
+    height: 100%;
+    width: 0;
+    background-color: colors.$secondary-color-extradark;
+
+    transition: width .3s ease-in-out;
 }

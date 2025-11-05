@@ -1,6 +1,7 @@
 import Page from "./page";
 import Title from "./title";
 import Selection from "./selection.js";
+import Ending from "./ending.js";
 
 import { addClass, makeDiv, addClass, removeClass, wait, clearElement } from "../utils/dom";
 import { easeInOutSine } from '../utils/math.js';
@@ -41,6 +42,10 @@ class Levels extends Page {
                         if (this.finish) {
                             t.progress(true, () => {
                                 // END GAME HERE
+                                this.hide(() => {
+                                    this.destroy();
+                                    this.app.page = new Ending({ app: this.app, position: 'current' });
+                                });
                             });
                         } else {
                             this.slide('next', () => {

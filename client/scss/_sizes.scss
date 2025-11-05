@@ -7,11 +7,11 @@ $button-size: min(3.5rem, 15vw, 15vh);
 $max-height: 40rem;
 $max-width: 25rem;
 
-$font-size-extrasmall: min(3vw, .8rem);
-$font-size-small: min(3.5vw, .9rem);
-$font-size-regular: min(4vw, 1rem);
-$font-size-title: min(5vw, 1.2rem);
-$font-size-score: min(6vw, 1.6rem);
+$font-size-extrasmall: min(3vw, 3vh, .8rem);
+$font-size-small: min(3.5vw, 3.5vh, .9rem);
+$font-size-regular: min(4vw, 4vh, 1rem);
+$font-size-title: min(5vw, 5vh, 1.2rem);
+$font-size-score: min(6vw, 6vh, 1.6rem);
 
-$gap1rem: min(1rem, 2vh);
-$gap2rem: min(2rem, 4vh);
+$gap1rem: min(1rem, 2vh, 2vw);
+$gap2rem: min(2rem, 4vh, 4vw);

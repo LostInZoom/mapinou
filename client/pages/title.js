@@ -20,7 +20,7 @@ class Title extends Page {
         let sounds = ['button2F', 'button4Bb', 'button8C', 'button7D', 'button6F', 'button8C']
 
         // Set the title name
-        this.name = 'Mapinou';
+        this.name = this.params.game.name;
 
         this.options.app.allowRabbits();
         addClass(this.container, 'page-title');
@@ -30,6 +30,13 @@ class Title extends Page {
         this.letters = makeDiv(null, 'title-letters');
         this.title.append(this.letters);
         this.container.append(this.title);
+
+        this.prog = this.app.getNumberProgression();
+        this.progression = makeDiv(null, 'title-progression-container');
+        this.filler = makeDiv(null, 'title-progression-filler');
+        this.label = makeDiv(null, 'title-progression-label', `${this.prog.position}/${this.prog.total}`);
+        this.progression.append(this.filler, this.label);
+        this.app.header.insert(this.progression);
 
         let delay = this.params.interface.transition.page;
 
@@ -135,7 +142,31 @@ class Title extends Page {
         });
 
         if (init) {
-            // Delay the build infos by 400 milliseconds for dramatic effects
+            wait(delay, () => {
+                addClass(this.progression, 'pop');
+            });
+            delay += 300;
+            wait(delay, () => {
+                this.filler.style.width = `${100 * this.prog.position / this.prog.total}%`;
+            });
+        } else {
+            if (this.position !== 'current') {
+                wait(this.params.interface.transition.page, () => {
+                    addClass(this.progression, 'pop');
+                    wait(300, () => {
+                        this.filler.style.width = `${100 * this.prog.position / this.prog.total}%`;
+                        this.listen = true;
+                        this.callback();
+                    });
+                });
+            } else {
+                addClass(this.progression, 'pop');
+                wait(300, () => { this.filler.style.width = `${100 * this.prog.position / this.prog.total}%`; });
+            }
+        }
+
+        if (init) {
+            // Delay the build infos by 200 milliseconds for dramatic effects
             delay += 200;
             // Slide the build button
             wait(delay, () => {
@@ -147,8 +178,10 @@ class Title extends Page {
             });
         } else {
             addClass(this.buildinfos, 'pop');
-            this.listen = true;
-            this.callback();
+            if (this.position === 'current') {
+                this.listen = true;
+                this.callback();
+            }
         }
 
         this.titlelisten = true;
@@ -168,6 +201,8 @@ class Title extends Page {
                 addClass(this.creditslabel, 'clicked');
                 this.playButtonSound();
                 this.listen = false;
+                removeClass(this.progression, 'pop');
+                wait(300, () => { this.progression.remove(); });
                 this.previous = new Credits({ app: this.app, position: 'previous' });
                 this.slidePrevious();
             }
@@ -197,11 +232,12 @@ class Title extends Page {
                 this.listen = false;
                 if (this.options.app.options.session.consent) {
                     if (this.options.app.options.session.form) {
-                        removeClassList([this.letters, this.start, this.credits, this.share, this.buildinfos], 'pop');
+                        removeClassList([this.letters, this.start, this.credits, this.share, this.buildinfos, this.progression], 'pop');
                         this.app.killRabbits();
                         this.app.forbidRabbits();
                         wait(300, () => {
                             this.destroy();
+                            this.progression.remove();
                             this.basemap.fit(this.params.interface.map.levels, {
                                 easing: easeInOutSine
                             }, () => {
