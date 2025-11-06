@@ -18,16 +18,22 @@ class Leaderboard {
 
         this.page = this.options.page;
         this.params = this.page.params;
-        this.results = this.options.results;
-        this.highscores = this.options.highscores;
+        this.ending = this.options.ending ?? false;
         this.parent = this.page.container;
         this.listen = false;
+
+        this.highscores = this.options.highscores;
+        this.results = this.options.results;
 
         this.activated = [];
 
         // Creation of containers and map
-        this.container = makeDiv(null, 'highscore-container');
-        let map = makeDiv(null, 'highscore-map');
+        this.container = makeDiv(null, `highscore-container ${this.ending ? 'ending' : 'level'}`);
+        if (!this.ending) {
+            this.mapcontainer = makeDiv(null, 'highscore-map');
+            this.container.append(this.mapcontainer);
+        }
+
         let tabscontainer = makeDiv(null, 'highscore-tabs-container');
         // Tabs buttons
         this.buttons = makeDiv(null, 'highscore-buttons');
@@ -35,8 +41,8 @@ class Leaderboard {
         this.tabs = makeDiv(null, 'highscore-tabs');
         tabscontainer.append(this.buttons, this.tabs);
 
-        this.continue = makeDiv(null, 'highscore-continue page-button', "Continuer")
-        this.container.append(map, tabscontainer, this.continue);
+        this.continue = makeDiv(null, 'highscore-continue page-button', this.ending ? "Menu principal" : "Continuer");
+        this.container.append(tabscontainer, this.continue);
         this.parent.append(this.container);
 
         this.createMetrics();
@@ -46,61 +52,79 @@ class Leaderboard {
 
         this.createLeaderboard();
         this.createChart();
-        this.createJourney();
+        if (!this.ending) { this.createJourney(); }
 
         addClass(this.container, 'pop');
 
-        let c = this.page.parameters.target;
-        let r = this.params.game.tolerance.target;
-        let hsmap = new Basemap({
-            app: this.page.app,
-            parent: map,
-            class: 'minimap',
-            interactive: false,
-            extent: pointExtent(c, r * 2)
-        }, () => {
-            hsmap.loadSprites().then(async () => {
+        if (this.ending) {
+            this.animateMetrics(() => {
+                addClass(this.continue, 'pop');
                 this.listen = true;
-
-                let hsRabbits = new Rabbits({
-                    id: 'leaderboard-rabbits',
-                    basemap: hsmap,
-                    level: this.page
+                this.continue.addEventListener('click', () => {
+                    if (this.listen) {
+                        this.listen = false;
+                        this.page.playButtonSound();
+                        removeClass(this.container, 'pop');
+                        wait(300, () => {
+                            this.callback();
+                        });
+                    }
                 });
-                let hsTarget = new Target({
-                    layer: hsRabbits,
-                    color: this.page.basemap.player.getColor(),
-                    coordinates: randomPointInCircle(c, r)
-                });
-                let hsPlayer = new Target({
-                    layer: hsRabbits,
-                    color: this.page.basemap.target.getColor(),
-                    coordinates: randomPointInCircle(c, r)
-                });
+            });
+        }
+        else {
+            let c = this.page.parameters.target;
+            let r = this.params.game.tolerance.target;
+            let hsmap = new Basemap({
+                app: this.page.app,
+                parent: this.mapcontainer,
+                class: 'minimap',
+                interactive: false,
+                extent: pointExtent(c, r * 2)
+            }, () => {
+                hsmap.loadSprites().then(async () => {
+                    this.listen = true;
 
-                await waitPromise(300);
-                hsTarget.spawn();
-                hsPlayer.spawn();
-                await waitPromise(200);
+                    let hsRabbits = new Rabbits({
+                        id: 'leaderboard-rabbits',
+                        basemap: hsmap,
+                        level: this.page
+                    });
+                    let hsTarget = new Target({
+                        layer: hsRabbits,
+                        color: this.page.basemap.player.getColor(),
+                        coordinates: randomPointInCircle(c, r)
+                    });
+                    let hsPlayer = new Target({
+                        layer: hsRabbits,
+                        color: this.page.basemap.target.getColor(),
+                        coordinates: randomPointInCircle(c, r)
+                    });
 
-                this.animateMetrics(() => {
-                    addClass(this.continue, 'pop');
-                    this.continue.addEventListener('click', () => {
-                        if (this.listen) {
-                            this.listen = false;
-                            this.page.playButtonSound();
-                            removeClass(this.container, 'pop');
-                            hsRabbits.despawnCharacters(() => {
-                                hsRabbits.destroy();
-                                hsmap.remove();
-                                if (this.journeyMap) { this.journeyMap.remove(); }
-                                this.callback();
-                            });
-                        }
+                    await waitPromise(300);
+                    hsTarget.spawn();
+                    hsPlayer.spawn();
+                    await waitPromise(200);
+
+                    this.animateMetrics(() => {
+                        addClass(this.continue, 'pop');
+                        this.continue.addEventListener('click', () => {
+                            if (this.listen) {
+                                this.listen = false;
+                                this.page.playButtonSound();
+                                removeClass(this.container, 'pop');
+                                hsRabbits.despawnCharacters(() => {
+                                    hsRabbits.destroy();
+                                    hsmap.remove();
+                                    if (this.journeyMap) { this.journeyMap.remove(); }
+                                    this.callback();
+                                });
+                            }
+                        });
                     });
                 });
             });
-        });
+        }
     }
 
     activateButton(e) {
@@ -116,8 +140,10 @@ class Leaderboard {
             Array.from(this.buttons.children).forEach(b => { removeClass(b, 'active'); });
             addClass(el, 'active');
 
-            if (v === 'journey') { wait(300, () => { addClass(this.journeymask, 'loaded'); }) }
-            else { wait(200, () => { removeClass(this.journeymask, 'loaded'); }) }
+            if (!this.ending) {
+                if (v === 'journey') { wait(300, () => { addClass(this.journeymask, 'loaded'); }) }
+                else { wait(200, () => { removeClass(this.journeymask, 'loaded'); }) }
+            }
 
             if (!this.activated.includes(v)) {
                 this.activated.push(v);
@@ -139,36 +165,43 @@ class Leaderboard {
         this.buttons.append(button);
         this.tabs.append(this.metrics);
 
-        const n = this.results.phase1.duration + this.results.phase2.duration;
+        const n = this.ending ? this.results.duration : this.results.phase1.duration + this.results.phase2.duration;
         const m = Math.floor(n / 60000).toString();
         const s = Math.floor((n % 60000) / 1000).toString();
 
-        const length = turf.length(turf.lineString(this.results.phase2.journey));
+        const length = this.ending ? this.results.distance / 1000 : turf.length(turf.lineString(this.results.phase2.journey));
         const km = Math.floor(length).toString();
         const metres = length.toString().split('.')[1]?.slice(0, 3) || '000';
 
         let [zoomin, zoomout, pan] = [0, 0, 0];
-        const calculateInteractions = (phase) => {
-            this.results[`phase${phase}`].interactions.forEach(i => {
-                if (i.type === 'zoom in') { ++zoomin; }
-                else if (i.type === 'zoom out') { ++zoomout; }
-                else if (i.type === 'pan') { ++pan; }
-            });
+        if (this.ending) {
+            [zoomin, zoomout, pan] = [this.results.zoomin, this.results.zoomout, this.results.pan];
+        } else {
+            const calculateInteractions = (phase) => {
+                this.results[`phase${phase}`].interactions.forEach(i => {
+                    if (i.type === 'zoom in') { ++zoomin; }
+                    else if (i.type === 'zoom out') { ++zoomout; }
+                    else if (i.type === 'pan') { ++pan; }
+                });
+            }
+            calculateInteractions(1);
+            calculateInteractions(2);
         }
-        calculateInteractions(1);
-        calculateInteractions(2);
+
+        const find = this.ending ? this.results.clics1 : this.results.phase1.clics.length;
+        const guide = this.ending ? this.results.clics2 : this.results.phase2.clics.length;
 
         this.increments = [
-            { name: 'Score', value: this.results.score, duration: 500 },
-            { name: 'Temps', value: [m, s], duration: [100, 500], labels: ['m', 's'] },
-            { name: 'Distance parcourue', value: [km, metres], duration: [300, 500], labels: ['km', 'm'] },
-            { name: 'Prédateurs rencontrés', value: this.results.enemies, duration: 100 },
-            { name: 'Légumes mangés', value: this.results.helpers, duration: 100 },
-            { name: 'Clics pour trouver Lapinou', value: this.results.phase1.clics.length, duration: 100 },
-            { name: 'Clics pour guider Lapinou', value: this.results.phase2.clics.length, duration: 100 },
-            { name: 'Zooms avant', value: zoomin, duration: 100 },
-            { name: 'Zooms arrière', value: zoomout, duration: 100 },
-            { name: 'Déplacements sur la carte', value: pan, duration: 100 },
+            { name: this.ending ? 'Score total' : 'Score', value: this.results.score, duration: 500 },
+            { name: this.ending ? 'Temps total' : 'Temps', value: [m, s], duration: [100, 500], labels: ['m', 's'] },
+            { name: this.ending ? 'Distance totale parcourue' : 'Distance parcourue', value: [km, metres], duration: [300, 500], labels: ['km', 'm'] },
+            { name: this.ending ? 'Total de prédateurs rencontrés' : 'Prédateurs rencontrés', value: this.results.enemies, duration: 100 },
+            { name: this.ending ? 'Total de légumes mangés' : 'Légumes mangés', value: this.results.helpers, duration: 100 },
+            { name: this.ending ? 'Total de clics pour trouver Lapinou' : 'Clics pour trouver Lapinou', value: find, duration: 100 },
+            { name: this.ending ? 'Total de clics pour guider Lapinou' : 'Clics pour guider Lapinou', value: guide, duration: 100 },
+            { name: this.ending ? 'Total de zooms avant' : 'Zooms avant', value: zoomin, duration: 100 },
+            { name: this.ending ? 'Total de zooms arrière' : 'Zooms arrière', value: zoomout, duration: 100 },
+            { name: this.ending ? 'Total de déplacements sur la carte' : 'Déplacements sur la carte', value: pan, duration: 100 },
         ];
 
         this.increments.forEach(i => {
@@ -253,11 +286,13 @@ class Leaderboard {
         this.buttons.append(button);
         this.tabs.append(this.leaderboard);
 
+        const leaderboard = this.ending ? this.highscores : this.highscores.leaderboard;
+
         // Tab to display personnal rank
-        this.highscores.leaderboard.sort((a, b) => a.score - b.score);
+        leaderboard.sort((a, b) => a.score - b.score);
         this.personal;
-        for (let i = 0; i < this.highscores.leaderboard.length; i++) {
-            let e = this.highscores.leaderboard[i];
+        for (let i = 0; i < leaderboard.length; i++) {
+            let e = leaderboard[i];
             let entry = makeDiv(null, 'highscore-entry');
             let html = `${i + 1}. ${e.name}`;
             if (this.params.session.index === e.session) {
@@ -290,8 +325,10 @@ class Leaderboard {
         this.buttons.append(button);
         this.tabs.append(tab);
 
+        const leaderboard = this.ending ? this.highscores : this.highscores.leaderboard;
+
         // Tab to display a chart with position
-        let scores = this.highscores.leaderboard.map(h => h.score);
+        let scores = leaderboard.map(h => h.score);
 
         if (scores.length < 2) {
             let oops = makeDiv(null, 'highscore-oops', "Il n'y a personne encore !");

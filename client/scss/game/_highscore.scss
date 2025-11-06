@@ -6,8 +6,7 @@
     pointer-events: all;
 
     width: min(calc(100% - sizes.$gap1rem * 2), sizes.$max-width);
-    height: min(calc(100% - sizes.$button-size - 3*sizes.$gap1rem - sizes.$font-size-small - 1rem - min(20vw, 12.5vh, 5rem)), sizes.$max-height);
-    margin-top: calc(sizes.$button-size + 2*sizes.$gap1rem + min(20vw, 12.5vh, 5rem));
+
     margin-bottom: calc(sizes.$font-size-small + 1rem + sizes.$gap1rem);
 
     background-color: colors.$secondary-color-dark;
@@ -24,6 +23,24 @@
     &.pop {
         transform: scale(1);
         transition: transform .3s cubic-bezier(0.075, 0.495, 0.320, 1.225);
+    }
+
+    &.ending {
+        margin-top: calc(sizes.$button-size + 2*sizes.$gap1rem);
+        height: min(calc(100% - sizes.$button-size - 3*sizes.$gap1rem - sizes.$font-size-small - 1rem), sizes.$max-height);
+
+        &>.highscore-tabs-container {
+            margin-top: sizes.$gap1rem;
+        }
+    }
+
+    &.level {
+        margin-top: calc(sizes.$button-size + 2*sizes.$gap1rem + min(20vw, 12.5vh, 5rem));
+        height: min(calc(100% - sizes.$button-size - 3*sizes.$gap1rem - sizes.$font-size-small - 1rem - min(20vw, 12.5vh, 5rem)), sizes.$max-height);
+
+        &>.highscore-tabs-container {
+            margin-top: calc(min(20vw, 12.5vh, 5rem) + sizes.$gap1rem + min(.5rem, 2vh, 2vw));
+        }
     }
 }
 
@@ -55,7 +72,6 @@
 
 .highscore-tabs-container {
     overflow: hidden;
-    margin-top: calc(min(20vw, 12.5vh, 5rem) + sizes.$gap1rem + min(.5rem, 2vh, 2vw));
     margin-bottom: sizes.$gap1rem;
 
     width: calc(100% - 2*sizes.$gap1rem);

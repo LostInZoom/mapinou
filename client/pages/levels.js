@@ -3,7 +3,7 @@ import Title from "./title";
 import Selection from "./selection.js";
 import Ending from "./ending.js";
 
-import { addClass, makeDiv, addClass, removeClass, wait, clearElement } from "../utils/dom";
+import { addClass, makeDiv, addClass, removeClass, wait } from "../utils/dom";
 import { easeInOutSine } from '../utils/math.js';
 import { ExperiencePanel, NavigationBar, TierPanel, TutorialPanel } from "./tiers.js";
 import { ajaxPost } from "../utils/ajax.js";

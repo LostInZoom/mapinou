@@ -393,19 +393,21 @@ async function insertResults(data) {
 async function getEnding() {
     let query = `
         SELECT
-            g.session,
-            COUNT(g.id) AS games,
-            SUM(g.distance) AS distance,
-            SUM(g.score) AS score,
-            SUM(g.enemies) AS enemies,
-            SUM(g.helpers) AS helpers,
-            COALESCE(p.total_duration, 0) AS duration,
-            COALESCE(i.total_investigations, 0) AS clics1,
-            COALESCE(r.total_interactions, 0) AS clics2,
-            COALESCE(r.zoom_in, 0) AS zoom_in,
-            COALESCE(r.zoom_out, 0) AS zoom_out,
-            COALESCE(r.pan, 0) AS pan
+            g.session::integer,
+            s.name,
+            COUNT(g.id)::integer AS games,
+            SUM(g.distance)::double precision AS distance,
+            SUM(g.score)::integer AS score,
+            SUM(g.enemies)::integer AS enemies,
+            SUM(g.helpers)::integer AS helpers,
+            COALESCE(p.total_duration, 0)::integer AS duration,
+            COALESCE(i.total_investigations, 0)::integer AS clics1,
+            COALESCE(r.total_interactions, 0)::integer AS clics2,
+            COALESCE(r.zoom_in, 0)::integer AS zoomin,
+            COALESCE(r.zoom_out, 0)::integer AS zoomout,
+            COALESCE(r.pan, 0)::integer AS pan
         FROM data.games g
+        JOIN data.sessions s ON g.session = s.id
 
         LEFT JOIN (
             SELECT
@@ -441,12 +443,14 @@ async function getEnding() {
 
         GROUP BY
             g.session,
+            s.name,
             p.total_duration,
             i.total_investigations,
             r.total_interactions,
             r.zoom_in,
             r.zoom_out,
             r.pan
+        -- HAVING COUNT(g.id) >= 16
         ORDER BY score;
     `
 
