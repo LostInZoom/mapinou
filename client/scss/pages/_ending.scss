@@ -1,0 +1,75 @@
+@use '../sizes';
+@use '../colors';
+
+.bunny-container {
+    opacity: 1;
+    transform: scale(0);
+
+    &.walk-in {
+        transition: transform 2s linear;
+        transform: scale(1);
+    }
+
+    &.walk-out {
+        opacity: 0;
+        transition: opacity, 1.5s ease-out, 1.5s linear;
+        transform: scale(5);
+    }
+}
+
+.bunny-character {
+    height: min(30vw, 25vh, 8rem);
+    width: min(30vw, 25vh, 8rem);
+
+    &>img {
+        height: inherit;
+        width: inherit;
+        image-rendering: pixelated;
+    }
+}
+
+.ending-congratulations {
+    text-align: center;
+    font-size: sizes.$font-size-title;
+    padding: .5rem 1.2rem;
+    border-radius: .8rem;
+
+    font-family: 'Vincendo';
+    background-color: colors.$secondary-color-dark;
+    color: colors.$main-color-light;
+    border: solid .3rem colors.$main-color-light;
+
+    transform: scale(0);
+    transition: transform .3s cubic-bezier(0.545, -0.215, 1.000, 0.470);
+
+    &.pop {
+        transform: scale(1);
+        transition: transform .3s cubic-bezier(0.075, 0.495, 0.320, 1.225);
+    }
+}
+
+.ending-text {
+    position: absolute;
+    bottom: sizes.$gap1rem;
+    text-align: center;
+
+    color: colors.$grey-extradark;
+
+    opacity: 1;
+    transition: opacity .3s ease-in-out;
+    animation: ending-continue 2s ease-in-out infinite;
+
+    &.hidden {
+        opacity: 0;
+    }
+}
+
+.ending-mask {
+    position: absolute;
+    pointer-events: all;
+    z-index: 49;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+}

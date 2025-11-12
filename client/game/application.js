@@ -15,8 +15,8 @@ class Application {
         this.options = options;
         this.progression = options.progression;
 
-        this.debug = false;
-        this.progression = { tier: 8, level: 3, finish: false };
+        this.debug = true;
+        // this.progression = { tier: 8, level: 3, finish: false };
 
         // Create the DOM Element
         this.container = makeDiv('application', null);
@@ -30,7 +30,7 @@ class Application {
         // Display the loader
         this.loading();
 
-        this.maxrabbit = 5;
+        this.maxrabbit = 10;
 
         // Boolean to flag if the page is sliding
         this.sliding = false;
@@ -261,6 +261,8 @@ class Application {
                 ++total;
             }
         }
+
+        if (p.finish) { position = total; }
         return { total: total, position: position };
     }
 
