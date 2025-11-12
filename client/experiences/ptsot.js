@@ -105,20 +105,14 @@ class SpatialOrientation extends Page {
         const backListener = () => {
             this.back.removeEventListener('click', backListener);
             this.playButtonSound();
-            if (this.index === 0) {
-                this.listen = false;
-                let o = this.options;
-                o.stage = 'presentation';
-                o.position = 'previous';
-                o.answers = this.answers;
-                this.previous = new SpatialOrientation(o);
-                this.slidePrevious();
-            } else {
-                if (this.tutorial) {
-                    --this.index;
-                    this.navigateBottom(false);
-                }
-            }
+
+            this.listen = false;
+            let o = this.options;
+            o.stage = 'presentation';
+            o.position = 'previous';
+            o.answers = this.answers;
+            this.previous = new SpatialOrientation(o);
+            this.slidePrevious();
         }
 
         this.bottomcontent = makeDiv(null, 'experience-content ptsot bottom');

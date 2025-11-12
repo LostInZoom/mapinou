@@ -198,20 +198,14 @@ class Purdue extends Page {
                 const backListener = () => {
                     this.playButtonSound();
                     back.removeEventListener('click', backListener);
-                    if (this.index === 0) {
-                        this.listen = false;
-                        let o = this.options;
-                        o.stage = 'presentation';
-                        o.position = 'previous';
-                        o.answers = this.answers;
-                        this.previous = new Purdue(o);
-                        this.slidePrevious();
-                    } else {
-                        if (this.tutorial) {
-                            --this.index;
-                            this.navigateBottom(false);
-                        }
-                    }
+
+                    this.listen = false;
+                    let o = this.options;
+                    o.stage = 'presentation';
+                    o.position = 'previous';
+                    o.answers = this.answers;
+                    this.previous = new Purdue(o);
+                    this.slidePrevious();
                 }
                 back.addEventListener('click', backListener);
             }
