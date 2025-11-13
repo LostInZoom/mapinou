@@ -34,13 +34,17 @@ class SpatialOrientation extends Page {
                 this.createPresentation();
             });
         }
+        else if (this.stage === 'results') {
+            this.createResults();
+        }
         else {
             this.topcontent = makeDiv(null, 'experience-content ptsot top pop');
             this.back = makeDiv(null, 'page-button page-button-back', 'Retour');
             this.toptext = makeDiv(null, 'experience-text top nobutton pop');
             this.topcontent.append(this.back, this.toptext);
             this.content.append(this.topcontent);
-            this.start = Date.now();
+
+            if (this.options.start === undefined) { this.options.start = Date.now(); }
 
             if (this.stage === 'tutorial') {
                 this.elements.top.forEach(e => {
@@ -96,6 +100,86 @@ class SpatialOrientation extends Page {
         });
     }
 
+    createResults() {
+        this.end = Date.now();
+        const results = {
+            session: this.params.session.index,
+            game: this.params.game,
+            start: new Date(this.options.start).toISOString(),
+            end: new Date(this.end).toISOString(),
+            duration: this.end - this.options.start,
+            answers: this.answers
+        }
+
+        let pursue = makeDiv(null, 'page-button page-button-continue', 'Continuer');
+        let text = makeDiv(null, 'experience-text noback pop');
+        this.content.append(text, pursue);
+        this.content.offsetWidth;
+
+        let presentation = makeDiv(null, 'experience-presentation');
+        let title = makeDiv(null, 'experience-presentation-paragraph experience-presentation-title', 'Résultats');
+        presentation.append(title);
+        text.append(presentation);
+
+        const table = document.createElement('table');
+        addClass(table, 'ptsot-metrics-container');
+
+        const type = document.createElement('tr');
+        addClass(type, 'ptsot-type');
+        const empty = document.createElement('td');
+        const you = document.createElement('td');
+        you.textContent = 'Vous';
+        const all = document.createElement('td');
+        all.textContent = 'Global';
+        type.append(empty, you, all);
+
+        const userElapsed = `${Math.round(this.answers.reduce((sum, obj) => sum + obj.elapsed, 0) / this.answers.length / 1000)}s`;
+        const userAngle = `${Math.round(this.answers.reduce((sum, obj) => sum + obj.difference, 0) / this.answers.length)}°`;
+
+        const times = document.createElement('tr');
+        addClass(times, 'ptsot-time');
+        const timesLabel = document.createElement('td');
+        timesLabel.textContent = 'Temps moyen :';
+        const timesUser = document.createElement('td');
+        const timesUserValue = makeDiv(null, 'ptsot-table-value', userElapsed);
+        timesUser.append(timesUserValue);
+        const timesGlobal = document.createElement('td');
+        const timesGlobalValue = makeDiv(null, 'ptsot-table-value');
+        timesGlobal.append(timesGlobalValue);
+
+        times.append(timesLabel, timesUser, timesGlobal);
+
+        const angles = document.createElement('tr');
+        addClass(angles, 'ptsot-angle');
+        const anglesLabel = document.createElement('td');
+        anglesLabel.textContent = "Écart d'angle moyen :";
+        const anglesUser = document.createElement('td');
+        const anglesUserValue = makeDiv(null, 'ptsot-table-value', userAngle);
+        anglesUser.append(anglesUserValue);
+        const anglesGlobal = document.createElement('td');
+        const anglesGlobalValue = makeDiv(null, 'ptsot-table-value');
+        anglesGlobal.append(anglesGlobalValue);
+
+        angles.append(anglesLabel, anglesUser, anglesGlobal);
+
+        table.append(type, times, angles);
+        text.append(table);
+
+        ajaxPost('ptsot', results, r => {
+            timesGlobalValue.innerHTML = `${Math.round(r.elapsed / 1000)}s`;
+            anglesGlobalValue.innerHTML = `${Math.round(r.difference)}°`;
+        });
+
+        wait(300, () => {
+            addClass(pursue, 'pop');
+            this.listen = true;
+            pursue.addEventListener('click', () => {
+                this.playButtonSound();
+                this.toLevels(true);
+            }, { once: true });
+        });
+    }
+
     createBottomContent(forwards = true) {
         let elements = this.elements[this.tutorial ? 'tutorial' : 'tests'];
         let content = elements[this.index].content;
@@ -122,6 +206,7 @@ class SpatialOrientation extends Page {
         this.bottomcontent.append(this.bottomtext, this.continue);
         this.content.append(this.bottomcontent);
 
+        let tutotest = false;
         content.forEach(e => {
             if (e.type === 'characters') {
                 this.generateCharacters(this.bottomtext, e.subtype);
@@ -131,6 +216,7 @@ class SpatialOrientation extends Page {
             }
             else if (e.type === 'test') {
                 this.generateCircle(this.bottomtext, e);
+                tutotest = true;
             }
             else if (e.type === 'timer') {
                 this.generateTimer(this.bottomtext, () => {
@@ -141,8 +227,14 @@ class SpatialOrientation extends Page {
                     }
                     this.back.removeEventListener('click', backListener);
                     if (this.index === elements.length - 1) {
+                        this.index = undefined;
                         this.app.progress();
-                        this.toLevels(true);
+                        let o = this.options;
+                        o.stage = 'results';
+                        o.position = 'next';
+                        o.answers = this.answers;
+                        this.next = new SpatialOrientation(o);
+                        this.slideNext();
                     } else {
                         ++this.index;
                         this.navigateBottom();
@@ -171,8 +263,8 @@ class SpatialOrientation extends Page {
         const transition = first ? this.app.options.interface.transition.page : 300;
         wait(transition, () => {
             if (this.tutorial) {
+                if (!tutotest) { addClass(this.continue, 'pop'); }
                 addClass(this.back, 'pop');
-                addClass(this.continue, 'pop');
                 removeClassList([this.toptext, this.bottomtext], 'nobutton');
             }
             this.listen = true;
@@ -196,8 +288,14 @@ class SpatialOrientation extends Page {
                         this.tutorial = false;
                         this.navigateBottom();
                     } else {
+                        this.index = undefined;
                         this.app.progress();
-                        this.toLevels(true);
+                        let o = this.options;
+                        o.stage = 'results';
+                        o.position = 'next';
+                        o.answers = this.answers;
+                        this.next = new SpatialOrientation(o);
+                        this.slideNext();
                     }
                 } else {
                     ++this.index;
@@ -399,6 +497,8 @@ class SpatialOrientation extends Page {
     }
 
     generateTimer(container, callback) {
+        this.activeTimer = true;
+
         let timercontainer = makeDiv(null, 'ptsot-timer-container');
         let timerdiv = makeDiv(null, 'ptsot-timer');
         timercontainer.append(timerdiv);
@@ -436,39 +536,20 @@ class SpatialOrientation extends Page {
     }
 
     toLevels(update) {
-        this.listen = false;
         this.index = undefined;
+        this.listen = false;
         if (this.topcontent) { removeClass(this.topcontent, 'pop'); }
         if (this.bottomcontent) { removeClass(this.bottomcontent, 'pop'); }
         else { removeClass(this.content, 'pop'); }
 
-        const clearing = update ? 2 : 1;
-        let cleared = 0;
-
-        const pursue = () => {
-            if (++cleared >= clearing) {
-                this.destroy();
-                this.basemap.fit(this.params.interface.map.levels, {
-                    easing: easeInOutSine
-                }, () => {
-                    this.app.page = new Levels({ app: this.app, position: 'current', update: update });
-                });
-            }
-        }
-
-        if (update) {
-            this.end = Date.now();
-            const results = {
-                session: this.params.session.index,
-                game: this.params.game,
-                start: new Date(this.start).toISOString(),
-                end: new Date(this.end).toISOString(),
-                duration: this.end - this.start,
-                answers: this.answers
-            }
-            ajaxPost('ptsot', results, pursue, pursue);
-        }
-        wait(500, pursue);
+        wait(300, () => {
+            this.destroy();
+            this.basemap.fit(this.params.interface.map.levels, {
+                easing: easeInOutSine
+            }, () => {
+                this.app.page = new Levels({ app: this.app, position: 'current', update: update });
+            });
+        });
     }
 
     createCharactersLabels(svg, type, options) {

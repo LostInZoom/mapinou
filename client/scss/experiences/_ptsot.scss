@@ -248,3 +248,35 @@ $timer-color-quarter: #e69797;
         background-color: $timer-color-quarter;
     }
 }
+
+.ptsot-metrics-container {
+    font-size: sizes.$font-size-regular;
+    width: calc(100% - 2 * sizes.$gap1rem);
+
+    border-collapse: collapse;
+    table-layout: fixed;
+
+    &>tr {
+        width: 100%;
+
+        &>td {
+            padding: .3rem .6rem;
+            text-align: center;
+            overflow: hidden;
+
+            &:first-child {
+                width: 50%;
+            }
+
+            &>.ptsot-table-value {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                aspect-ratio: 1/1;
+                border-radius: 50%;
+                background-color: colors.$main-color-light;
+                color: colors.$main-color-dark;
+            }
+        }
+    }
+}

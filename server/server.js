@@ -2,7 +2,11 @@ import * as fs from 'fs';
 import { load } from "js-yaml";
 import express from 'express';
 import bodyParser from 'body-parser';
-import { createSession, getEnding, giveConsent, insertForm, insertPiaget, insertPTSOT, insertPurdue, insertResults, insertSBSOD, renameSession, verifySession } from "../.database/requests.js";
+import {
+	createSession, getEnding, giveConsent,
+	insertForm, insertPiaget, insertPTSOT, insertPurdue, insertResults, insertSBSOD,
+	renameSession, verifySession
+} from "../.database/requests.js";
 
 const parametersFile = fs.readFileSync('./server/parameters.yml', { encoding: 'utf-8' });
 const parameters = load(parametersFile);
@@ -99,8 +103,8 @@ app.post('/mapinou/sbsod', jsonParser, (req, res) => {
 });
 
 app.post('/mapinou/ptsot', jsonParser, (req, res) => {
-	insertPTSOT(req.body).then((done) => {
-		res.send(JSON.stringify({ done: done }));
+	insertPTSOT(req.body).then(r => {
+		res.send(JSON.stringify(r));
 	});
 });
 

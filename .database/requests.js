@@ -159,6 +159,8 @@ async function insertPTSOT(data) {
     let query = '';
     let values = [];
 
+    let results = {}
+
     try {
         let version = await checkVersion(data.game);
         const expIndex = await insertExperience(data, 'ptsot', version);
@@ -167,17 +169,25 @@ async function insertPTSOT(data) {
             let answer = data.answers[a];
             if (answer) {
                 query = `
-                INSERT INTO data.ptsot (experience, question, real, drawn, difference, elapsed, time)
-                VALUES ($1, $2, $3, $4, $5, $6, $7)
-            `
+                    INSERT INTO data.ptsot (experience, question, real, drawn, difference, elapsed, time)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7)
+                `
                 values = [expIndex, a, answer.trueAngle, answer.drawAngle, answer.difference, answer.elapsed, answer.time];
                 await db.query(query, values);
             }
         }
 
-        return true
+        query = `
+            SELECT avg(elapsed) as elapsed, avg(difference) as difference
+            FROM data.ptsot
+        `
+        let global = await db.query(query);
+        results['elapsed'] = global.rows[0].elapsed;
+        results['difference'] = global.rows[0].difference;
+
+        return results
     } catch {
-        return false;
+        return {};
     }
 }
 

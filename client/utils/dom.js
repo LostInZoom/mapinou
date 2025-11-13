@@ -264,9 +264,24 @@ async function checkAvailability(callback) {
     callback(result);
 }
 
+function createTable(data, className = "") {
+    const table = document.createElement("table");
+    if (className) table.className = className;
+    data.forEach((line, index) => {
+        const tr = document.createElement("tr");
+        line.forEach(cell => {
+            const c = document.createElement(index === 0 ? "th" : "td");
+            c.textContent = cell;
+            tr.appendChild(c);
+        });
+        table.appendChild(tr);
+    });
+    return table;
+}
+
 export {
     makeDiv, hasClass, addClass, removeClass, addClassList, removeClassList,
-    activate, deactivate, checkAvailability,
+    activate, deactivate, checkAvailability, createTable,
     clearElement, addSVG, getCSSColors, remove, wait, waitPromise, isOverflown,
     easingIncrement, createValidation, setStorage, getStorage, hasSameKeys, runWithVariance
 }
