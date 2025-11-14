@@ -29,8 +29,11 @@ class Purdue extends Page {
                 this.createPresentation();
             });
         }
+        else if (this.stage === 'results') {
+            this.createResults();
+        }
         else {
-            this.start = Date.now();
+            if (this.options.start === undefined) { this.options.start = Date.now(); }
             this.createTest();
         }
     }
@@ -74,6 +77,98 @@ class Purdue extends Page {
                 this.slideNext();
             }, { once: true });
         });
+    }
+
+    createResults() {
+        this.end = Date.now();
+        const results = {
+            session: this.params.session.index,
+            game: this.params.game,
+            start: new Date(this.options.start).toISOString(),
+            end: new Date(this.end).toISOString(),
+            duration: this.end - this.options.start,
+            answers: this.answers
+        }
+
+        let pursue = makeDiv(null, 'page-button page-button-continue', 'Continuer');
+        let text = makeDiv(null, 'experience-text nobutton pop');
+        this.content.append(text, pursue);
+        this.content.offsetWidth;
+
+        let presentation = makeDiv(null, 'experience-presentation');
+        let title = makeDiv(null, 'experience-presentation-paragraph experience-presentation-title', 'Résultats');
+        presentation.append(title);
+        text.append(presentation);
+
+        const container = makeDiv(null, 'purdue-results no-scrollbar');
+        const table = document.createElement('table');
+        addClass(table, 'purdue-metrics-container');
+
+        const first = document.createElement('tr');
+        addClass(first, 'purdue-type');
+        const test = document.createElement('td');
+        test.textContent = 'Test';
+        const you = document.createElement('td');
+        you.textContent = 'Vous';
+        const all = document.createElement('td');
+        all.textContent = 'Taux de bonnes réponses';
+        first.append(test, you, all);
+        table.append(first);
+
+        this.answers.forEach((a, i) => {
+            const l = document.createElement('tr');
+            const t = document.createElement('td');
+            t.textContent = i + 1;
+            const y = document.createElement('td');
+            const svg = makeDiv(null, 'purdue-answer-svg', a.correct ? this.params.svgs.check : this.params.svgs.cross);
+            addClass(svg, a.correct ? 'correct' : 'wrong');
+            y.append(svg);
+            const g = document.createElement('td');
+            const cont = makeDiv(null, 'purdue-percentage-container');
+            const value = makeDiv(null, 'purdue-percentage-filler');
+            const label = makeDiv(null, 'purdue-percentage-label');
+            cont.append(value, label);
+            g.append(cont);
+            l.append(t, y, g);
+            table.append(l);
+        });
+
+        container.append(table);
+        text.append(container);
+
+        let percentages = [];
+        const tasks = [
+            cb => ajaxPost('purdue', results, r => { percentages = r.percentages; cb(); }),
+            cb => {
+                wait(this.params.interface.transition.page, () => {
+                    addClass(pursue, 'pop');
+                    removeClass(text, 'nobutton');
+                    addClass(text, 'noback');
+                    cb();
+                });
+            }
+        ]
+
+        const clearing = tasks.length;
+        let cleared = 0;
+
+        const fillPerc = () => {
+            if (++cleared >= clearing) {
+                percentages.forEach((p, i) => {
+                    const perc = table.children[i + 1].lastElementChild.firstElementChild;
+                    perc.firstElementChild.style.width = `${p}%`;
+                    perc.lastElementChild.innerHTML = `${p}%`;
+                });
+
+                this.listen = true;
+                pursue.addEventListener('click', () => {
+                    this.playButtonSound();
+                    this.toLevels(true);
+                }, { once: true });
+            }
+        }
+
+        tasks.forEach(t => t(fillPerc));
     }
 
     createTest() {
@@ -218,7 +313,13 @@ class Purdue extends Page {
                 }
                 if (this.index >= this.elements.tests.length) {
                     this.app.progress();
-                    this.toLevels(true);
+                    this.index = undefined;
+                    let o = this.options;
+                    o.stage = 'results';
+                    o.position = 'next';
+                    o.answers = this.answers;
+                    this.next = new Purdue(o);
+                    this.slideNext();
                 } else {
                     let o = this.options;
                     o.stage = 'test';
@@ -239,33 +340,14 @@ class Purdue extends Page {
         if (this.bottomcontent) { removeClass(this.bottomcontent, 'pop'); }
         else { removeClass(this.content, 'pop'); }
 
-        const clearing = update ? 2 : 1;
-        let cleared = 0;
-
-        const pursue = () => {
-            if (++cleared >= clearing) {
-                this.destroy();
-                this.basemap.fit(this.params.interface.map.levels, {
-                    easing: easeInOutSine
-                }, () => {
-                    this.app.page = new Levels({ app: this.app, position: 'current', update: update });
-                });
-            }
-        }
-
-        if (update) {
-            this.end = Date.now();
-            const results = {
-                session: this.params.session.index,
-                game: this.params.game,
-                start: new Date(this.start).toISOString(),
-                end: new Date(this.end).toISOString(),
-                duration: this.end - this.start,
-                answers: this.answers
-            }
-            ajaxPost('purdue', results, pursue, pursue);
-        }
-        wait(500, pursue);
+        wait(300, () => {
+            this.destroy();
+            this.basemap.fit(this.params.interface.map.levels, {
+                easing: easeInOutSine
+            }, () => {
+                this.app.page = new Levels({ app: this.app, position: 'current', update: update });
+            });
+        });
     }
 }
 

@@ -109,8 +109,8 @@ app.post('/mapinou/ptsot', jsonParser, (req, res) => {
 });
 
 app.post('/mapinou/purdue', jsonParser, (req, res) => {
-	insertPurdue(req.body).then((done) => {
-		res.send(JSON.stringify({ done: done }));
+	insertPurdue(req.body).then(r => {
+		res.send(JSON.stringify(r));
 	});
 });
 

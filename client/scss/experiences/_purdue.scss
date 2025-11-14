@@ -77,3 +77,83 @@ $answer-color-light: #bed3e6;
     font-size: sizes.$font-size-regular;
     text-align: center;
 }
+
+.purdue-metrics-container {
+    font-size: sizes.$font-size-regular;
+    width: calc(100% - 2 * sizes.$gap1rem);
+
+    border-collapse: collapse;
+    table-layout: fixed;
+
+    &>tr {
+        width: 100%;
+
+        &>td {
+            padding: .3rem .6rem;
+            text-align: center;
+            overflow: hidden;
+
+            &:last-child {
+                width: 60%;
+            }
+        }
+    }
+}
+
+.purdue-answer-svg {
+    height: min(8vw, 10vh, 2rem);
+    width: min(8vw, 10vh, 2rem);
+    border-radius: 50%;
+    justify-self: center;
+
+    &>svg {
+        height: inherit;
+        width: inherit;
+    }
+
+    &.correct {
+        background-color: colors.$green-dark;
+    }
+
+    &.wrong {
+        background-color: colors.$red-dark;
+    }
+}
+
+.purdue-percentage-container {
+    position: relative;
+    width: 100%;
+    height: min(8vw, 10vh, 2rem);
+    background-color: colors.$main-color-light;
+    // border-radius: sizes.$border-radius;
+    border-radius: min(8vw, 10vh, 2rem);
+    overflow: hidden;
+
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+
+.purdue-percentage-filler {
+    position: absolute;
+    height: 100%;
+    width: 0%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background-color: colors.$main-color-medium;
+    transition: width .5s ease-in-out;
+}
+
+.purdue-percentage-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+
+    font-size: sizes.$font-size-small;
+    border-radius: sizes.$border-radius;
+    color: colors.$main-color-extradark;
+    padding: .1rem .3rem;
+}

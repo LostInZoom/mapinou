@@ -1,6 +1,7 @@
 $main-color-light: #F7F2DA;
 $main-color-medium: #cabfa3;
 $main-color-dark: #917c5f;
+$main-color-extradark: #7c6748;
 
 $secondary-color-light: #e0ecc9;
 $secondary-color-medium: #b8c4a2;
@@ -26,6 +27,11 @@ $helpers: #61afa8;
 $helpers-transparent: #61afa880;
 $enemies: #af6161;
 $enemies-transparent: #af616142;
+
+$red-light: #da9393;
+$red-dark: #a15c5c;
+$green-light: #91d18c;
+$green-dark: #43863f;
 
 .enemies-map {
     background-color: $enemies;

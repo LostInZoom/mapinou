@@ -211,9 +211,22 @@ async function insertPurdue(data) {
             }
         }
 
-        return true
+        query = `
+            SELECT 100.0 * AVG(CASE WHEN correct THEN 1 ELSE 0 END)::float AS percentage
+            FROM data.purdue
+            GROUP BY question
+            ORDER BY question;
+        `
+        let global = await db.query(query);
+
+        let results = [];
+        global.rows.forEach(r => results.push(r.percentage));
+
+        return {
+            percentages: results
+        }
     } catch {
-        return false;
+        return {};
     }
 }
 

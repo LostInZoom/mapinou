@@ -170,7 +170,7 @@ class SpatialOrientation extends Page {
             anglesGlobalValue.innerHTML = `${Math.round(r.difference)}°`;
         });
 
-        wait(300, () => {
+        wait(this.params.interface.transition.page, () => {
             addClass(pursue, 'pop');
             this.listen = true;
             pursue.addEventListener('click', () => {

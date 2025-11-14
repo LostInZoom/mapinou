@@ -15,7 +15,7 @@ class Application {
         this.options = options;
         this.progression = options.progression;
 
-        this.debug = true;
+        this.debug = false;
         // this.progression = { tier: 8, level: 3, finish: false };
 
         // Create the DOM Element
@@ -231,7 +231,7 @@ class Application {
     }
 
     getProgression(previous) {
-        if (this.debug) { return { tier: 5, level: 0, finish: this.progression.finish }; }
+        if (this.debug) { return { tier: 7, level: 0, finish: this.progression.finish }; }
         if (previous && !this.progression.finish) {
             if (this.progression.level === 0) {
                 const l = this.options.levels[this.progression.tier - 1].type === 'tier' ? this.options.levels[this.progression.tier - 1].content.length - 1 : 0;
