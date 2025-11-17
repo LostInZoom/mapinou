@@ -255,10 +255,14 @@ class Title extends Page {
                             });
                         });
                     } else {
+                        removeClass(this.progression, 'pop');
+                        wait(300, () => { this.progression.remove(); });
                         this.next = new Form({ app: this.app, position: 'next', question: 0 });
                         this.slideNext();
                     }
                 } else {
+                    removeClass(this.progression, 'pop');
+                    wait(300, () => { this.progression.remove(); });
                     this.next = new Consent({ app: this.app, position: 'next' });
                     this.slideNext();
                 }
