@@ -51,5 +51,9 @@ function calculateTextSize(text, style) {
     }
 }
 
+function getResponsiveSize(rem, vw, vh) {
+    return Math.min(pxToRem(window.innerWidth * vw / 100), pxToRem(window.innerHeight * vh / 100), rem);
+}
 
-export { getColorsByClassNames, remToPx, pxToRem, calculateTextSize, capitalizeFirstLetter };
+
+export { getColorsByClassNames, remToPx, pxToRem, calculateTextSize, capitalizeFirstLetter, getResponsiveSize };
