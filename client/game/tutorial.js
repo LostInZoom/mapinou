@@ -566,6 +566,7 @@ class Tutorial extends Page {
         const end3 = async () => {
             this.tutorialcontainer.removeEventListener('click', end3);
             this.paloma.setText("Amusez-vous bien !");
+            this.paloma.sing();
             await this.paloma.focusBubble();
             this.tutorialcontainer.addEventListener('click', end4, { once: true });
         }
@@ -573,6 +574,7 @@ class Tutorial extends Page {
         const end2 = async () => {
             this.tutorialcontainer.removeEventListener('click', end2);
             this.paloma.setText("Par contre, vous ne pouvez faire chaque niveau qu'une fois.");
+            this.paloma.sing();
             await this.paloma.focusBubble();
             this.tutorialcontainer.addEventListener('click', end3, { once: true });
         }
@@ -580,6 +582,7 @@ class Tutorial extends Page {
         const end1 = async () => {
             this.tutorialcontainer.removeEventListener('click', end1);
             this.paloma.setText("Vous pouvez refaire ce tutoriel avec moi quand vous voulez.");
+            this.paloma.sing();
             await this.paloma.focusBubble();
             this.tutorialcontainer.addEventListener('click', end2, { once: true });
         }
@@ -589,6 +592,7 @@ class Tutorial extends Page {
         this.sendFront();
         await this.displayTutorial();
         this.paloma.setText("Bravo, vous avez retrouvé l'ami de Lapinou !");
+        this.paloma.sing();
         await this.paloma.displayBubble();
         this.paloma.displayInformation();
         this.tutorialcontainer.addEventListener('click', end1, { once: true });

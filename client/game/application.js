@@ -15,7 +15,7 @@ class Application {
         this.options = options;
         this.progression = options.progression;
 
-        this.debug = true;
+        this.debug = false;
         // this.progression = { tier: 8, level: 3, finish: false };
 
         // Create the DOM Element
@@ -26,6 +26,7 @@ class Application {
         this.loader = makeDiv(null, 'loader');
         this.mask.append(this.loader);
         this.container.append(this.mask);
+        this.container.offsetHeight;
 
         // Display the loader
         this.loading();
