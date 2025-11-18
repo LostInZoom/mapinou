@@ -157,7 +157,7 @@ class Purdue extends Page {
                 percentages.forEach((p, i) => {
                     const perc = table.children[i + 1].lastElementChild.firstElementChild;
                     perc.firstElementChild.style.width = `${p}%`;
-                    perc.lastElementChild.innerHTML = `${p}%`;
+                    perc.lastElementChild.innerHTML = `${Math.round(p)}%`;
                 });
 
                 this.listen = true;

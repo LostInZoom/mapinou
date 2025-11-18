@@ -54,6 +54,10 @@ $timer-color-quarter: #e69797;
     position: absolute;
     transform: translate(-50%, -50%);
 
+    &>img {
+        image-rendering: pixelated;
+    }
+
     &.rabbit {
         transform: translate(-38%, -50%);
     }
