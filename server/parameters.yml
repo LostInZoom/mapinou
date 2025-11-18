@@ -46,10 +46,11 @@ game:
     minzoom: 12.5
     maxzoom: 14
   wrong:
-    - Aïe aïe aïe, pas par là !
-    - Et non, c'est pas ici !
-    - Pas par là.
-    - Je ne suis pas ici.
+    rightzoom:
+      - Aïe aïe aïe, pas par là !
+      - Et non, c'est pas ici !
+      - Je ne suis pas ici.
+    wrongzoom: Non ! Continue de zoomer pour que je précise ma position !
   lost:
     - Reviens en arrière, Tu t'égares...
     - Ce n'est pas par là, reviens en arrière !

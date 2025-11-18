@@ -185,11 +185,18 @@ class Hint {
         };
         requestAnimationFrame(animate);
 
-        let w = this.params.game.wrong;
-        let v = w[generateRandomInteger(0, w.length - 1)];
+        const rightzoom = this.basemap.getZoom() >= Math.max(...Object.keys(this.hints).map(Number));
+        let value = '';
+        if (rightzoom) {
+            let w = this.params.game.wrong.rightzoom;
+            value = w[generateRandomInteger(0, w.length - 1)];
+        } else {
+            value = this.params.game.wrong.wrongzoom;
+        }
+
         this.listen = false;
-        this.update('wrong', v, () => {
-            wait(1200, () => {
+        this.update('wrong', value, () => {
+            wait(rightzoom ? 1200 : 2000, () => {
                 pursue = false;
                 this.listen = true;
                 this.basemap.render();

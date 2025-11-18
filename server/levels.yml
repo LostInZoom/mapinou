@@ -71,6 +71,8 @@
         '6.83': Hmm, entre Brest en Quimper...
         '8.50': Un peu au sud de Crozon.
         '9.65': C'est ça ! Je suis au Cap de la Chèvre. Cliquez sur ma position pour continuer.
+        '11.51': Tout au bout de la route ! Cliquez sur ma position pour continuer.
+        '12.51': C'est ça ! Je suis au Cap de la Chèvre. Cliquez sur ma position pour continuer.
       enemies:
         - type: snake
           coordinates:
