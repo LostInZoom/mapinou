@@ -8,7 +8,7 @@ import Recorder from '../cartography/recorder';
 import Leaderboard from './leaderboard';
 
 import { within } from "../cartography/analysis";
-import { addClass, getStorage, makeDiv, removeClass, wait, waitPromise } from "../utils/dom";
+import { addClass, makeDiv, removeClass, wait, waitPromise } from "../utils/dom";
 import { ajaxPost } from '../utils/ajax';
 import { easeInOutSine } from '../utils/math';
 
