@@ -42,10 +42,10 @@ class Tutorial extends Page {
         this.hint = new Hint({ level: this });
 
         // Cancel current game and go back to level selection
-        this.listening = false;
+        this.listen = false;
         this.back.addEventListener('click', () => {
-            if (this.listening) {
-                this.listening = false;
+            if (this.listen) {
+                this.listen = false;
                 this.clear(() => {
                     this.toLevels();
                 });
@@ -85,7 +85,7 @@ class Tutorial extends Page {
             }
         }
 
-        this.listening = true;
+        this.listen = true;
         await this.paloma.walkIn();
 
         const tuto11 = async () => {
@@ -242,15 +242,15 @@ class Tutorial extends Page {
             this.tutorialcontainer.addEventListener('click', tuto2, { once: true });
         };
 
-        if (this.listening) {
+        if (this.listen) {
             this.mask.sendBack();
             this.paloma.setText("Bonjour, je suis Paloma.<br>Je vais vous guider pendant ce tutoriel !");
             await waitPromise(300);
-            if (this.listening) {
+            if (this.listen) {
                 this.paloma.setOrientation('south');
                 this.paloma.displayBubble();
                 await this.paloma.displayInformation();
-                if (this.listening) {
+                if (this.listen) {
                     this.tutorialcontainer.addEventListener('click', tuto1, { once: true });
                 }
             }
@@ -274,7 +274,7 @@ class Tutorial extends Page {
         });
 
         let visible = false;
-        this.listening = true;
+        this.listen = true;
         let helperTutorial = false;
 
         const vege2 = async () => {
@@ -351,7 +351,7 @@ class Tutorial extends Page {
                 this.basemap.enableInteractions();
                 this.basemap.enableMovement(state => {
                     if (state === 'win') {
-                        this.listening = false;
+                        this.listen = false;
                         this.tutorialcontainer.removeEventListener('click', vege1);
                         this.tutorialcontainer.removeEventListener('click', vege2);
                         this.basemap.removeListener('render', mapListener);
@@ -669,6 +669,7 @@ class Tutorial extends Page {
     async displayPhase(number, callback) {
         callback = callback || function () { };
 
+        this.listen = false;
         let phasecontainer = makeDiv(null, 'level-phase-container');
         let textcontainer = makeDiv(null, 'level-phase-text');
         let title = makeDiv(null, 'level-phase-title', 'Phase ' + number);
@@ -693,6 +694,7 @@ class Tutorial extends Page {
             addClass(textcontainer, 'hide');
             wait(1000, () => {
                 phasecontainer.remove();
+                this.listen = true;
                 callback();
             });
         }

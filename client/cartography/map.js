@@ -292,6 +292,7 @@ class Basemap {
     }
 
     fit(extent, options, callback) {
+        callback = callback || function () { };
         let duration = options.duration;
         const view = this.map.cameraForBounds(extent);
 
