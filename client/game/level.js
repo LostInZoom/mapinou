@@ -47,16 +47,13 @@ class Level extends Page {
         this.listening = false;
         this.back.addEventListener('click', () => {
             if (this.listening) {
+                this.playButtonSound();
                 this.listening = false;
                 this.clear(() => {
                     this.toLevels(false);
                 });
             }
         });
-
-        // if (this.app.music.isActive()) {
-        //     wait(1500, () => { this.app.music.change('game', true); })
-        // }
 
         this.phase1(() => {
             this.phase2(() => {
@@ -65,19 +62,6 @@ class Level extends Page {
                 });
             });
         });
-
-        // this.phase2(() => {
-        //     wait(300, () => {
-        //         this.ending();
-        //     });
-        // });
-
-        // this.results = JSON.parse(getStorage('test'));
-        // this.results.score = 150;
-        // this.basemap.createCharacters(this, this.parameters);
-        // this.dataExtent = this.basemap.getExtentForData();
-
-        // this.ending();
     }
 
     async phase1(callback) {
@@ -119,7 +103,7 @@ class Level extends Page {
                         clic.correct = false;
                         this.basemap.recorder.insertCustomClic(clic);
 
-                        this.playSound({ src: 'lapinou-hurt', volume: 0.8 });
+                        this.playSound({ src: 'lapinou-hurt', amount: 3, volume: 0.8 });
                         addClass(this.basemap.getContainer(), 'wrong');
                         this.score.addModifier('position');
                         wait(500, () => { removeClass(this.basemap.getContainer(), 'wrong'); });

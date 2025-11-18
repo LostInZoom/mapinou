@@ -130,7 +130,7 @@ class Application {
                             color = s[generateRandomInteger(0, s.length - 1)][0];
                             this.sounds.playFile({ src: 'lapinou-end', volume: 0.6 });
                         } else {
-                            this.sounds.playFile({ src: 'lapinou-happy', volume: 0.6 });
+                            this.sounds.playFile({ src: 'lapinou-happy', amount: 4, volume: 0.6 });
                         }
 
                         let roamer = new Roamer({

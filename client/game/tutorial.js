@@ -33,7 +33,7 @@ class Tutorial extends Page {
         this.back.offsetWidth;
         addClass(this.back, 'pop');
 
-        this.tutorialcontainer = makeDiv(null, 'tutorial-container hidden');
+        this.tutorialcontainer = makeDiv(null, 'tutorial-container front hidden');
         this.app.container.append(this.tutorialcontainer);
         this.tutorialcontainer.offsetWidth;
 
@@ -45,6 +45,7 @@ class Tutorial extends Page {
         this.listen = false;
         this.back.addEventListener('click', () => {
             if (this.listen) {
+                this.playButtonSound();
                 this.listen = false;
                 this.clear(() => {
                     this.toLevels();
@@ -67,6 +68,7 @@ class Tutorial extends Page {
             let target = e.lngLat.toArray();
             let player = this.parameters.player;
             if (within(target, player, this.params.game.tolerance.click)) {
+                this.hint.found();
                 this.score.unpop();
                 this.score.stop();
                 this.mask.reveal().then(() => {
@@ -115,6 +117,7 @@ class Tutorial extends Page {
         const tuto10 = async () => {
             this.tutorialcontainer.removeEventListener('click', tuto10);
             this.paloma.setText("Bonne recherche !");
+            this.paloma.sing();
             await this.paloma.focusBubble();
             this.tutorialcontainer.addEventListener('click', tuto11, { once: true });
         }
@@ -122,6 +125,7 @@ class Tutorial extends Page {
         const tuto9 = async () => {
             this.tutorialcontainer.removeEventListener('click', tuto9);
             this.paloma.setText("Il vous donnera des indications au fur et à mesure que vous zoomerez.");
+            this.paloma.sing();
             await this.paloma.focusBubble();
             this.tutorialcontainer.addEventListener('click', tuto10, { once: true });
         }
@@ -133,6 +137,7 @@ class Tutorial extends Page {
             this.paloma.setOrientation('south');
             await waitPromise(300);
             this.paloma.setText("Pouvez-vous aidez Lapinou à se localiser sur la carte ?");
+            this.paloma.sing();
             await this.paloma.displayBubble();
             this.tutorialcontainer.addEventListener('click', tuto9, { once: true });
         };
@@ -141,6 +146,7 @@ class Tutorial extends Page {
             this.tutorialcontainer.removeEventListener('click', tuto7);
             await this.hint.hideBubble();
             this.paloma.setText("Pas de problème ! On va t'aider.");
+            this.paloma.sing();
             await this.paloma.displayBubble();
             this.tutorialcontainer.addEventListener('click', tuto8, { once: true });
         };
@@ -149,6 +155,7 @@ class Tutorial extends Page {
             this.tutorialcontainer.removeEventListener('click', tuto6);
             await this.paloma.hideBubble();
             this.hint.setText("Bin oui, je suis perdu...");
+            this.hint.squeek();
             await this.hint.displayBubble();
             this.tutorialcontainer.addEventListener('click', tuto7, { once: true });
         };
@@ -161,6 +168,7 @@ class Tutorial extends Page {
             this.paloma.setOrientation('west');
             await waitPromise(300);
             this.paloma.setText("Tu as l'air inquiet Lapinou...");
+            this.paloma.sing();
             this.paloma.displayBubble();
             this.tutorialcontainer.addEventListener('click', tuto6, { once: true });
         };
@@ -170,9 +178,11 @@ class Tutorial extends Page {
             this.paloma.hideBubble();
             await this.hint.walkIn();
             this.paloma.setText('Voici Lapinou.');
+            this.paloma.sing();
             await this.paloma.displayBubble();
             await waitPromise(500);
             this.hint.setText("Salut !");
+            this.hint.squeek();
             await this.hint.displayBubble();
             this.tutorialcontainer.addEventListener('click', tuto5, { once: true });
         }
@@ -187,8 +197,9 @@ class Tutorial extends Page {
             this.paloma.hideInformation();
             await this.paloma.setTransparent();
             await this.mask.hide();
-            this.mask.sendFront();
+            this.sendBack();
 
+            this.paloma.sing();
             this.paloma.displayBubble();
             this.tutorialcontainer.addEventListener('click', tuto4, { once: true });
         };
@@ -207,6 +218,7 @@ class Tutorial extends Page {
             this.score.setState('default');
             this.score.start();
             this.paloma.setText('Votre score apparaît ici. Gardez-le le plus bas possible.');
+            this.paloma.sing();
             await this.paloma.displayBubble();
             this.tutorialcontainer.addEventListener('click', tuto3, { once: true });
         };
@@ -223,6 +235,7 @@ class Tutorial extends Page {
             let cy = `${m + (b / 2)}rem`;
 
             await this.mask.set({ cx: cx, cy: cy, r: `${getResponsiveSize(4, 30, 40)}rem` });
+            this.paloma.sing();
             this.paloma.displayBubble();
             this.tutorialcontainer.addEventListener('click', tuto2bis, { once: true });
         };
@@ -238,16 +251,17 @@ class Tutorial extends Page {
             let cy = `${(b / 2) + m}rem`;
 
             await this.mask.set({ cx: cx, cy: cy, rx: `${getResponsiveSize(5, 40, 50)}rem`, ry: `${getResponsiveSize(4, 30, 40)}rem` });
+            this.paloma.sing();
             await this.paloma.displayBubble();
             this.tutorialcontainer.addEventListener('click', tuto2, { once: true });
         };
 
         if (this.listen) {
-            this.mask.sendBack();
             this.paloma.setText("Bonjour, je suis Paloma.<br>Je vais vous guider pendant ce tutoriel !");
             await waitPromise(300);
             if (this.listen) {
                 this.paloma.setOrientation('south');
+                this.paloma.sing();
                 this.paloma.displayBubble();
                 await this.paloma.displayInformation();
                 if (this.listen) {
@@ -281,7 +295,8 @@ class Tutorial extends Page {
             this.tutorialcontainer.removeEventListener('click', vege2);
             this.mask.unset();
             await this.paloma.hideBubble();
-            this.hideTutorial();
+            await this.hideTutorial();
+            this.sendBack();
             helperTutorial = true;
             this.basemap.addListener('render', mapListener);
         };
@@ -289,10 +304,12 @@ class Tutorial extends Page {
         const vege1 = async () => {
             this.tutorialcontainer.removeEventListener('click', vege1);
             this.paloma.setText(`Les manger fera baisser votre score de ${Math.abs(this.params.game.score.modifier['helpers'])} points.`);
+            this.paloma.sing();
             await this.paloma.focusBubble();
             this.tutorialcontainer.addEventListener('click', vege2, { once: true });
         };
 
+        let firstVege = true;
         const mapListener = async () => {
             let threshold = this.params.game.routing.minzoom;
             let zoom = this.basemap.getZoom();
@@ -312,10 +329,15 @@ class Tutorial extends Page {
                 if (visible.length > 0) {
                     let h = visible[0];
                     if (this.basemap.isVisible(h.getCoordinates(), 50)) {
+                        let first = firstVege;
+                        if (firstVege) { firstVege = false; }
+
                         this.basemap.player.stop();
                         this.paloma.unsetTransparent();
 
+                        this.sendFront();
                         this.mask.reveal();
+
                         let px = this.basemap.getPixelAtCoordinates(h.getCoordinates());
                         if (px[0] < this.mask.getWidth() / 2) { this.paloma.setOrientation('west'); }
                         else { this.paloma.setOrientation('east'); }
@@ -325,9 +347,10 @@ class Tutorial extends Page {
                         this.basemap.removeListener('render', mapListener);
 
                         this.paloma.setText("Vous pouvez trouver des légumes sur votre chemin.");
+                        if (first) this.paloma.sing();
                         await this.paloma.displayBubble();
                         this.paloma.displayInformation();
-                        this.tutorialcontainer.addEventListener('click', vege1, { once: true });
+                        this.tutorialcontainer.addEventListener('click', vege1);
                     }
                 }
             }
@@ -343,6 +366,7 @@ class Tutorial extends Page {
             await waitPromise(1000);
             await this.paloma.flyOut();
             await this.hideTutorial();
+            this.sendBack();
             this.paloma.flyIn();
 
             this.displayPhase(2, () => {
@@ -351,11 +375,10 @@ class Tutorial extends Page {
                 this.basemap.enableInteractions();
                 this.basemap.enableMovement(state => {
                     if (state === 'win') {
-                        this.listen = false;
                         this.tutorialcontainer.removeEventListener('click', vege1);
                         this.tutorialcontainer.removeEventListener('click', vege2);
                         this.basemap.removeListener('render', mapListener);
-                        this.clear(callback);
+                        callback();
                     }
                 });
             });
@@ -376,9 +399,11 @@ class Tutorial extends Page {
             }, async () => {
                 this.centerPaloma();
                 this.paloma.unsetTransparent();
+                this.sendFront();
                 this.mask.reveal();
                 await this.displayTutorial();
                 this.paloma.setText("Bonne route !");
+                this.paloma.sing();
                 await this.paloma.displayBubble();
                 this.paloma.displayInformation();
                 this.tutorialcontainer.addEventListener('click', endtuto, { once: true });
@@ -389,6 +414,7 @@ class Tutorial extends Page {
             this.tutorialcontainer.removeEventListener('click', tuto8);
             this.score.setState('movement');
             this.paloma.setText("Lors de vos déplacements, votre score augmente plus rapidement.");
+            this.paloma.sing();
             await this.paloma.focusBubble();
             this.tutorialcontainer.addEventListener('click', tuto9, { once: true });
 
@@ -399,6 +425,7 @@ class Tutorial extends Page {
             this.score.pop();
             this.score.start();
             this.paloma.setText("Quand vous êtes immobile, votre score augmente d'un point par seconde.");
+            this.paloma.sing();
             await this.paloma.focusBubble();
             this.tutorialcontainer.addEventListener('click', tuto8, { once: true });
         }
@@ -413,6 +440,7 @@ class Tutorial extends Page {
             }, async () => {
                 addClass(this.basemap.maskcontainer, 'routable');
                 this.paloma.setText("Lorsque des bordures sont visibles autour de l'écran, vous pouvez vous déplacer sur la carte.");
+                this.paloma.sing();
                 await this.paloma.displayBubble();
                 this.tutorialcontainer.addEventListener('click', tuto7, { once: true });
             });
@@ -421,6 +449,7 @@ class Tutorial extends Page {
         const tuto5bis = async () => {
             this.tutorialcontainer.removeEventListener('click', tuto5bis);
             this.paloma.setText(`Traverser cette zone fera augmenter votre score de ${this.params.game.score.modifier['enemies']} points.`);
+            this.paloma.sing();
             await this.paloma.focusBubble();
             this.tutorialcontainer.addEventListener('click', tuto6, { once: true });
         };
@@ -442,6 +471,7 @@ class Tutorial extends Page {
                 padding: { top: 0, bottom: 50, left: 0, right: 0 }
             }, async () => {
                 this.paloma.setText("Cette zone n'est visible qu'à partir d'un certain niveau de zoom.");
+                this.paloma.sing();
                 await this.paloma.displayBubble();
                 this.paloma.setOrientation('south');
                 this.tutorialcontainer.addEventListener('click', tuto5bis, { once: true });
@@ -451,6 +481,7 @@ class Tutorial extends Page {
         const tuto4 = async () => {
             this.tutorialcontainer.removeEventListener('click', tuto4);
             this.paloma.setText("Chacun possède une zone de chasse de taille différente.");
+            this.paloma.sing();
             await this.paloma.focusBubble();
             this.tutorialcontainer.addEventListener('click', tuto5, { once: true });
         }
@@ -461,6 +492,7 @@ class Tutorial extends Page {
             await this.paloma.hideBubble();
             await this.mask.unset();
             await this.hideTutorial();
+            this.sendBack();
             this.mask.hide();
 
             this.basemap.enemies.spawn(1000, async () => {
@@ -469,6 +501,7 @@ class Tutorial extends Page {
                 this.paloma.setTransparent();
                 await this.displayTutorial();
                 this.paloma.setText("Attention, il y a des prédateurs sur votre chemin : des serpents, des aigles et des chasseurs.");
+                this.paloma.sing();
                 await this.paloma.displayBubble();
                 this.tutorialcontainer.addEventListener('click', tuto4, { once: true });
             });
@@ -485,6 +518,7 @@ class Tutorial extends Page {
             await this.mask.set({ cx: px[0], cy: px[1], rx: '3rem', ry: '3rem' });
             this.basemap.target.spawn(async () => {
                 this.paloma.setText('Et voilà son ami. Allez le retrouver !');
+                this.paloma.sing();
                 await this.paloma.displayBubble();
                 this.paloma.displayInformation();
                 this.tutorialcontainer.addEventListener('click', tuto3, { once: true });
@@ -492,6 +526,7 @@ class Tutorial extends Page {
         };
 
         const tuto1 = async () => {
+            this.sendFront();
             await this.displayTutorial();
             let px = this.basemap.getPixelAtCoordinates(this.basemap.player.getCoordinates());
             if (px[0] < this.mask.getWidth() / 2) { this.paloma.setOrientation('west'); }
@@ -499,6 +534,7 @@ class Tutorial extends Page {
             await this.mask.set({ cx: px[0], cy: px[1], rx: '3rem', ry: '3rem' });
             this.paloma.setText('Bravo ! Vous avez trouvé Lapinou !');
             this.paloma.displayInformation();
+            this.paloma.sing();
             await this.paloma.displayBubble();
             this.tutorialcontainer.addEventListener('click', tuto2, { once: true });
         };
@@ -521,7 +557,10 @@ class Tutorial extends Page {
             await waitPromise(1000);
             await this.paloma.flyOut();
             await this.hideTutorial();
-            this.toLevels();
+
+            this.clear(() => {
+                this.toLevels();
+            });
         }
 
         const end3 = async () => {
@@ -547,6 +586,7 @@ class Tutorial extends Page {
 
         this.centerPaloma();
         this.paloma.setOrientation('south');
+        this.sendFront();
         await this.displayTutorial();
         this.paloma.setText("Bravo, vous avez retrouvé l'ami de Lapinou !");
         await this.paloma.displayBubble();
@@ -618,16 +658,20 @@ class Tutorial extends Page {
         if (this.phase === 1) {
             tasks.push(cb => this.hint.end(cb));
             tasks.push(cb => {
-                if (this.paloma) { this.paloma.hide(cb); }
-                if (this.mask) { this.mask.hide(); }
+                if (this.paloma) {
+                    this.paloma.hide(cb);
+                    if (this.mask) { this.mask.hide(); }
+                } else { cb(); }
             });
         }
         else if (this.phase === 2) {
             tasks.push(cb => this.basemap.clear(cb));
             tasks.push(cb => this.basemap.makeUnroutable(cb));
             tasks.push(cb => {
-                if (this.paloma) { this.paloma.hide(cb); }
-                if (this.mask) { this.mask.hide(); }
+                if (this.paloma) {
+                    this.paloma.hide(cb);
+                    if (this.mask) { this.mask.hide(); }
+                } else { cb(); }
             });
         }
 
@@ -700,6 +744,14 @@ class Tutorial extends Page {
         }
 
         phasecontainer.addEventListener('click', listener, { once: true });
+    }
+
+    sendBack() {
+        removeClass(this.tutorialcontainer, 'front');
+    }
+
+    sendFront() {
+        addClass(this.tutorialcontainer, 'front');
     }
 }
 

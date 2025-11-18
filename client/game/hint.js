@@ -112,6 +112,9 @@ class Hint {
         if (type !== this.type) {
             this.setType(type);
             this.setText(text);
+            if (type === 'thought') { this.squeek(); }
+            else if (type === 'lost') { this.complain(); }
+            else if (type === 'wrong') { this.complain(); }
             await this.focusBubble();
             callback();
         } else {
@@ -119,6 +122,7 @@ class Hint {
                 this.setType(type);
                 if (text !== this.currentText) {
                     this.setText(text);
+                    this.squeek();
                     await this.focusBubble();
                     callback();
                 } else {
@@ -160,6 +164,18 @@ class Hint {
             }
         }
         this.basemap.addListener('render', updateListener);
+    }
+
+    squeek() {
+        this.level.app.sounds.playFile({ src: 'lapinou-happy', amount: 4, volume: 0.8 });
+    }
+
+    complain() {
+        this.level.app.sounds.playFile({ src: 'lapinou-hurt', amount: 3, volume: 0.8 });
+    }
+
+    found() {
+        this.level.app.sounds.playFile({ src: 'lapinou-end', volume: 0.8 });
     }
 
     injure(blink, callback) {

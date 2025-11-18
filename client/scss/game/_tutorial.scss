@@ -2,7 +2,7 @@
 @use '../sizes';
 
 .tutorial-container {
-    z-index: 100;
+    z-index: 49;
     position: absolute;
     pointer-events: all;
 
@@ -19,7 +19,7 @@
     opacity: 1;
 
     &.front {
-        z-index: 49;
+        z-index: 100;
     }
 
     &.hidden {

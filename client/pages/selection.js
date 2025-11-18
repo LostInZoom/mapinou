@@ -57,9 +57,9 @@ class Selection {
                 rabbit.addEventListener('click', () => {
                     if (!hasClass(rabbit, 'active')) {
                         if (hasClass(rabbit, 'locked')) {
-                            this.page.playSound({ src: 'lapinou-hurt', volume: 0.6 });
+                            this.page.playSound({ src: 'lapinou-hurt', amount: 3, volume: 0.6 });
                         } else {
-                            this.page.playSound({ src: 'lapinou-happy', volume: 0.6 });
+                            this.page.playSound({ src: 'lapinou-happy', amount: 4, volume: 0.6 });
                             rabbitlist.forEach(r => { removeClass(r, 'active'); })
                             addClass(rabbit, 'active');
                             this.selectedColor = color;

@@ -107,6 +107,10 @@ class Paloma {
         removeClass(this.bubble, 'transparent');
     }
 
+    sing() {
+        this.level.app.sounds.playFile({ src: 'paloma', amount: 5 });
+    }
+
     display(callback) {
         callback = callback || function () { };
         removeClass(this.container, 'hidden');
