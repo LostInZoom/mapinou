@@ -156,7 +156,7 @@ consent:
       - 'Les interactions avec la carte pendant un niveau, à savoir les déplacements latéraux,
         les zooms en avant et en arrière.'
       - 'Les informations sur votre appareil, à savoir le type (téléphone mobile ou tablette),
-        le système d''exploitation (Android, iOS, etc.) et taille de l''écran.'
+        le système d''exploitation (Android, iOS, etc.) et la taille de l''écran.'
   - type: paragraph
     content: 'Nous ne collectons aucune information personnelle tel que votre nom, votre
       localisation ou votre adresse IP.'
