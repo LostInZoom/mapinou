@@ -165,11 +165,6 @@ class SantaBarbara extends Page {
             if (end) { addClass(this.continue, 'pop'); }
             addClass(this.back, 'pop');
 
-            // Allow continuing if debug mode is active
-            if (this.app.debug) {
-                addClass(this.continue, 'pop');
-            }
-
             this.observer = new ResizeObserver(() => {
                 if (isOverflown(questions)) {
                     addClass(this.scrollindicator, 'active');
