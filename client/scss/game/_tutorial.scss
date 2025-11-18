@@ -18,6 +18,10 @@
     transition: opacity .3s linear;
     opacity: 1;
 
+    &.front {
+        z-index: 49;
+    }
+
     &.hidden {
         opacity: 0;
         pointer-events: none;
@@ -67,8 +71,14 @@
     flex-direction: column;
 
     width: 100%;
-
     user-select: none;
+
+    opacity: 1;
+    transition: opacity .3s linear;
+
+    &.hidden {
+        opacity: 0;
+    }
 }
 
 .paloma-character {

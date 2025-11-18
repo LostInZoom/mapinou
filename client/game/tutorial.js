@@ -41,10 +41,6 @@ class Tutorial extends Page {
         this.paloma = new Paloma({ level: this });
         this.hint = new Hint({ level: this });
 
-        // if (this.app.music.isActive()) {
-        //     wait(1500, () => { this.app.music.change('game', true); })
-        // }
-
         // Cancel current game and go back to level selection
         this.listening = false;
         this.back.addEventListener('click', () => {
@@ -89,12 +85,8 @@ class Tutorial extends Page {
             }
         }
 
+        this.listening = true;
         await this.paloma.walkIn();
-        this.paloma.setText("Bonjour, je suis Paloma.<br>Je vais vous guider pendant ce tutoriel !");
-        await waitPromise(300);
-        this.paloma.setOrientation('south');
-        this.paloma.displayBubble();
-        await this.paloma.displayInformation();
 
         const tuto11 = async () => {
             this.tutorialcontainer.removeEventListener('click', tuto11);
@@ -111,7 +103,6 @@ class Tutorial extends Page {
                 this.score.pop();
                 this.score.setState('default');
                 this.score.start();
-                this.listening = true;
 
                 this.basemap.enableInteractions();
                 this.basemap.addListener('click', selectionListener);
@@ -196,6 +187,8 @@ class Tutorial extends Page {
             this.paloma.hideInformation();
             await this.paloma.setTransparent();
             await this.mask.hide();
+            this.mask.sendFront();
+
             this.paloma.displayBubble();
             this.tutorialcontainer.addEventListener('click', tuto4, { once: true });
         };
@@ -249,7 +242,19 @@ class Tutorial extends Page {
             this.tutorialcontainer.addEventListener('click', tuto2, { once: true });
         };
 
-        this.tutorialcontainer.addEventListener('click', tuto1, { once: true });
+        if (this.listening) {
+            this.mask.sendBack();
+            this.paloma.setText("Bonjour, je suis Paloma.<br>Je vais vous guider pendant ce tutoriel !");
+            await waitPromise(300);
+            if (this.listening) {
+                this.paloma.setOrientation('south');
+                this.paloma.displayBubble();
+                await this.paloma.displayInformation();
+                if (this.listening) {
+                    this.tutorialcontainer.addEventListener('click', tuto1, { once: true });
+                }
+            }
+        }
     }
 
     async phase2(callback) {
@@ -606,16 +611,24 @@ class Tutorial extends Page {
         this.basemap.removeListeners();
 
         const tasks = [
-            (cb) => wait(300, cb),
-            (cb) => this.score.destroy(cb),
+            cb => wait(300, cb),
+            cb => this.score.destroy(cb),
         ];
 
         if (this.phase === 1) {
-            tasks.push((cb) => this.hint.end(cb));
+            tasks.push(cb => this.hint.end(cb));
+            tasks.push(cb => {
+                if (this.paloma) { this.paloma.hide(cb); }
+                if (this.mask) { this.mask.hide(); }
+            });
         }
         else if (this.phase === 2) {
-            tasks.push((cb) => this.basemap.clear(cb));
-            tasks.push((cb) => this.basemap.makeUnroutable(cb));
+            tasks.push(cb => this.basemap.clear(cb));
+            tasks.push(cb => this.basemap.makeUnroutable(cb));
+            tasks.push(cb => {
+                if (this.paloma) { this.paloma.hide(cb); }
+                if (this.mask) { this.mask.hide(); }
+            });
         }
 
         let cleared = 0;

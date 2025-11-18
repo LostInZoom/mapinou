@@ -17,7 +17,7 @@ class Paloma {
         this.framenumber = 3;
         this.framerate = 200;
 
-        this.container = makeDiv(null, 'paloma-container');
+        this.container = makeDiv(null, 'paloma-container pop');
 
         this.character = makeDiv(null, 'paloma-character out-left');
         this.charimage = document.createElement('img');
@@ -105,6 +105,18 @@ class Paloma {
 
     async unsetTransparent() {
         removeClass(this.bubble, 'transparent');
+    }
+
+    display(callback) {
+        callback = callback || function () { };
+        removeClass(this.container, 'hidden');
+        wait(300, callback);
+    }
+
+    hide(callback) {
+        callback = callback || function () { };
+        addClass(this.container, 'hidden');
+        wait(300, callback);
     }
 
     reload() {

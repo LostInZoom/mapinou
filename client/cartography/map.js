@@ -293,20 +293,33 @@ class Basemap {
 
     fit(extent, options, callback) {
         let duration = options.duration;
-        if (duration === undefined) {
-            const view = this.map.cameraForBounds(extent);
-            duration = this.getAnimationDurationFromZoom(view.zoom);
+        const view = this.map.cameraForBounds(extent);
+
+        const z1 = this.getZoom().toFixed(10);
+        const z2 = view.zoom.toFixed(10);
+        const c1 = this.getCenter().toArray();
+        const c2 = view.center.toArray();
+        const [x1, y1] = [c1[0].toFixed(10), c1[1].toFixed(10)];
+        const [x2, y2] = [c2[0].toFixed(10), c2[1].toFixed(10)];
+
+        if (z1 === z2 && x1 === x2 && y1 == y2) {
+            callback();
+        } else {
+            if (duration === undefined) {
+                duration = this.getAnimationDurationFromZoom(view.zoom);
+            }
+
+            this.map.fitBounds(extent, {
+                padding: options.padding ?? 0,
+                duration: duration,
+                easing: options.easing ?? (x => x),
+                curve: options.curve ?? this.animationCurve,
+                speed: options.speed ?? this.animationSpeed
+            });
+            this.map.once('moveend', () => {
+                if (callback) callback();
+            });
         }
-        this.map.fitBounds(extent, {
-            padding: options.padding ?? 0,
-            duration: duration,
-            easing: options.easing ?? (x => x),
-            curve: options.curve ?? this.animationCurve,
-            speed: options.speed ?? this.animationSpeed
-        });
-        this.map.once('moveend', () => {
-            if (callback) callback();
-        });
     }
 
     slide(direction, callback) {

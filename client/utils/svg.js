@@ -184,6 +184,14 @@ class TutorialMask {
         this.ellipse.setAttribute('ry', '0');
         await waitPromise(300);
     }
+
+    sendBack() {
+        removeClass(this.parent, 'front');
+    }
+
+    sendFront() {
+        addClass(this.parent, 'front');
+    }
 }
 
 export { LevelEdges, TutorialMask };
