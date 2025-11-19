@@ -385,7 +385,7 @@ async function checkVersion(game) {
     }
 }
 
-async function populateResults() {
+async function populateResults(amount) {
     let query = `
         SELECT *
 		FROM data.levels;
@@ -393,7 +393,6 @@ async function populateResults() {
 
     let result = await db.query(query);
 
-    const amount = 100;
     const indexes = [];
     for (let index = 0; index < amount; index++) {
         const animal = generateId(null, {

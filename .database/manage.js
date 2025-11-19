@@ -18,8 +18,8 @@ function update() {
     })
 }
 
-function populate() {
-    populateResults().then(() => {
+function populate(amount = 100) {
+    populateResults(amount).then(() => {
         process.exit();
     })
 }
