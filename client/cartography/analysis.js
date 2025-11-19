@@ -151,9 +151,43 @@ function centroid(array) {
     return turf.centroid(fc).geometry.coordinates;
 }
 
+function bboxFromLines(...lines) {
+    let minLon = Infinity;
+    let minLat = Infinity;
+    let maxLon = -Infinity;
+    let maxLat = -Infinity;
+    for (const line of lines) {
+        if (!Array.isArray(line)) continue;
+        for (let point of line) {
+            if (!Array.isArray(point) || point.length !== 2) continue;
+
+            const [lon, lat] = point;
+
+            if (
+                typeof lon !== "number" ||
+                typeof lat !== "number" ||
+                !isFinite(lon) ||
+                !isFinite(lat)
+            ) {
+                continue;
+            }
+
+            minLon = Math.min(minLon, lon);
+            minLat = Math.min(minLat, lat);
+            maxLon = Math.max(maxLon, lon);
+            maxLat = Math.max(maxLat, lat);
+        }
+    }
+
+    if (!isFinite(minLon)) {
+        return null;
+    }
+    return [minLon, minLat, maxLon, maxLat];
+}
+
 export {
     buffer, flatten, bufferAroundPolygon,
-    middle, within, project, angle,
+    middle, within, project, angle, bboxFromLines,
     randomPointInCircle, toLongLat, mergeExtents,
     pointExtent, centroid
 }

@@ -5,7 +5,7 @@ import Basemap from '../cartography/map';
 import Rabbits from '../layers/rabbits';
 import Target from '../characters/target';
 
-import { pointExtent, randomPointInCircle } from "../cartography/analysis";
+import { bboxFromLines, pointExtent, randomPointInCircle } from "../cartography/analysis";
 import { easeInOutSine, easeOutExpo, removeOutliersIQR } from '../utils/math';
 import { addClass, easingIncrement, hasClass, makeDiv, removeClass, wait, waitPromise } from "../utils/dom";
 import { makeDiv } from "../utils/dom";
@@ -462,10 +462,7 @@ class Leaderboard {
 
         // Tab to display journeys
         const winner = JSON.parse(this.highscores.journey);
-        const bbox1 = turf.bbox(turf.lineString(this.results.phase2.journey));
-        const bbox2 = turf.bbox(winner);
-        const bbox = [Math.min(bbox1[0], bbox2[0]), Math.min(bbox1[1], bbox2[1]), Math.max(bbox1[2], bbox2[2]), Math.max(bbox1[3], bbox2[3])];
-
+        const bbox = bboxFromLines(winner.coordinates, this.results.phase2.journey);
         this.winner = winner.coordinates;
 
         this.journeyMap = new Basemap({
@@ -473,7 +470,7 @@ class Leaderboard {
             parent: tab,
             class: 'highscores',
             extent: bbox,
-            padding: { top: 10, left: 10, right: 10, bottom: 40 },
+            // padding: { top: 10, left: 10, right: 10, bottom: 40 },
             interactive: false
         }, () => {
             let labels = makeDiv(null, 'highscore-journey-labels');

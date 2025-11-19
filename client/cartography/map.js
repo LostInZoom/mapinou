@@ -38,6 +38,7 @@ class Basemap {
             }
         }
         this.parent.append(this.container);
+        this.container.offsetHeight;
 
         let center = this.options.center || [0, 0];
         let zoom = this.options.zoom || 1;
@@ -85,6 +86,7 @@ class Basemap {
                 fitBoundsOptions: { padding: padding || 0 },
                 canvasContextAttributes: { antialias: true },
                 style: style,
+                attributionControl: false
             });
         } else {
             this.map = new Map({
