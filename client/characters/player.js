@@ -159,68 +159,75 @@ class Player extends Rabbit {
             const svertexes = simplified.geometry.coordinates;
             const length = turf.length(line, { units: 'meters' });
 
-            // Retrieve the time
-            let lastTime = performance.now();
+            const angles = [];
+            for (let i = 0; i < svertexes.length - 1; i++) {
+                angles[i] = angle(svertexes[i], svertexes[i + 1]);
+            }
+            angles[svertexes.length - 1] = angles[svertexes.length - 2];
 
-            // Get the speed in meters/second
-            const speed = this.params.game.speed.travel / 3.6;
+            const STEP = 3; // meters
+            const sampled = [];
 
-            // Start the distance counter
-            this.distance = 0;
+            for (let d = 0; d < length; d += STEP) {
+                const pt = turf.along(line, d, { units: "meters" }).geometry.coordinates;
+                sampled.push(pt);
+            }
+            sampled.push(destination);
 
-            // orientation fixe pour ce segment
-            this.setOrientationFromAngle(angle(svertexes[0], svertexes[1]));
-            let journey = [svertexes[0]];
+            const orientation = [];
+            for (let i = 0; i < sampled.length; i++) {
+                const np = turf.nearestPointOnLine(simplified, sampled[i]);
+                const seg = np.properties.index;
+                orientation[i] = angles[seg];
+            }
+
+            let lastTime = performance.now(); // retrieve time
+            const speed = this.params.game.speed.travel / 3.6; // speed in m/s
+            this.distance = 0; // distance counter
 
             const animation = (time) => {
-                if (this.start === start) {
-                    // Calculate the elapsed time in seconds
-                    const elapsed = (time - lastTime) / 1000;
-                    // Calculate the distance traveled depending on the elapsed time and the speed
-                    this.distance = this.distance + (elapsed * speed);
-                    // Set the previous time as the current one
-                    lastTime = time;
+                if (this.start !== start) return;
 
-                    // If the travelled distance is below the length of the route, continue the animation
-                    if (this.distance <= length) {
-                        if (this.distance > 0) {
-                            // Calculate the position of the point along the route line
-                            let along = turf.along(line, this.distance, { units: 'meters' });
-                            this.position = along.geometry.coordinates;
+                // Calculate the elapsed time in seconds
+                const elapsed = (time - lastTime) / 1000;
+                // Calculate the distance traveled depending on the elapsed time and the speed
+                this.distance += elapsed * speed;
+                // Set the previous time as the current one
+                lastTime = time;
 
-                            let projected = turf.nearestPointOnLine(simplified, along);
-                            let i = projected.properties.index;
-                            const before = svertexes[i];
-                            const after = svertexes[i + 1];
+                // If the travelled distance is below the length of the route, continue the animation
+                if (this.distance <= length) {
+                    if (this.distance > 0) {
+                        let idx = Math.floor(this.distance / STEP);
+                        if (idx >= sampled.length) idx = sampled.length - 1;
 
-                            if (!journey.includes(before)) {
-                                this.setOrientationFromAngle(angle(before, after));
-                                journey.push(before);
-                            }
+                        this.position = sampled[idx];
 
-                            this.router.updateJourney(this.position);
-                            this.setCoordinates(this.position);
-                            this.journey.push(this.position);
+                        this.setCoordinates(this.position);
+                        this.setOrientationFromAngle(orientation[idx]);
 
-                            this.layer.basemap.helpers.handle(this);
-                            this.layer.basemap.enemies.handle(this);
+                        this.router.updateJourney(this.position);
+                        // this.setCoordinates(this.position);
+                        this.journey.push(this.position);
 
-                            // If target is in range, win the level
-                            if (within(this.position, this.layer.basemap.target.getCoordinates(), this.params.game.tolerance.target)) {
-                                if (this.clic) { this.clic.state = 'won'; }
-                                this.stop();
-                                this.router.setProvider('ign');
-                                callback('win');
-                            }
+                        this.layer.basemap.helpers.handle(this);
+                        this.layer.basemap.enemies.handle(this);
+
+                        // If target is in range, win the level
+                        if (within(this.position, this.layer.basemap.target.getCoordinates(), this.params.game.tolerance.target)) {
+                            if (this.clic) this.clic.state = 'won';
+                            this.stop();
+                            this.router.setProvider('ign');
+                            callback('win');
                         }
-                        requestAnimationFrame(animation);
                     }
-                    else {
-                        this.setCoordinates(vertexes[vertexes.length - 1]);
-                        if (this.clic) { this.clic.state = 'reached'; }
-                        this.stop();
-                        callback('continue');
-                    }
+                    requestAnimationFrame(animation);
+                }
+                else {
+                    this.setCoordinates(vertexes[vertexes.length - 1]);
+                    if (this.clic) { this.clic.state = 'reached'; }
+                    this.stop();
+                    callback('continue');
                 }
             };
             requestAnimationFrame(animation);
