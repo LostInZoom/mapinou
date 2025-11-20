@@ -133,7 +133,7 @@ window.addEventListener("DOMContentLoaded", async () => {
             installation = false;
             createValidation(document.body, `
                 Pour profiter au mieux de Mapinou, vous pouvez créer un raccourci sur votre écran d'accueil.
-                Sélectionnez :<br><i>Menu</i> ▸ <i>Ajouter à l’écran d’accueil</i>.`,
+                Sélectionnez :<br><i>Menu</i> ▸ <i>Ajouter à l’écran d’accueil</i>`,
                 ["D'accord", "Ne plus demander"],
                 choice => {
                     if (choice === 1) { setStorage('install', false); }
@@ -145,7 +145,7 @@ window.addEventListener("DOMContentLoaded", async () => {
             installation = false;
             createValidation(document.body, `
                 Pour profiter au mieux de Mapinou, vous pouvez installer le jeu sur votre appareil.
-                Sélectionnez :<br><i>Partager</i> ▸ <i>Sur l’écran d’accueil</i>.`,
+                Sélectionnez :<br><i>Partager</i> ▸ <i>Sur l’écran d’accueil</i>`,
                 ["D'accord", "Ne plus demander"],
                 choice => {
                     if (choice === 1) { setStorage('install', false); }

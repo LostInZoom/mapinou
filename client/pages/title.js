@@ -140,14 +140,14 @@ class Title extends Page {
                     if (firefox) {
                         createValidation(document.body, `
                             Pour créer un raccourci sur votre écran d'accueil, sélectionnez :
-                            <br><i>Menu</i> ▸ <i>Ajouter à l’écran d’accueil</i>.`,
+                            <br><i>Menu</i> ▸ <i>Ajouter à l’écran d’accueil</i>`,
                             ["D'accord"]
                         );
                     }
                     else if (device.os === 'ios') {
                         createValidation(document.body, `
                             Pour créer un raccourci sur votre écran d'accueil, sélectionnez :
-                            <br><i>Partager</i> ▸ <i>Sur l’écran d’accueil</i>.`,
+                            <br><i>Partager</i> ▸ <i>Sur l’écran d’accueil</i>`,
                             ["D'accord"]
                         );
                     } else {
