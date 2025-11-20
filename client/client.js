@@ -3,7 +3,7 @@ import device from "current-device";
 import Application from "./game/application.js";
 import { ajaxGet, ajaxPost } from "./utils/ajax.js";
 import { generateRandomInteger } from "./utils/math.js";
-import { createValidation, getStorage, setStorage } from "./utils/dom.js";
+import { createValidation, getStorage, isWebView, setStorage } from "./utils/dom.js";
 
 window.addEventListener("DOMContentLoaded", async () => {
     const register = (callback) => {
@@ -116,6 +116,15 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
 
     if (device.type !== 'desktop') {
+        if (isWebView()) {
+            createValidation(document.body, `
+                Il n'est pas recommandé de jouer à Mapinou dans le navigateur actuel.
+            `, [
+                "Continuer quand même",
+                `<a href="https://lostinzoom.huma-num.fr/mapinou" target="_blank" rel="noopener">Ouvrir dans mon navigateur</a>`
+            ]);
+        }
+
         let installation = true;
         const firefox = navigator.userAgent.toLowerCase().includes('firefox');
         const ask = JSON.parse(getStorage('install'));
@@ -156,9 +165,6 @@ window.addEventListener("DOMContentLoaded", async () => {
                         // YES
                         if (v === 0) {
                             if (deferredPrompt) {
-                                // window.addEventListener('appinstalled', () => {
-                                //     createValidation(document.body, `Quittez ce navigateur et lancez Mapinou depuis votre téléphone.` );
-                                // });
                                 deferredPrompt.prompt();
                                 await deferredPrompt.userChoice;
                                 deferredPrompt = null;

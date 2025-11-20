@@ -252,7 +252,7 @@ async function checkAvailability(callback) {
     }
 
     try {
-        const r = await fetch("https://1.1.1.1/cdn-cgi/trace", { method: "HEAD", cache: "no-store" });
+        const r = await fetch("https://www.google.com/generate_204", { signal: controller.signal });
         result.internet = r.ok;
     } catch { }
 
@@ -279,9 +279,66 @@ function createTable(data, className = "") {
     return table;
 }
 
+function isWebView() {
+    const ua = navigator.userAgent || navigator.vendor || window.opera;
+    const uaLower = ua.toLowerCase();
+    // --- iOS WebView ---
+    const isIOS = /iphone|ipad|ipod/i.test(uaLower);
+    const isSafari = /safari/i.test(uaLower);
+    if (isIOS && !isSafari) return true;
+    // --- Android WebView ---
+    if (/wv/.test(uaLower)) return true;
+    if (/android.*version\/\d+/.test(uaLower)) return true;
+    if (/; wv/.test(uaLower)) return true;
+    // --- Facebook, Instagram, Messenger ---
+    if (uaLower.includes("fbav") || uaLower.includes("fbios")) return true;
+    if (uaLower.includes("instagram")) return true;
+    if (uaLower.includes("messenger")) return true;
+    // --- TikTok WebView ---
+    if (uaLower.includes("tiktok")) return true;
+    // --- Snapchat ---
+    if (uaLower.includes("snapchat")) return true;
+    // --- Twitter / X in-app browser ---
+    if (uaLower.includes("twitter")) return true;
+    if (uaLower.includes("x-client")) return true;
+    if (uaLower.includes("okhttp")) return true;
+    // --- LinkedIn ---
+    if (uaLower.includes("linkedin")) return true;
+    // --- Gmail / Outlook / GSA ---
+    if (uaLower.includes("gsa")) return true;
+    if (uaLower.includes("mail")) return true;
+    if (uaLower.includes("outlook")) return true;
+    if (uaLower.includes("reddit")) return true;
+    if (isIOS && (
+        uaLower.includes("crios") ||
+        uaLower.includes("fxios") ||
+        uaLower.includes("edgios")
+    )) return true;
+
+    return false;
+}
+
+function isAppInstalled() {
+    const ua = navigator.userAgent.toLowerCase();
+    // Chrome PWA (Android)
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+        return true;
+    }
+    // Safari iOS / Chrome iOS / Firefox iOS
+    if (window.navigator.standalone === true) {
+        return true;
+    }
+    // Firefox Android (shortcut)
+    if (ua.includes('firefox') &&
+        window.matchMedia('(display-mode: standalone)').matches) {
+        return true;
+    }
+    return false;
+}
+
 export {
     makeDiv, hasClass, addClass, removeClass, addClassList, removeClassList,
     activate, deactivate, checkAvailability, createTable,
     clearElement, addSVG, getCSSColors, remove, wait, waitPromise, isOverflown,
-    easingIncrement, createValidation, setStorage, getStorage, hasSameKeys, runWithVariance
+    easingIncrement, createValidation, setStorage, getStorage, hasSameKeys, runWithVariance, isWebView, isAppInstalled
 }

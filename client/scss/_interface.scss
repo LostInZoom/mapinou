@@ -120,4 +120,11 @@
     background-color: colors.$main-color-light;
     color: colors.$main-color-dark;
     padding: .5rem .8rem;
+
+    &>a {
+        cursor: default;
+        text-decoration: none;
+        font-weight: normal;
+        color: colors.$main-color-dark;
+    }
 }
