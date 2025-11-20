@@ -1,7 +1,7 @@
 {
     "name": "Mapinou",
     "short_name": "Mapinou",
-    "description": "A game about cartogaphic navigation.",
+    "description": "Aidez la science en jouant avec des lapins !",
     "icons": [
         {
             "src": "./img/mapinou-512x512.png",

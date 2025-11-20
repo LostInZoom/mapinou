@@ -1,7 +1,7 @@
 {
   "name": "mapinou",
   "version": "1.0.0",
-  "description": "A game about cartographic navigation.",
+  "description": "Aidez la science en jouant avec des lapins !",
   "author": "jberli",
   "license": "GPL-3.0-or-later",
   "source": "server.js",

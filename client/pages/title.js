@@ -9,7 +9,6 @@ import { addClass, createValidation, isAppInstalled, isWebView, makeDiv, removeC
 import { remap, easeOutCubic, easeInOutSine } from "../utils/math";
 import { capitalizeFirstLetter, pxToRem } from "../utils/parse";
 import Credits from "./credits";
-import Ending from "./ending";
 
 class Title extends Page {
     constructor(options, callback) {
@@ -262,7 +261,7 @@ class Title extends Page {
                 try {
                     await navigator.share({
                         title: 'Mapinou',
-                        text: 'Naviguez dans des cartes et trouvez des lapins.',
+                        text: 'Aidez la science en jouant avec des lapins !',
                         url: window.location.href
                     });
                 } catch {
@@ -287,7 +286,6 @@ class Title extends Page {
                             this.basemap.fit(this.params.interface.map.levels, {
                                 easing: easeInOutSine
                             }, () => {
-                                // this.app.page = new Ending({ app: this.app, position: 'current' });
                                 this.app.page = new Levels({ app: this.app, position: 'current', init: true });
                             });
                         });
