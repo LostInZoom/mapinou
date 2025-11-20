@@ -5,7 +5,7 @@ import Rabbits from '../layers/rabbits.js';
 import Page from '../pages/page.js';
 import Title from '../pages/title.js';
 
-import { makeDiv, addClass, removeClass, wait } from '../utils/dom.js';
+import { makeDiv, addClass, removeClass, wait, isAppInstalled } from '../utils/dom.js';
 import { generateRandomInteger } from '../utils/math.js';
 import { Header } from '../pages/elements.js';
 import { Music, SoundEffects } from '../utils/soundbuttons.js';
@@ -77,7 +77,8 @@ class Application {
 
                 const audio = this.options.audio;
                 this.music.display(() => {
-                    if (audio.music && window.matchMedia('(display-mode: fullscreen)').matches) {
+                    isAppInstalled()
+                    if (audio.music && isAppInstalled()) {
                         this.music.play();
                     }
                 });

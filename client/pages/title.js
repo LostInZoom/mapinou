@@ -1,9 +1,11 @@
+import device from "current-device";
+
 import Consent from "./consent";
 import Form from "./form";
 import Levels from "./levels";
 import Page from "./page";
 
-import { addClass, makeDiv, removeClass, removeClassList, wait } from "../utils/dom";
+import { addClass, createValidation, isAppInstalled, isWebView, makeDiv, removeClass, removeClassList, wait } from "../utils/dom";
 import { remap, easeOutCubic, easeInOutSine } from "../utils/math";
 import { capitalizeFirstLetter, pxToRem } from "../utils/parse";
 import Credits from "./credits";
@@ -115,19 +117,54 @@ class Title extends Page {
 
         this.share = makeDiv(null, 'title-button title-button-share', this.params.svgs.share);
         if (navigator.share) { addClass(this.share, 'active'); }
-
         this.buttons.append(this.start, this.credits, this.share);
-        this.buildinfos = makeDiv(null, 'title-build');
-        this.buildinfoslabel = makeDiv(null, 'title-build-label', `
-            version ${this.params.game.version} "${capitalizeFirstLetter(this.params.game.codename)}" - ${new Date().getFullYear()}
-        `);
-        this.buildinfos.append(this.buildinfoslabel);
 
-        this.container.append(this.buttons, this.buildinfos);
+        this.banner = makeDiv(null, 'title-banner');
 
+        if (isAppInstalled() || device.type === 'desktop' || isWebView()) {
+            addClass(this.banner, 'pwa');
+            const text = `version ${this.params.game.version} "${capitalizeFirstLetter(this.params.game.codename)}" - ${new Date().getFullYear()}`;
+            const label = makeDiv(null, 'title-banner-label', text);
+            this.banner.append(label);
+        } else {
+            addClass(this.banner, 'browser');
+            const text = `Pour profiter au mieux de Mapinou, installez-le sur votre appareil !`;
+            const label = makeDiv(null, 'title-banner-label', text);
+            const install = makeDiv(null, 'title-banner-install', this.params.svgs.install);
+            this.banner.append(install, label);
+
+            const listenbanner = true;
+            this.banner.addEventListener('click', () => {
+                if (listenbanner) {
+                    const firefox = navigator.userAgent.toLowerCase().includes('firefox');
+                    if (firefox) {
+                        createValidation(document.body, `
+                            Pour créer un raccourci sur votre écran d'accueil, sélectionnez :
+                            <br><i>Menu</i> ▸ <i>Ajouter à l’écran d’accueil</i>.`,
+                            ["D'accord"]
+                        );
+                    }
+                    else if (device.os === 'ios') {
+                        createValidation(document.body, `
+                            Pour créer un raccourci sur votre écran d'accueil, sélectionnez :
+                            <br><i>Partager</i> ▸ <i>Sur l’écran d’accueil</i>.`,
+                            ["D'accord"]
+                        );
+                    } else {
+                        createValidation(document.body, `
+                            Pour créer un raccourci sur votre écran d'accueil, sélectionnez :
+                            <br><i>Menu</i> ▸ <i>Ajouter à l’écran d’accueil</i> ▸ <i>Installer</i>`,
+                            ["D'accord"]
+                        );
+                    }
+                }
+            });
+        }
+
+        this.container.append(this.buttons, this.banner);
         this.start.offsetWidth;
         this.credits.offsetWidth;
-        this.buildinfos.offsetWidth;
+        this.banner.offsetWidth;
 
         delay += 300;
 
@@ -158,9 +195,9 @@ class Title extends Page {
         if (init) {
             wait(delay, () => {
                 this.playSound({ src: sounds[index++], volume: 0.8 });
-                addClass(this.buildinfos, 'pop');
+                addClass(this.banner, 'pop');
             });
-        } else { addClass(this.buildinfos, 'pop'); }
+        } else { addClass(this.banner, 'pop'); }
         delay += 400;
 
         if (init) {
@@ -241,7 +278,7 @@ class Title extends Page {
                 this.listen = false;
                 if (this.options.app.options.session.consent) {
                     if (this.options.app.options.session.form) {
-                        removeClassList([this.letters, this.start, this.credits, this.share, this.buildinfos, this.progression], 'pop');
+                        removeClassList([this.letters, this.start, this.credits, this.share, this.banner, this.progression], 'pop');
                         this.app.killRabbits();
                         this.app.forbidRabbits();
                         wait(300, () => {

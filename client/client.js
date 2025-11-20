@@ -3,7 +3,7 @@ import device from "current-device";
 import Application from "./game/application.js";
 import { ajaxGet, ajaxPost } from "./utils/ajax.js";
 import { generateRandomInteger } from "./utils/math.js";
-import { createValidation, getStorage, isWebView, setStorage } from "./utils/dom.js";
+import { createValidation, getStorage, isAppInstalled, isWebView, setStorage } from "./utils/dom.js";
 
 window.addEventListener("DOMContentLoaded", async () => {
     const register = (callback) => {
@@ -92,12 +92,12 @@ window.addEventListener("DOMContentLoaded", async () => {
                     sounds = JSON.parse(sounds);
                 }
 
-                const isPWA = window.matchMedia('(display-mode: fullscreen)').matches
+                const pwa = isAppInstalled();
                 if (!music) {
-                    music = isPWA;
+                    music = pwa;
                 } else {
                     music = JSON.parse(music);
-                    if (music) { music = isPWA; }
+                    if (music) { music = pwa; }
                 }
                 setStorage('music', music);
 
@@ -132,8 +132,8 @@ window.addEventListener("DOMContentLoaded", async () => {
         if (firefox && ask) {
             installation = false;
             createValidation(document.body, `
-                Pour proftier au mieux de Mapinou, vous pouvez créer un raccourcis sur votre écran d'accueil,
-                sélectionnez :<br><i>Menu</i> ▸ <i>Ajouter à l’écran d’accueil</i>."`,
+                Pour profiter au mieux de Mapinou, vous pouvez créer un raccourci sur votre écran d'accueil.
+                Sélectionnez :<br><i>Menu</i> ▸ <i>Ajouter à l’écran d’accueil</i>.`,
                 ["D'accord", "Ne plus demander"],
                 choice => {
                     if (choice === 1) { setStorage('install', false); }
@@ -144,8 +144,8 @@ window.addEventListener("DOMContentLoaded", async () => {
         if (device.os === 'ios' && ask) {
             installation = false;
             createValidation(document.body, `
-                Pour profiter au mieux de Mapinou, vous pouvez installer le jeu sur votre appareil,
-                sélectionnez :<br><i>Partager</i> ▸ <i>Sur l’écran d’accueil</i>.`,
+                Pour profiter au mieux de Mapinou, vous pouvez installer le jeu sur votre appareil.
+                Sélectionnez :<br><i>Partager</i> ▸ <i>Sur l’écran d’accueil</i>.`,
                 ["D'accord", "Ne plus demander"],
                 choice => {
                     if (choice === 1) { setStorage('install', false); }

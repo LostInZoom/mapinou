@@ -324,6 +324,9 @@ function isAppInstalled() {
     if (window.matchMedia('(display-mode: standalone)').matches) {
         return true;
     }
+    if (window.matchMedia('(display-mode: fullscreen)').matches) {
+        return true;
+    }
     // Safari iOS / Chrome iOS / Firefox iOS
     if (window.navigator.standalone === true) {
         return true;

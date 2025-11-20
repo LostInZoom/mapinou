@@ -122,32 +122,76 @@
     background-color: colors.$secondary-color-dark;
 }
 
-.title-build {
-    position: absolute;
-    z-index: 150;
-    bottom: sizes.$gap2rem;
+$install-button: min(3.5rem, 15vw, 12vh);
+
+.title-banner {
+    position: relative;
+    pointer-events: all;
+
+    margin: auto sizes.$gap2rem sizes.$gap2rem sizes.$gap2rem;
 
     display: flex;
-    justify-content: center;
+    align-items: center;
 
-    transform: scale(0);
-    transition: transform .3s cubic-bezier(0.36, 0, 0.66, -0.56);
+    &.browser {
+        width: min(calc(100% - 2 * sizes.$gap2rem), 20rem);
 
-    &.pop {
-        transform: scale(1);
-        transition: transform .3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        transform: scale(0);
+        transition: transform .3s cubic-bezier(0.545, -0.215, 1.000, 0.470);
+
+        &.pop {
+            transform: scale(1);
+            transition: transform .3s cubic-bezier(0.075, 0.495, 0.320, 1.225);
+        }
+
+        &>.title-banner-label {
+            width: calc(100% - $install-button / 2);
+            margin-right: calc($install-button / 2);
+            padding: .3rem calc($install-button / 2) .3rem .6rem;
+        }
+    }
+
+    &.pwa {
+        transform: scale(0);
+        transition: transform .3s cubic-bezier(0.36, 0, 0.66, -0.56);
+
+        &.pop {
+            transform: scale(1);
+            transition: transform .3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        &>.title-banner-label {
+            padding: .3rem .5rem;
+        }
     }
 }
 
-.title-build-label {
-    pointer-events: all;
-    font-family: 'Vincendo';
-    font-size: sizes.$font-size-extrasmall;
-    padding: .2rem .4rem;
+
+.title-banner-label {
     border-radius: sizes.$border-radius;
+    text-align: center;
+    font-size: sizes.$font-size-extrasmall;
+    color: colors.$main-color-light;
+    background-color: colors.$secondary-color-dark;
+}
+
+.title-banner-install {
+    position: absolute;
+    right: 0;
+
+    aspect-ratio: 1 / 1;
+    height: $install-button;
+    width: $install-button;
+    border-radius: 50%;
 
     color: colors.$main-color-light;
     background-color: colors.$secondary-color-dark;
+
+    &>svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+    }
 }
 
 $progsize: min(2.5rem, 10vw, 10vh);
