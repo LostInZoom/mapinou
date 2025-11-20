@@ -128,7 +128,7 @@ class Title extends Page {
             this.banner.append(label);
         } else {
             addClass(this.banner, 'browser');
-            const text = `Pour profiter au mieux de Mapinou, installez-le sur votre appareil !`;
+            const text = `Installez Mapinou pour mieux en profiter !`;
             const label = makeDiv(null, 'title-banner-label', text);
             const install = makeDiv(null, 'title-banner-install', this.params.svgs.install);
             this.banner.append(install, label);

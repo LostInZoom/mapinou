@@ -124,6 +124,11 @@
 
 $install-button: min(3.5rem, 15vw, 12vh);
 
+$padding-horizontal1: min(2vw, 2vh, .4rem);
+$padding-vertical1: min(2vw, 2vh, .8rem);
+$padding-horizontal2: min(1.5vw, 1.5vh, .3rem);
+$padding-vertical2: min(2vw, 2vh, .5rem);
+
 .title-banner {
     position: relative;
     pointer-events: all;
@@ -131,11 +136,10 @@ $install-button: min(3.5rem, 15vw, 12vh);
     margin: auto sizes.$gap2rem sizes.$gap2rem sizes.$gap2rem;
 
     display: flex;
+    justify-content: end;
     align-items: center;
 
     &.browser {
-        width: min(calc(100% - 2 * sizes.$gap2rem), 20rem);
-
         transform: scale(0);
         transition: transform .3s cubic-bezier(0.545, -0.215, 1.000, 0.470);
 
@@ -145,9 +149,8 @@ $install-button: min(3.5rem, 15vw, 12vh);
         }
 
         &>.title-banner-label {
-            width: calc(100% - $install-button / 2);
             margin-right: calc($install-button / 2);
-            padding: .3rem calc($install-button / 2) .3rem .6rem;
+            padding: $padding-horizontal1 calc($install-button / 2) $padding-horizontal1 $padding-vertical1;
         }
     }
 
@@ -161,7 +164,7 @@ $install-button: min(3.5rem, 15vw, 12vh);
         }
 
         &>.title-banner-label {
-            padding: .3rem .5rem;
+            padding: $padding-horizontal2 $padding-vertical2;
         }
     }
 }
@@ -170,7 +173,7 @@ $install-button: min(3.5rem, 15vw, 12vh);
 .title-banner-label {
     border-radius: sizes.$border-radius;
     text-align: center;
-    font-size: sizes.$font-size-extrasmall;
+    font-size: sizes.$font-size-small;
     color: colors.$main-color-light;
     background-color: colors.$secondary-color-dark;
 }
