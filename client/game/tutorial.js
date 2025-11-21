@@ -48,7 +48,7 @@ class Tutorial extends Page {
                 this.playButtonSound();
                 this.listen = false;
                 this.clear(() => {
-                    this.toLevels();
+                    this.toLevels(false);
                 });
             }
         });
@@ -559,7 +559,8 @@ class Tutorial extends Page {
             await this.hideTutorial();
 
             this.clear(() => {
-                this.toLevels();
+                if (this.first) { this.app.progress(); }
+                this.toLevels(true);
             });
         }
 
@@ -698,18 +699,17 @@ class Tutorial extends Page {
         removeClass(this.tutorialcontainer, 'end');
     }
 
-    toLevels() {
+    toLevels(update) {
         this.tutorialcontainer.remove();
         this.destroy();
 
         this.basemap.fit(this.params.interface.map.levels, {
             easing: easeInOutSine
         }, () => {
-            if (this.first) { this.app.progress(); }
             this.app.page = new Levels({
                 app: this.app,
                 position: 'current',
-                update: this.first
+                update: update
             });
         });
     }
