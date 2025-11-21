@@ -246,22 +246,12 @@ function hasSameKeys(obj, keys) {
 
 async function checkAvailability(callback) {
     callback = callback || function () { };
-    let result = {
-        internet: false,
-        server: false
-    }
-
-    try {
-        const r = await fetch("https://www.google.com/generate_204", { signal: controller.signal });
-        result.internet = r.ok;
-    } catch { }
-
+    let server = false;
     try {
         const r = await fetch("ping/");
-        result.server = r.ok;
+        server = r.ok;
     } catch { }
-
-    callback(result);
+    callback(server);
 }
 
 function createTable(data, className = "") {

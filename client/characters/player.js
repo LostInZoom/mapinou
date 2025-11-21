@@ -243,7 +243,7 @@ class Player extends Rabbit {
             this.listen = false;
             checkAvailability(online => {
                 this.listen = true;
-                if (online.internet && online.server) {
+                if (online) {
                     this.traveling = true;
 
                     this.clic = {
@@ -293,16 +293,7 @@ class Player extends Rabbit {
                         }
                     });
                 } else {
-                    let text = 'Impossible de continuer, ';
-                    if (!online.internet) {
-                        text += 'vérifiez votre connexion internet.'
-                    } else {
-                        if (!online.server) {
-                            text += 'le serveur Mapinou rencontre un problème.'
-                        }
-                    }
-
-                    createValidation(document.body, text,
+                    createValidation(document.body, 'Impossible de continuer, vérifiez votre connexion internet.',
                         ['Réessayer', 'Arrêter'],
                         choice => {
                             if (choice === 1) {

@@ -119,7 +119,7 @@ class TierPanel extends Panel {
 
                     const pursue = async () => {
                         if (++cleared === clearing) {
-                            if (online.internet && online.server) {
+                            if (online) {
                                 this.page.app.page = new Level({
                                     app: this.page.app,
                                     levels: this.page,
@@ -128,13 +128,7 @@ class TierPanel extends Panel {
                                     level: i
                                 });
                             } else {
-                                let text = 'Impossible de continuer, ';
-                                if (!online.internet) {
-                                    text += 'vérifiez votre connexion internet.'
-                                } else {
-                                    if (!online.server) { text += 'le serveur Mapinou rencontre un problème.' }
-                                }
-                                createValidation(document.body, text, ["D'accord"], () => {
+                                createValidation(document.body, 'Impossible de continuer, vérifiez votre connexion internet.', ["D'accord"], () => {
                                     this.app.page = new Levels({
                                         app: this.app,
                                         position: 'current',
@@ -348,7 +342,7 @@ class ExperiencePanel extends Panel {
 
                 const pursue = async () => {
                     if (++cleared === clearing) {
-                        if (online.internet && online.server) {
+                        if (online) {
                             if (content.index === 'sbsod') {
                                 this.page.app.page = new SantaBarbara({
                                     app: this.page.app,
@@ -379,13 +373,7 @@ class ExperiencePanel extends Panel {
                                 });
                             }
                         } else {
-                            let text = 'Impossible de continuer, ';
-                            if (!online.internet) {
-                                text += 'vérifiez votre connexion internet.'
-                            } else {
-                                if (!online.server) { text += 'le serveur Mapinou rencontre un problème.' }
-                            }
-                            createValidation(document.body, text, ["D'accord"], () => {
+                            createValidation(document.body, 'Impossible de continuer, vérifiez votre connexion internet.', ["D'accord"], () => {
                                 this.app.page = new Levels({
                                     app: this.app,
                                     position: 'current',
@@ -533,7 +521,7 @@ class TutorialPanel extends Panel {
 
                 const pursue = async () => {
                     if (++cleared === clearing) {
-                        if (online.internet && online.server) {
+                        if (online) {
                             this.page.app.page = new Tutorial({
                                 app: this.page.app,
                                 levels: this.page,
@@ -542,13 +530,7 @@ class TutorialPanel extends Panel {
                                 first: this.number === prognumber ? true : false
                             });
                         } else {
-                            let text = 'Impossible de continuer, ';
-                            if (!online.internet) {
-                                text += 'vérifiez votre connexion internet.'
-                            } else {
-                                if (!online.server) { text += 'le serveur Mapinou rencontre un problème.' }
-                            }
-                            createValidation(document.body, text, ["D'accord"], () => {
+                            createValidation(document.body, 'Impossible de continuer, vérifiez votre connexion internet.', ["D'accord"], () => {
                                 this.app.page = new Levels({
                                     app: this.app,
                                     position: 'current',
