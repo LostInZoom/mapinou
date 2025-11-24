@@ -159,7 +159,7 @@ async function insertPTSOT(data) {
     let query = '';
     let values = [];
 
-    let results = {}
+    let results = { differences: [] }
 
     try {
         let version = await checkVersion(data.game);
@@ -178,12 +178,13 @@ async function insertPTSOT(data) {
         }
 
         query = `
-            SELECT avg(elapsed) as elapsed, avg(difference) as difference
+            SELECT question, avg(difference) as difference
             FROM data.ptsot
+            GROUP BY question
+            ORDER BY question
         `
         let global = await db.query(query);
-        results['elapsed'] = global.rows[0].elapsed;
-        results['difference'] = global.rows[0].difference;
+        global.rows.forEach(r => { results.differences.push(r.difference); });
 
         return results
     } catch {

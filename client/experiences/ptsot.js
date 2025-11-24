@@ -121,53 +121,42 @@ class SpatialOrientation extends Page {
         presentation.append(title);
         text.append(presentation);
 
+        const container = makeDiv(null, 'ptsot-results no-scrollbar');
         const table = document.createElement('table');
         addClass(table, 'ptsot-metrics-container');
 
-        const type = document.createElement('tr');
-        addClass(type, 'ptsot-type');
-        const empty = document.createElement('td');
+        const first = document.createElement('tr');
+        addClass(first, 'ptsot-type');
+        const test = document.createElement('td');
+        test.textContent = 'Test';
         const you = document.createElement('td');
-        you.textContent = 'Vous';
+        you.textContent = 'Écart';
         const all = document.createElement('td');
-        all.textContent = 'Global';
-        type.append(empty, you, all);
+        all.textContent = 'Écart global moyen';
+        first.append(test, you, all);
+        table.append(first);
 
-        const userElapsed = `${Math.round(this.answers.reduce((sum, obj) => sum + obj.elapsed, 0) / this.answers.length / 1000)}s`;
-        const userAngle = `${Math.round(this.answers.reduce((sum, obj) => sum + obj.difference, 0) / this.answers.length)}°`;
+        results.answers.forEach((a, i) => {
+            const l = document.createElement('tr');
+            const t = document.createElement('td');
+            t.textContent = i + 1;
+            const y = document.createElement('td');
+            const ylabel = makeDiv(null, 'ptsot-results-value user', `${Math.round(a.difference)}°`);
+            y.append(ylabel);
+            const g = document.createElement('td');
+            const glabel = makeDiv(null, 'ptsot-results-value global');
+            g.append(glabel);
+            l.append(t, y, g);
+            table.append(l);
+        });
 
-        const times = document.createElement('tr');
-        addClass(times, 'ptsot-time');
-        const timesLabel = document.createElement('td');
-        timesLabel.textContent = 'Temps moyen :';
-        const timesUser = document.createElement('td');
-        const timesUserValue = makeDiv(null, 'ptsot-table-value', userElapsed);
-        timesUser.append(timesUserValue);
-        const timesGlobal = document.createElement('td');
-        const timesGlobalValue = makeDiv(null, 'ptsot-table-value');
-        timesGlobal.append(timesGlobalValue);
-
-        times.append(timesLabel, timesUser, timesGlobal);
-
-        const angles = document.createElement('tr');
-        addClass(angles, 'ptsot-angle');
-        const anglesLabel = document.createElement('td');
-        anglesLabel.textContent = "Écart d'angle moyen :";
-        const anglesUser = document.createElement('td');
-        const anglesUserValue = makeDiv(null, 'ptsot-table-value', userAngle);
-        anglesUser.append(anglesUserValue);
-        const anglesGlobal = document.createElement('td');
-        const anglesGlobalValue = makeDiv(null, 'ptsot-table-value');
-        anglesGlobal.append(anglesGlobalValue);
-
-        angles.append(anglesLabel, anglesUser, anglesGlobal);
-
-        table.append(type, times, angles);
-        text.append(table);
+        container.append(table);
+        text.append(container);
 
         ajaxPost('ptsot', results, r => {
-            timesGlobalValue.innerHTML = `${Math.round(r.elapsed / 1000)}s`;
-            anglesGlobalValue.innerHTML = `${Math.round(r.difference)}°`;
+            r.differences.forEach((d, i) => {
+                table.children[i + 1].lastElementChild.firstElementChild.innerHTML = `${Math.round(d)}°`;
+            });
         });
 
         wait(this.params.interface.transition.page, () => {
