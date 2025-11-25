@@ -141,7 +141,13 @@ class Leaderboard {
             addClass(el, 'active');
 
             if (!this.ending) {
-                if (v === 'journey') { wait(300, () => { addClass(this.journeymask, 'loaded'); }) }
+                if (v === 'journey') {
+                    wait(300, () => {
+                        this.tabMap.offsetHeight;
+                        this.journeyMap.fit(this.bbox, { duration: 0, padding: { top: 10, left: 10, right: 10, bottom: 40 } });
+                        addClass(this.journeymask, 'loaded');
+                    })
+                }
                 else { wait(200, () => { removeClass(this.journeymask, 'loaded'); }) }
             }
 
@@ -275,7 +281,6 @@ class Leaderboard {
             }
         }
         callback();
-
     }
 
     createLeaderboard() {
@@ -452,32 +457,33 @@ class Leaderboard {
         let button = makeDiv(null, 'highscore-button journey', this.params.svgs.journey);
         button.setAttribute('value', 'journey');
         button.addEventListener('click', (e) => { this.activateButton(e); });
-        let tab = makeDiv(null, 'highscore-tab journey no-scrollbar');
+        this.tabMap = makeDiv(null, 'highscore-tab journey no-scrollbar');
         this.journeymask = makeDiv(null, 'mask');
         let loader = makeDiv(null, 'loader');
         this.journeymask.append(loader);
-        tab.append(this.journeymask);
+        this.tabMap.append(this.journeymask);
         this.buttons.append(button);
-        this.tabs.append(tab);
+        this.tabs.append(this.tabMap);
 
         // Tab to display journeys
         const winner = JSON.parse(this.highscores.journey);
-        const bbox = bboxFromLines(winner.coordinates, this.results.phase2.journey);
+        this.bbox = bboxFromLines(winner.coordinates, this.results.phase2.journey);
         this.winner = winner.coordinates;
+        this.tabMap.offsetHeight;
 
         this.journeyMap = new Basemap({
             app: this.page.app,
-            parent: tab,
+            parent: this.tabMap,
             class: 'highscores',
-            extent: bbox,
-            // padding: { top: 10, left: 10, right: 10, bottom: 40 },
+            extent: this.bbox,
+            padding: { top: 10, left: 10, right: 10, bottom: 40 },
             interactive: false
         }, () => {
             let labels = makeDiv(null, 'highscore-journey-labels');
             this.journeyLabel = makeDiv(null, 'highscore-journey-label player', 'Vous');
             this.winnerLabel = makeDiv(null, 'highscore-journey-label winner', 'Numéro 1');
             labels.append(this.journeyLabel, this.winnerLabel);
-            tab.append(labels);
+            this.tabMap.append(labels);
 
             this.journeyMap.map.addSource('winner', {
                 type: 'geojson',
