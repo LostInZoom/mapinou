@@ -99,6 +99,30 @@
     gap: .4rem;
 }
 
+.credits-github {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: sizes.$gap1rem;
+    width: 100%;
+}
+
+.credits-github-label {
+    text-align: center;
+    font-size: sizes.$font-size-regular;
+    width: 75%;
+}
+
+.credits-github-logo {
+    height: sizes.$button-size;
+    width: sizes.$button-size;
+
+    &>svg {
+        height: inherit;
+        width: inherit;
+    }
+}
+
 .credits-entry {
     display: flex;
     justify-content: center;
