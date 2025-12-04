@@ -14,7 +14,7 @@ The collected data are anonymous.
 
 .. raw:: html
 
-    <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+    <div style="width: 100%; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
         <img src="doc/title.jpg" />
         <img src="doc/phase1.jpg" />
         <img src="doc/phase2.jpg" />
