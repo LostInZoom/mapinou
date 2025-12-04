@@ -15,5 +15,5 @@ The collected data are anonymous.
 .. raw:: html
 
     <div style="display: flex; justify-content: center; gap: 20px;">
-        <img src="doc/title.png" style="height: 500px;" />
+        <img src="doc/title.jpg" style="height: 500px;" />
     </div>
