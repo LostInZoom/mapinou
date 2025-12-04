@@ -22,9 +22,9 @@ The collected data are anonymous.
             gap: 20px;
             margin: 0 auto;
         ">
-            <img src="doc/title.png" style="max-width: 100%; height: auto;" />
-            <img src="doc/phase1.png" style="max-width: 100%; height: auto;" />
-            <img src="doc/phase2.png" style="max-width: 100%; height: auto;" />
-            <img src="doc/experience.png" style="max-width: 100%; height: auto;" />
+            <img src="doc/title.jpg" style="max-width: 100%; height: auto;" />
+            <img src="doc/phase1.jpg" style="max-width: 100%; height: auto;" />
+            <img src="doc/phase2.jpg" style="max-width: 100%; height: auto;" />
+            <img src="doc/experience.jpg" style="max-width: 100%; height: auto;" />
         </div>
     </div>
