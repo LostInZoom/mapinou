@@ -520,7 +520,7 @@ et j'ai couru **${parseInt(games.distance) / 1000}** kilomètres quand même.
             content += `J'ai quand même mangé **${helpers}** légumes, ça fait plaisir !`;
         }
 
-        content += `\n\nDepuis le début, j'ai fais **${total}** parties et couru **${parseInt(distance) / 1000}**kilomètres.`;
+        content += `\n\nDepuis le début, j'ai fais **${total}** parties et couru **${parseInt(distance) / 1000}** kilomètres.`;
     } else if (type === 'paloma') {
         content += "Coo coo ! Des petites statistiques pour démarrer la semaine 📊\n"
 
