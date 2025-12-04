@@ -7,6 +7,7 @@
   "source": "server.js",
   "type": "module",
   "scripts": {
+    "zulip": "run-func .database/manage.js zulip",
     "initialize": "run-func .database/manage.js initialize",
     "update": "run-func .database/manage.js update",
     "populate": "run-func .database/manage.js populate",
@@ -55,6 +56,7 @@
     "pg": "^8.15.1",
     "run-func": "^3.0.0",
     "sass": "^1.83.4",
-    "svgo": "^3.3.2"
+    "svgo": "^3.3.2",
+    "zulip-js": "^2.1.0"
   }
 }

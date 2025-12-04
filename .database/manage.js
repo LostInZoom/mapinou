@@ -1,4 +1,4 @@
-import { insertLevels, nameMissingSessions, populateResults } from './tools.js';
+import { insertLevels, nameMissingSessions, populateResults, retrieveDatabaseInfos } from './tools.js';
 import { clearDB, createTables } from "./tools.js";
 
 function initialize() {
@@ -15,19 +15,25 @@ function initialize() {
 function update() {
     insertLevels().then(() => {
         process.exit();
-    })
+    });
 }
 
 function populate(amount = 100) {
     populateResults(amount).then(() => {
         process.exit();
-    })
+    });
 }
 
 function name() {
     nameMissingSessions().then(() => {
         process.exit();
-    })
+    });
 }
 
-export { initialize, update, populate, name }
+function zulip(type) {
+    retrieveDatabaseInfos(type).then(() => {
+        process.exit();
+    });
+}
+
+export { initialize, update, populate, name, zulip }

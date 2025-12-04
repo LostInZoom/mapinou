@@ -2,9 +2,11 @@ import { db } from "./credentials.js";
 import * as fs from 'fs';
 import { load } from "js-yaml";
 import * as d3 from "d3";
+import zulipInit from "zulip-js";
 
 import translate from "translate";
 import { generateId } from "zoo-ids";
+import { configLapinou, configPaloma, configPip } from './credentials.js';
 
 /**
  * Clear the tables from the given database.
@@ -469,4 +471,171 @@ async function nameMissingSessions() {
     }
 }
 
-export { clearDB, createTables, insertLevels, populateResults, checkVersion, nameMissingSessions }
+async function retrieveDatabaseInfos(type) {
+    let content = '';
+
+    if (type === 'lapinou') {
+        let query = `
+            SELECT count(*) as number, sum(distance) as distance
+            FROM data.games
+        `
+        let results = await db.query(query);
+        const total = results.rows[0].number;
+        const distance = results.rows[0].distance;
+
+        // Number of games played last week
+        query = `
+            SELECT COUNT(DISTINCT g.id) AS number, sum(g.helpers) as helpers, sum(distance) as distance
+            FROM data.games g
+            JOIN data.phases p ON p.game = g.id
+            WHERE p.number = 2
+                AND end_time >= date_trunc('week', now()) - interval '7 days'
+                AND end_time <  date_trunc('week', now());
+        `
+        results = await db.query(query);
+        let games = results.rows[0];
+
+        const nb = parseInt(games.number);
+        if (nb === 0) {
+            content += `Je m'ennuie ! La semaine dernière, je n'ai fais aucune partie...`
+        }
+        else if (nb < 10) {
+            content += `C'est tranquilou en ce moment !
+La semaine dernière, je n'ai fais que **${nb}** parties
+et je n'ai couru que **${parseInt(games.distance) / 1000}** kilomètres.
+`
+        } else {
+            content += `Pfiouu, je suis fatigué ce matin !
+La semaine dernière, j'ai fais **${nb}** parties
+et j'ai couru **${parseInt(games.distance) / 1000}** kilomètres quand même.
+`
+        }
+
+        const helpers = parseInt(games.helpers);
+        if (helpers === 0) {
+            content += `Je n'ai pas mangé de légume, j'ai faim !`;
+        } else if (helpers < 20) {
+            content += `Je n'ai mangé que **${helpers}** légumes, c'est pas super...`;
+        } else {
+            content += `J'ai quand même mangé **${helpers}** légumes, ça fait plaisir !`;
+        }
+
+        content += `\n\nDepuis le début, j'ai fais **${total}** parties et couru **${parseInt(distance) / 1000}**kilomètres.`;
+    } else if (type === 'paloma') {
+        content += "Coo coo ! Des petites statistiques pour démarrer la semaine 📊\n"
+
+        // Number of sessions created last week
+        let query = `
+            SELECT count(*) as number
+            FROM data.sessions
+            WHERE time >= date_trunc('week', now()) - interval '7 days'
+                AND time <  date_trunc('week', now());
+        `;
+        let results = await db.query(query);
+        let weekSessions = results.rows[0].number;
+
+        // Total number of sessions
+        query = `
+            SELECT count(*) as number
+            FROM data.sessions
+        `;
+        results = await db.query(query);
+        let totalSessions = results.rows[0].number;
+
+        content += `
+Depuis le début de l'expérience, **${totalSessions}** personnes différentes ont commencé Mapinou,
+dont **${weekSessions}** la semaine dernière. 📈
+`
+
+        // Percentage of completed levels
+        query = `
+            WITH selected_levels AS (
+                SELECT unnest(ARRAY[1,4,8,12,16]) AS level
+            ),
+            all_sessions AS (
+                SELECT id AS session_id
+                FROM data.sessions
+            ),
+            sessions_with_level AS (
+                SELECT DISTINCT g.level, g.session
+                FROM data.games g
+                WHERE g.level IN (1,4,8,12,16)
+            )
+            SELECT
+                sl.level,
+                COUNT(sw.session) AS number,
+                ROUND(100.0 * COUNT(sw.session) / (SELECT COUNT(*) FROM all_sessions)) AS percentage
+            FROM selected_levels sl
+            LEFT JOIN sessions_with_level sw ON sw.level = sl.level
+            GROUP BY sl.level
+            ORDER BY sl.level;
+        `
+        results = await db.query(query);
+        results.rows.forEach(row => {
+            content += `- **${row.percentage}%** ont dépassé le niveau ${row.level}\n`
+        });
+        content += '\n';
+
+        // Percentage of os
+        query = `
+            SELECT os, COUNT(*) AS number, ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER ()) AS percentage
+            FROM data.sessions
+            GROUP BY os
+            ORDER BY number DESC;
+        `
+        results = await db.query(query);
+
+        results.rows.forEach((row, i) => {
+            if (i === 0) {
+                content += `**${row.percentage}%** jouent sur ${row.os ? row.os : "un apareil inconnu"}`
+            } else {
+                content += `**${row.percentage}%** sur ${row.os ? row.os : "un apareil inconnu"}`
+            }
+
+            if (i === results.rows.length - 1) {
+                content += ' 📱';
+            } else if (i === results.rows.length - 2) {
+                content += ', et '
+            } else {
+                content += ', ';
+            }
+        });
+
+    } else if (type === 'pip') {
+        let query = `
+            SELECT COUNT(DISTINCT g.id) AS number, sum(g.enemies) as enemies
+            FROM data.games g
+            JOIN data.phases p ON p.game = g.id
+            WHERE p.number = 2
+                AND end_time >= date_trunc('week', now()) - interval '7 days'
+                AND end_time <  date_trunc('week', now());
+        `
+        let results = await db.query(query);
+        let games = results.rows[0];
+
+        const enemies = parseInt(games.enemies);
+        if (enemies === 0) {
+            content += `Ssss ! Pas de chance, on a eu aucun lapin la semaine dernière !`
+        }
+        else if (enemies < 15) {
+            content += `Ssss ! On a pas attrapé grand chose la semaine dernière, seulement **${enemies}** lapins.`
+        } else {
+            content += `Ssss ! C'était une grosse semaine, on a chopé **${enemies}** lapins.`
+        }
+    }
+
+    if (content) {
+        let zulip;
+        if (type === 'lapinou') { zulip = await zulipInit(configLapinou); }
+        else if (type === 'paloma') { zulip = await zulipInit(configPaloma); }
+        else if (type === 'pip') { zulip = await zulipInit(configPip); }
+        const response = await zulip.messages.send({
+            to: "Mapinou",
+            type: "stream",
+            topic: "news",
+            content: content
+        });
+    }
+}
+
+export { clearDB, createTables, insertLevels, populateResults, checkVersion, nameMissingSessions, retrieveDatabaseInfos }

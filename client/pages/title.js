@@ -4,11 +4,11 @@ import Consent from "./consent";
 import Form from "./form";
 import Levels from "./levels";
 import Page from "./page";
+import Credits from "./credits";
 
 import { addClass, createValidation, isAppInstalled, isWebView, makeDiv, removeClass, removeClassList, wait } from "../utils/dom";
 import { remap, easeOutCubic, easeInOutSine } from "../utils/math";
 import { capitalizeFirstLetter, pxToRem } from "../utils/parse";
-import Credits from "./credits";
 
 class Title extends Page {
     constructor(options, callback) {
@@ -171,8 +171,20 @@ class Title extends Page {
             wait(delay, () => {
                 this.playSound({ src: sounds[index++], volume: 0.8 });
                 addClass(this.start, 'pop');
+                // const size = makeDiv(null, 'title-size', `
+                //     fullsize: ${window.innerWidth}x${window.innerHeight}<br>
+                //     size: ${this.app.basemap.getWidth()}x${this.app.basemap.getHeight()}
+                // `);
+                // this.container.append(size);
             });
-        } else { addClass(this.start, 'pop'); }
+        } else {
+            addClass(this.start, 'pop');
+            // const size = makeDiv(null, 'title-size', `
+            //     fullsize: ${window.offsetWidth}x${window.offsetHeight}<br>
+            //     size: ${this.app.basemap.getWidth()}x${this.app.basemap.getHeight()}
+            // `);
+            // this.container.append(size);
+        }
         delay += 350;
 
         if (init) {

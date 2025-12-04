@@ -5,12 +5,13 @@ import Player from '../characters/player.js';
 import Target from '../characters/target.js';
 import Helpers from '../layers/helpers.js';
 import Position from '../game/position.js';
-import { addClass, hasSameKeys, makeDiv, removeClass, wait } from '../utils/dom.js';
 import Rabbits from '../layers/rabbits.js';
-import { mergeExtents, project } from './analysis.js';
-import { easeInOutCubic, easeOutCirc, remap } from '../utils/math.js';
 import Flowers from '../layers/flowers.js';
 import Recorder from './recorder.js';
+
+import { addClass, hasSameKeys, makeDiv, removeClass, wait } from '../utils/dom.js';
+import { mergeExtents, project } from './analysis.js';
+import { easeInOutCubic, easeOutCirc, remap } from '../utils/math.js';
 
 class Basemap {
     constructor(options, callback) {
@@ -77,6 +78,9 @@ class Basemap {
             ],
             "fadeDuration": 0
         };
+
+        // Vector tiles
+        // style = 'https://data.geopf.fr/annexes/ressources/vectorTiles/styles/PLAN.IGN/standard.json';
 
         if (extent) {
             this.map = new Map({

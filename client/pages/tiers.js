@@ -1,14 +1,14 @@
 import Basemap from "../cartography/map";
 import Piaget from "../experiences/piaget";
+import SantaBarbara from "../experiences/sbsod";
 import SpatialOrientation from "../experiences/ptsot";
 import Purdue from "../experiences/purdue";
-import SantaBarbara from "../experiences/sbsod";
 import Level from "../game/level";
 import Tutorial from "../game/tutorial";
+import Levels from "./levels";
 
 import { addClass, checkAvailability, createValidation, makeDiv, removeClass, wait, waitPromise } from "../utils/dom";
 import { LevelEdges } from "../utils/svg";
-import Levels from "./levels";
 
 class Panel {
     constructor(options, callback) {
