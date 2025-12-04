@@ -476,12 +476,13 @@ async function retrieveDatabaseInfos(type) {
 
     if (type === 'lapinou') {
         let query = `
-            SELECT count(*) as number, sum(distance) as distance
+            SELECT count(*) as number, sum(distance) as distance, sum(helpers) as helpers
             FROM data.games
         `
         let results = await db.query(query);
         const total = results.rows[0].number;
         const distance = results.rows[0].distance;
+        const helpers = results.rows[0].helpers;
 
         // Number of games played last week
         query = `
@@ -501,22 +502,22 @@ async function retrieveDatabaseInfos(type) {
         }
         else if (nb < 10) {
             content += `C'est tranquilou en ce moment !
-La semaine dernière, je n'ai fais que **${nb}** parties et je n'ai couru que **${parseInt(games.distance) / 1000}** kilomètres.`
+La semaine dernière, je n'ai fais que **${nb}** parties et je n'ai couru que **${Math.round(parseInt(games.distance) / 1000)}** kilomètres.`
         } else {
             content += `Pfiouu, je suis fatigué ce matin !
-La semaine dernière, j'ai fais **${nb}** parties et j'ai couru **${parseInt(games.distance) / 1000}** kilomètres quand même.`
+La semaine dernière, j'ai fais **${nb}** parties et j'ai couru **${Math.round(parseInt(games.distance) / 1000)}** kilomètres quand même.`
         }
 
-        const helpers = parseInt(games.helpers);
-        if (helpers === 0) {
+        const whelpers = parseInt(games.helpers);
+        if (whelpers === 0) {
             content += ` Je n'ai pas mangé de légume, j'ai faim !`;
-        } else if (helpers < 20) {
-            content += ` Je n'ai mangé que **${helpers}** légumes, c'est pas super...`;
+        } else if (whelpers < 20) {
+            content += ` Je n'ai mangé que **${whelpers}** légumes, c'est pas super...`;
         } else {
-            content += ` J'ai quand même mangé **${helpers}** légumes, ça fait plaisir !`;
+            content += ` J'ai quand même mangé **${whelpers}** légumes, ça fait plaisir !`;
         }
 
-        content += `\n\nDepuis le début, j'ai fais **${total}** parties et couru **${parseInt(distance) / 1000}** kilomètres.`;
+        content += `\n\nDepuis le début, j'ai fais **${total}** parties, couru **${Math.round(parseInt(distance) / 1000)}** kilomètres et mangé **${helpers}** légumes.`;
     } else if (type === 'paloma') {
         content += "Coo coo ! Des petites statistiques pour démarrer la semaine 📊\n"
 
@@ -540,8 +541,7 @@ La semaine dernière, j'ai fais **${nb}** parties et j'ai couru **${parseInt(gam
 
         content += `
 Depuis le début de l'expérience, **${totalSessions}** personnes différentes ont commencé Mapinou,
-dont **${weekSessions}** la semaine dernière. 📈
-`
+dont **${weekSessions}** la semaine dernière. 📈`
 
         // Percentage of completed levels
         query = `
@@ -568,7 +568,7 @@ dont **${weekSessions}** la semaine dernière. 📈
         `
         results = await db.query(query);
         results.rows.forEach(row => {
-            content += `- **${row.percentage}%** ont dépassé le niveau ${row.level}\n`
+            content += `- **${row.percentage}%** ont dépassé le niveau ${row.level} => **${row.number}** personnes\n`
         });
         content += '\n';
 
@@ -610,14 +610,21 @@ dont **${weekSessions}** la semaine dernière. 📈
         let results = await db.query(query);
         let games = results.rows[0];
 
+        query = `
+            SELECT sum(enemies) as enemies
+            FROM data.games
+        `
+        results = await db.query(query);
+        let total = results.rows[0].enemies;
+
         const enemies = parseInt(games.enemies);
         if (enemies === 0) {
-            content += `Ssss ! Pas de chance, on a eu aucun lapin la semaine dernière !`
+            content += `Ssss ! Pas de chance, on a eu aucun lapin la semaine dernière ! On reste à **${total}** lapins.`
         }
         else if (enemies < 15) {
-            content += `Ssss ! On a pas attrapé grand chose la semaine dernière, seulement **${enemies}** lapins.`
+            content += `Ssss ! On a pas attrapé grand chose la semaine dernière, seulement **${enemies}** lapins. Ça nous fait quand même un total de **${total}** lapins.`
         } else {
-            content += `Ssss ! C'était une grosse semaine, on a chopé **${enemies}** lapins.`
+            content += `Ssss ! C'était une grosse semaine, on a chopé **${enemies}** lapins. Ça nous fait un total de **${total}** lapins, pas mal !`
         }
     }
 
