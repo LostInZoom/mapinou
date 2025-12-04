@@ -14,17 +14,15 @@ The collected data are anonymous.
 
 .. raw:: html
 
-    <div style="text-align: center;">
-        <div style="
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-            margin: 0 auto;
-        ">
-            <img src="doc/title.jpg" style="max-width: 100%; height: auto;" />
-            <img src="doc/phase1.jpg" style="max-width: 100%; height: auto;" />
-            <img src="doc/phase2.jpg" style="max-width: 100%; height: auto;" />
-            <img src="doc/experience.jpg" style="max-width: 100%; height: auto;" />
-        </div>
+    <div style="
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        margin: 0 auto;
+    ">
+        <img src="doc/title.jpg" style="max-width: 100%; height: auto;" />
+        <img src="doc/phase1.jpg" style="max-width: 100%; height: auto;" />
+        <img src="doc/phase2.jpg" style="max-width: 100%; height: auto;" />
+        <img src="doc/experience.jpg" style="max-width: 100%; height: auto;" />
     </div>
