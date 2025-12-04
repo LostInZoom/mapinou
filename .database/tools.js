@@ -501,23 +501,19 @@ async function retrieveDatabaseInfos(type) {
         }
         else if (nb < 10) {
             content += `C'est tranquilou en ce moment !
-La semaine dernière, je n'ai fais que **${nb}** parties
-et je n'ai couru que **${parseInt(games.distance) / 1000}** kilomètres.
-`
+La semaine dernière, je n'ai fais que **${nb}** parties et je n'ai couru que **${parseInt(games.distance) / 1000}** kilomètres.`
         } else {
             content += `Pfiouu, je suis fatigué ce matin !
-La semaine dernière, j'ai fais **${nb}** parties
-et j'ai couru **${parseInt(games.distance) / 1000}** kilomètres quand même.
-`
+La semaine dernière, j'ai fais **${nb}** parties et j'ai couru **${parseInt(games.distance) / 1000}** kilomètres quand même.`
         }
 
         const helpers = parseInt(games.helpers);
         if (helpers === 0) {
-            content += `Je n'ai pas mangé de légume, j'ai faim !`;
+            content += ` Je n'ai pas mangé de légume, j'ai faim !`;
         } else if (helpers < 20) {
-            content += `Je n'ai mangé que **${helpers}** légumes, c'est pas super...`;
+            content += ` Je n'ai mangé que **${helpers}** légumes, c'est pas super...`;
         } else {
-            content += `J'ai quand même mangé **${helpers}** légumes, ça fait plaisir !`;
+            content += ` J'ai quand même mangé **${helpers}** légumes, ça fait plaisir !`;
         }
 
         content += `\n\nDepuis le début, j'ai fais **${total}** parties et couru **${parseInt(distance) / 1000}** kilomètres.`;
@@ -586,10 +582,11 @@ dont **${weekSessions}** la semaine dernière. 📈
         results = await db.query(query);
 
         results.rows.forEach((row, i) => {
+            let device = row.os || row.os === 'unknown' ? row.os : "un apareil inconnu";
             if (i === 0) {
-                content += `**${row.percentage}%** jouent sur ${row.os ? row.os : "un apareil inconnu"}`
+                content += `**${row.percentage}%** jouent sur ${device}`
             } else {
-                content += `**${row.percentage}%** sur ${row.os ? row.os : "un apareil inconnu"}`
+                content += `**${row.percentage}%** sur ${device}`
             }
 
             if (i === results.rows.length - 1) {
