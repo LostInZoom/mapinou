@@ -12,6 +12,8 @@ Mapinou is developped by the LostInZoom ERC team, directed by Guillaume Touya. I
 as it uses the videogame format to gather data in order to better understand how we interact with online maps.
 The collected data are anonymous.
 
-.. image:: doc/title.jpg
-    :align: center
-    :height: 500px
+.. raw:: html
+
+    <div style="display: flex; justify-content: center; gap: 20px;">
+        <img src="doc/title.png" style="height: 500px;" />
+    </div>
