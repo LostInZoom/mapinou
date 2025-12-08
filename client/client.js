@@ -116,14 +116,14 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
 
     if (device.type !== 'desktop') {
-        if (isWebView()) {
-            createValidation(document.body, `
-                Il n'est pas recommandé de jouer à Mapinou dans le navigateur actuel.
-            `, [
-                "Continuer quand même",
-                `<a href="https://lostinzoom.huma-num.fr/mapinou" target="_blank" rel="noopener">Ouvrir dans mon navigateur</a>`
-            ]);
-        }
+        // if (device.os !== 'ios' && isWebView()) {
+        //     createValidation(document.body, `
+        //         Il n'est pas recommandé de jouer à Mapinou dans le navigateur actuel.
+        //     `, [
+        //         "Continuer quand même",
+        //         `<a href="https://lostinzoom.huma-num.fr/mapinou" target="_blank" rel="noopener">Ouvrir dans mon navigateur</a>`
+        //     ]);
+        // }
 
         let installation = true;
         const firefox = navigator.userAgent.toLowerCase().includes('firefox');
@@ -132,8 +132,8 @@ window.addEventListener("DOMContentLoaded", async () => {
         if (firefox && ask) {
             installation = false;
             createValidation(document.body, `
-                Pour profiter au mieux de Mapinou, vous pouvez créer un raccourci sur votre écran d'accueil.
-                Sélectionnez :<br><i>Menu</i> ▸ <i>Ajouter à l’écran d’accueil</i>`,
+                Pour profiter au mieux de Mapinou, vous pouvez créer un raccourci sur votre écran d'accueil.<br>
+                Ouvrez le menu de votre navigateur (trois points en bas à droite) et sélectionnez :<br><b>Ajouter l'application à l’écran d’accueil</b>`,
                 ["D'accord", "Ne plus demander"],
                 choice => {
                     if (choice === 1) { setStorage('install', false); }
@@ -144,8 +144,8 @@ window.addEventListener("DOMContentLoaded", async () => {
         if (device.os === 'ios' && ask) {
             installation = false;
             createValidation(document.body, `
-                Pour profiter au mieux de Mapinou, vous pouvez installer le jeu sur votre appareil.
-                Sélectionnez :<br><i>Partager</i> ▸ <i>Sur l’écran d’accueil</i>`,
+                Pour profiter au mieux de Mapinou, vous pouvez installer l'application sur votre appareil.<br>
+                Cliquez en bas de l'écran sur l'icone <b>Partager</b> puis sélectionnez <b>Sur l’écran d’accueil</b>`,
                 ["D'accord", "Ne plus demander"],
                 choice => {
                     if (choice === 1) { setStorage('install', false); }

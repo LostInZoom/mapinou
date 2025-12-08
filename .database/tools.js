@@ -541,7 +541,8 @@ La semaine dernière, j'ai fais **${nb}** parties et j'ai couru **${Math.round(p
 
         content += `
 Depuis le début de l'expérience, **${totalSessions}** personnes différentes ont commencé Mapinou,
-dont **${weekSessions}** la semaine dernière. 📈`
+dont **${weekSessions}** la semaine dernière. 📈
+`
 
         // Percentage of completed levels
         query = `

@@ -18,6 +18,7 @@ $circle-radius: .6rem;
 }
 
 .piaget-bottle {
+    aspect-ratio: 1/1;
     position: relative;
     overflow: hidden;
 
@@ -26,8 +27,7 @@ $circle-radius: .6rem;
 
     &>svg {
         height: 100%;
-        width: auto;
-        aspect-ratio: 1/1;
+        width: 100%;
 
         &>.bottle {
             color: transparent;
@@ -47,12 +47,10 @@ $circle-radius: .6rem;
     top: 0;
     left: 0;
     height: 100%;
-    width: auto;
 
     &>svg {
         height: 100%;
         width: 100%;
-        aspect-ratio: 1/1;
 
         &>circle {
             fill: $water-color;
