@@ -574,7 +574,7 @@ class Tutorial extends Page {
 
         const end2 = async () => {
             this.tutorialcontainer.removeEventListener('click', end2);
-            this.paloma.setText("Par contre, vous ne pouvez faire chaque niveau qu'une fois.");
+            this.paloma.setText("Par contre, vous ne pourrez faire qu'une seule fois les autres niveaux de Mapinou.");
             this.paloma.sing();
             await this.paloma.focusBubble();
             this.tutorialcontainer.addEventListener('click', end3, { once: true });
@@ -585,7 +585,7 @@ class Tutorial extends Page {
             this.paloma.setText("Vous pouvez refaire ce tutoriel avec moi quand vous voulez.");
             this.paloma.sing();
             await this.paloma.focusBubble();
-            this.tutorialcontainer.addEventListener('click', end2, { once: true });
+            this.tutorialcontainer.addEventListener('click', end3, { once: true });
         }
 
         this.centerPaloma();
