@@ -64,7 +64,14 @@ class Credits extends Page {
                     name.append(link);
                     link.addEventListener('click', (evt) => {
                         evt.stopPropagation();
-                        window.open(e.link, '_blank');
+                        if (isAppInstalled()) {
+                            navigator.share({
+                                title: e.link,
+                                url: e.link
+                            });
+                        } else {
+                            window.open(e.link, '_blank');
+                        }
                     });
                 }
                 entry.append(role, name);

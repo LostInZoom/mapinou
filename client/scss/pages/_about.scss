@@ -18,6 +18,8 @@ $bottom-button-size: min(2.5rem, 10vw, 8vh);
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    overflow: hidden;
 }
 
 .about-button-title {

@@ -5,10 +5,13 @@
 - type: vectors
   content:
     - src: erc
+      info: European Research Council
       link: https://erc.europa.eu/homepage
     - src: ign
+      info: Institut national de l'information géographique et forestière
       link: https://www.ign.fr
     - src: geodata
+      info: Géodata Paris
       link: https://geodata-paris.fr
 - type: paragraph
   title: Le projet LostInZoom
@@ -21,6 +24,7 @@
 - type: vectors
   content:
     - src: lostinzoom
+      info: LostInZoom
       link: https://lostinzoom.github.io/home/
 - type: paragraph
   title: Objectif de Mapinou
@@ -46,4 +50,5 @@
 - type: vectors
   content:
     - src: github
+      info: GitHub
       link: https://github.com/LostInZoom/mapinou

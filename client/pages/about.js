@@ -1,5 +1,5 @@
 import Page from "./page";
-import { addClass, isOverflown, makeDiv, removeClass, wait } from "../utils/dom";
+import { addClass, isAppInstalled, isOverflown, makeDiv, removeClass, wait } from "../utils/dom";
 import Title from "./title";
 
 class About extends Page {
@@ -37,7 +37,14 @@ class About extends Page {
                     v.append(l);
                     v.addEventListener('click', evt => {
                         evt.stopPropagation();
-                        window.open(vector.link, '_blank');
+                        if (isAppInstalled()) {
+                            navigator.share({
+                                title: vector.info,
+                                url: vector.link
+                            });
+                        } else {
+                            window.open(vector.link, '_blank');
+                        }
                     });
                     entry.append(v);
                 });
