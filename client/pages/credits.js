@@ -1,5 +1,5 @@
 import Page from "./page";
-import { addClass, makeDiv, remove, removeClass, wait } from "../utils/dom";
+import { addClass, isAppInstalled, makeDiv, remove, removeClass, wait } from "../utils/dom";
 import Title from "./title";
 import Sound from "../utils/sounds";
 import Campfire from "../game/campfire";
