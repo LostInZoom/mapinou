@@ -30,6 +30,11 @@ $color-wrong : #c44343;
         width: inherit;
         height: inherit;
         image-rendering: pixelated;
+
+        &.focus {
+            transition: transform .1s ease-out;
+            transform: scale(1.2);
+        }
     }
 
     &.hidden {
@@ -66,7 +71,7 @@ $color-wrong : #c44343;
 
     &.focus {
         transition: transform .1s ease-out, background .2s linear, opacity .2s ease-out;
-        transform: scale(1.1);
+        transform: scale(1.2);
     }
 
     &::before {

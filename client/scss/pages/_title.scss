@@ -5,13 +5,24 @@
     position: absolute;
     z-index: 150;
     pointer-events: all;
-    top: 20%;
 
     transition: transform .5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     transform: scale(1);
 
     &.slanted {
         transform: perspective(10rem) rotateX(30deg) rotateZ(-5deg) scaleX(0.8);
+    }
+}
+
+@media (orientation: portrait) {
+    .title-name {
+        top: 20%;
+    }
+}
+
+@media (orientation: landscape) {
+    .title-name {
+        top: 10%;
     }
 }
 

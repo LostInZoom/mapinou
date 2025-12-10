@@ -1,16 +1,19 @@
 @use '../colors';
 @use '../sizes';
 
+$margin-top: calc(sizes.$button-size + 2*sizes.$gap1rem);
+$bottom-button-size: min(2.5rem, 10vw, 8vh);
+$image-size: min(4rem, 18vw, 18vh);
+
 .page-content-credits {
-    pointer-events: all;
     pointer-events: all;
 
     background-color: colors.$secondary-color-dark;
     color: colors.$main-color-light;
     border-radius: sizes.$border-radius;
 
-    margin: 5.5rem 0 5rem 0;
-    height: calc(100% - 9.5rem);
+    max-height: calc(min(calc(100% - $margin-top), sizes.$max-height) - (2*sizes.$gap1rem + $bottom-button-size));
+    margin-bottom: calc(2*sizes.$gap1rem + $bottom-button-size);
 
     display: flex;
     flex-direction: column;
@@ -23,12 +26,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 5rem;
+    height: min(15vw, 15vh, 5rem);
 }
 
 .credits-title {
     font-family: 'Vincendo';
-    font-size: 2rem;
+    font-size: min(8vw, 8vh, 1.5rem);
     text-align: center;
 }
 
@@ -37,14 +40,14 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 4rem;
-    width: 4rem;
+    height: $image-size;
+    width: $image-size;
 
     &>img {
         position: absolute;
-        bottom: 1rem;
-        width: 3.5rem;
-        height: 3.5rem;
+        bottom: sizes.$gap1rem;
+        width: inherit;
+        height: inherit;
         image-rendering: pixelated;
     }
 }
@@ -53,19 +56,19 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 4rem;
-    width: 4rem;
+    height: $image-size;
+    width: $image-size;
 
     &>img {
-        width: 4rem;
-        height: 4rem;
+        width: inherit;
+        height: inherit;
         image-rendering: pixelated;
     }
 }
 
 .credits-scrollbox {
     height: 100%;
-    margin: 0 1rem 1rem 1rem;
+    margin: 0 sizes.$gap1rem sizes.$gap1rem sizes.$gap1rem;
 }
 
 .credits-spacer {
@@ -75,28 +78,28 @@
 .credits-text {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: sizes.$gap1rem;
 }
 
 .credits-group-title {
     font-family: 'Vincendo';
     text-align: center;
-    margin-bottom: 1rem;
+    margin-bottom: sizes.$gap1rem;
 }
 
 .credits-group-maintitle {
-    font-size: 1.5rem;
+    font-size: sizes.$font-size-title;
 }
 
 .credits-group-subtitle {
-    font-size: 1rem;
+    font-size: sizes.$font-size-regular;
 }
 
 .credits-content {
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: .4rem;
+    gap: min(.4rem, 2vh, 2vw);
 }
 
 .credits-github {
@@ -126,7 +129,7 @@
 .credits-entry {
     display: flex;
     justify-content: center;
-    gap: 1rem;
+    gap: sizes.$gap1rem;
     width: 100%;
     font-size: sizes.$font-size-regular;
 }
@@ -134,12 +137,12 @@
 .credits-role {
     text-align: end;
     line-height: 1.1rem;
-    width: calc(50% - .5rem);
+    width: calc(50% - (sizes.$gap1rem / 2));
     overflow-wrap: anywhere;
 }
 
 .credits-name {
-    width: calc(50% - .5rem);
+    width: calc(50% - (sizes.$gap1rem / 2));
 
     line-height: 1.1rem;
     display: flex;
@@ -169,19 +172,20 @@
 
 .credits-bottom-buttons {
     position: absolute;
-    bottom: 1rem;
-    right: 1rem;
+    bottom: sizes.$gap1rem;
+    right: sizes.$gap1rem;
 
     display: flex;
     justify-content: end;
     align-items: center;
-    gap: 1rem;
+    gap: sizes.$gap1rem;
 }
 
 .credits-scroll {
-    height: 2.5rem;
-    width: 2.5rem;
-    border-radius: sizes.$border-radius;
+    height: $bottom-button-size;
+    width: $bottom-button-size;
+
+    border-radius: 50%;
     pointer-events: all;
 
     color: colors.$main-color-light;
@@ -206,17 +210,17 @@
 }
 
 .credits-button-title {
-    height: 2.5rem;
+    height: $bottom-button-size;
 
     display: flex;
     align-items: center;
 
-    padding: 0 1rem;
+    padding: 0 sizes.$gap1rem;
     border-radius: sizes.$border-radius;
     pointer-events: all;
 
     font-family: 'Vincendo';
-    font-size: 1.2rem;
+    font-size: sizes.$font-size-title;
     text-transform: uppercase;
     color: colors.$main-color-light;
     background-color: colors.$secondary-color-dark;

@@ -5,6 +5,7 @@ import Form from "./form";
 import Levels from "./levels";
 import Page from "./page";
 import Credits from "./credits";
+import About from "./about";
 
 import { addClass, createValidation, isAppInstalled, isWebView, makeDiv, removeClass, removeClassList, wait } from "../utils/dom";
 import { remap, easeOutCubic, easeInOutSine } from "../utils/math";
@@ -19,7 +20,7 @@ class Title extends Page {
         let init = this.options.init;
 
         let index = 0;
-        let sounds = ['button2F', 'button4Bb', 'button8C', 'button7D', 'button6F', 'button8C', 'button2F']
+        let sounds = ['button2F', 'button4Bb', 'button8C', 'button5Bb', 'button7D', 'button6F', 'button8C', 'button2F']
 
         // Set the title name
         this.name = this.params.game.name;
@@ -110,13 +111,17 @@ class Title extends Page {
         this.startlabel = makeDiv(null, 'title-button-label', 'Jouer');
         this.start.append(this.startlabel);
 
+        this.about = makeDiv(null, 'title-button title-button-about');
+        this.aboutlabel = makeDiv(null, 'title-button-label', 'À propos');
+        this.about.append(this.aboutlabel);
+
         this.credits = makeDiv(null, 'title-button title-button-credits');
         this.creditslabel = makeDiv(null, 'title-button-label', 'Crédits');
         this.credits.append(this.creditslabel);
 
         this.share = makeDiv(null, 'title-button title-button-share', this.params.svgs.share);
         if (navigator.share) { addClass(this.share, 'active'); }
-        this.buttons.append(this.start, this.credits, this.share);
+        this.buttons.append(this.start, this.about, this.credits, this.share);
 
         this.banner = makeDiv(null, 'title-banner');
 
@@ -162,6 +167,7 @@ class Title extends Page {
 
         this.container.append(this.buttons, this.banner);
         this.start.offsetWidth;
+        this.about.offsetWidth;
         this.credits.offsetWidth;
         this.banner.offsetWidth;
 
@@ -185,6 +191,14 @@ class Title extends Page {
             // `);
             // this.container.append(size);
         }
+        delay += 350;
+
+        if (init) {
+            wait(delay, () => {
+                this.playSound({ src: sounds[index++], volume: 0.8 });
+                addClass(this.about, 'pop');
+            });
+        } else { addClass(this.about, 'pop'); }
         delay += 350;
 
         if (init) {
@@ -265,6 +279,18 @@ class Title extends Page {
             }
         });
 
+        this.aboutlabel.addEventListener('click', () => {
+            if (this.listen) {
+                addClass(this.aboutlabel, 'clicked');
+                this.playButtonSound();
+                this.listen = false;
+                removeClass(this.progression, 'pop');
+                wait(300, () => { this.progression.remove(); });
+                this.previous = new About({ app: this.app, position: 'previous' });
+                this.slidePrevious();
+            }
+        });
+
         this.share.addEventListener('click', async () => {
             if (this.listen && navigator.share) {
                 addClass(this.share, 'clicked');
@@ -289,7 +315,7 @@ class Title extends Page {
                 this.listen = false;
                 if (this.options.app.options.session.consent) {
                     if (this.options.app.options.session.form) {
-                        removeClassList([this.letters, this.start, this.credits, this.share, this.banner, this.progression], 'pop');
+                        removeClassList([this.letters, this.start, this.about, this.credits, this.share, this.banner, this.progression], 'pop');
                         this.app.killRabbits();
                         this.app.forbidRabbits();
                         wait(300, () => {

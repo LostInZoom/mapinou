@@ -72,17 +72,6 @@ class Credits extends Page {
             });
         });
 
-        let github = makeDiv(null, 'credits-github');
-        let githublabel = makeDiv(null, 'credits-github-label', `N'hésitez pas à rapporter les bugs sur le dépôt !`);
-        let githublogo = makeDiv(null, 'credits-github-logo', this.params.svgs.github);
-        github.append(githublogo, githublabel);
-        text.append(github);
-
-        github.addEventListener('click', (evt) => {
-            evt.stopPropagation();
-            window.open('https://github.com/LostInZoom/mapinou', '_blank');
-        });
-
         wait(this.params.interface.transition.page, () => {
             this.listen = true;
             this.buttonTitle.addEventListener('click', () => {

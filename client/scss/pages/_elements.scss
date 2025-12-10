@@ -40,7 +40,7 @@ $margin-top: calc(sizes.$button-size + 2*sizes.$gap1rem);
     margin-bottom: $margin;
 
     max-height: min(calc(100% - $margin-top - $margin), sizes.$max-height);
-    width: min(calc(100% - 2rem), sizes.$max-width);
+    width: min(calc(100% - 2*sizes.$gap1rem), sizes.$max-width);
 
     display: flex;
     flex-direction: column;

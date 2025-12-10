@@ -93,6 +93,7 @@ class Consent extends Page {
             this.back.addEventListener('click', () => {
                 if (this.listen) {
                     this.listen = false;
+                    if (this.observer) this.observer.unobserve(this.elements);
                     this.playButtonSound();
                     this.previous = new Title({ app: this.app, position: 'previous' });
                     this.slidePrevious();
@@ -103,6 +104,7 @@ class Consent extends Page {
             this.continue.addEventListener('click', () => {
                 if (this.listen) {
                     this.listen = false;
+                    if (this.observer) this.observer.unobserve(this.elements);
                     this.playButtonSound();
                     ajaxPost('consent/', { session: this.app.options.session.index }, (status) => {
                         if (status.done) { this.app.options.session.consent = true; }

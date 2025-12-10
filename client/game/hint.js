@@ -66,6 +66,13 @@ class Hint {
         await waitPromise(this.transition);
     }
 
+    async focusRabbit() {
+        addClass(this.charimage, 'focus');
+        await waitPromise(100);
+        removeClass(this.charimage, 'focus');
+        await waitPromise(this.transition);
+    }
+
     setText(text) {
         this.currentText = text;
         this.bubble.innerHTML = text;
@@ -115,6 +122,7 @@ class Hint {
             if (type === 'thought') { this.squeek(); }
             else if (type === 'lost') { this.complain(); }
             else if (type === 'wrong') { this.complain(); }
+            this.focusRabbit();
             await this.focusBubble();
             callback();
         } else {
@@ -123,6 +131,7 @@ class Hint {
                 if (text !== this.currentText) {
                     this.setText(text);
                     this.squeek();
+                    this.focusRabbit();
                     await this.focusBubble();
                     callback();
                 } else {

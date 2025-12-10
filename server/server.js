@@ -14,9 +14,12 @@ const levelsFile = fs.readFileSync('./server/levels.yml', { encoding: 'utf-8' })
 const levels = load(levelsFile);
 const creditsFile = fs.readFileSync('./server/credits.yml', { encoding: 'utf-8' });
 const credits = load(creditsFile);
+const aboutFile = fs.readFileSync('./server/about.yml', { encoding: 'utf-8' });
+const about = load(aboutFile);
 
 parameters.levels = levels;
 parameters.credits = credits;
+parameters.about = about;
 
 fs.readdir('./server/svg', (error, files) => {
 	parameters.svgs = {};

@@ -1,0 +1,49 @@
+- type: paragraph
+  content: >-
+    Mapinou est développé par l'équipe du projet ERC LostInZoom à l'IGN, dirigé par Guillaume Touya
+    et qui a pour objectif d'étudier comment nous interagissons avec les cartes en ligne.
+- type: vectors
+  content:
+    - src: erc
+      link: https://erc.europa.eu/homepage
+    - src: ign
+      link: https://www.ign.fr
+    - src: geodata
+      link: https://geodata-paris.fr
+- type: paragraph
+  title: Le projet LostInZoom
+  content: Ce projet de recherche a pour objectif d'étudier le phénomène appelé "brouillard du désert".
+    Lors d'une tempête de sable dans le désert, les vents peuvent modifier la topographie du terrain
+    et nous faire perdre nos repères. De la même manière, lorsque nous naviguons dans une carte en ligne,
+    nous traversons différentes échelles et donc différents niveaux d'abstraction de la réalité du terrain.
+    Il arrive alors que nous soyons désorientés pendant quelques instants et parfois
+    nous devons bouger la carte à nouveau pour comprendre où nous sommes.
+- type: vectors
+  content:
+    - src: lostinzoom
+      link: https://lostinzoom.github.io/home/
+- type: paragraph
+  title: Objectif de Mapinou
+  content: Mapinou est conçu pour combiner des expériences existantes issues de la recherche
+    en sciences cognitives avec un jeu cartographique qui mobilise votre aisance à vous déplacer
+    dans la carte. Nous espérons que les données collectées nous permettront de comprendre
+    les mécanismes que nous mettons en place pour nous localiser pendant une tâche nécessitant
+    des interactions avec une carte en ligne.
+- type: paragraph
+  title: Données collectées
+  content: Nous collectons différentes données lorsque vous guidez Lapinou vers son ami lapin.
+    Nous enregistrons toutes les interactions que vous avez avec la carte (zoom avant et arrière, déplacements
+    latéraux, clics), le temps passé sur chaque niveau, le score et le chemin emprunté. Nous enregistrons 
+    également le type d'appareil (téléphone mobile, tablette, ordinateur), le système d'exploitation
+    (Android, iOS, etc.), la taille et l'orientation de l'écran.
+- type: paragraph
+  title: Nous contacter
+  content: Si vous souhaitez nous contacter, vous pouvez nous 
+    <a href="mailto:justin.berli@ign.fr?subject=MAPINOU%20-%20Contact">envoyer un courriel.</a>
+    <br>
+    Si vous constatez des bugs dans le jeu, n'hésitez pas à les reporter sur le dépôt GitHub
+    du projet ci-dessous.
+- type: vectors
+  content:
+    - src: github
+      link: https://github.com/LostInZoom/mapinou
