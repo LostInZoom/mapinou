@@ -1,7 +1,7 @@
 - type: paragraph
   content: >-
-    Mapinou est développé par l'équipe du projet ERC LostInZoom à l'IGN, dirigé par Guillaume Touya
-    et qui a pour objectif d'étudier comment nous interagissons avec les cartes en ligne.
+    Mapinou est développé par l’équipe du projet ERC LostInZoom à l’IGN, sous la direction de Guillaume Touya.
+    Le projet s’intéresse à la manière dont nous utilisons et explorons les cartes en ligne.
 - type: vectors
   content:
     - src: erc
@@ -29,24 +29,24 @@
 - type: paragraph
   title: Objectif de Mapinou
   content: Mapinou est conçu pour combiner des expériences existantes issues de la recherche
-    en sciences cognitives avec un jeu cartographique qui mobilise votre aisance à vous déplacer
-    dans la carte. Nous espérons que les données collectées nous permettront de comprendre
-    les mécanismes que nous mettons en place pour nous localiser pendant une tâche nécessitant
-    des interactions avec une carte en ligne.
+    en sciences cognitives avec un jeu cartographique mobilisant notre aisance à nous déplacer
+    dans la carte. Les données collectées vont permettre de comprendre les mécanismes que nous
+    mettons en place pour nous localiser pendant une tâche nécessitant des interactions avec une carte en ligne.
 - type: paragraph
   title: Données collectées
-  content: Nous collectons différentes données lorsque vous guidez Lapinou vers son ami lapin.
-    Nous enregistrons toutes les interactions que vous avez avec la carte (zoom avant et arrière, déplacements
+  content: Différentes données sont collectées lorsque vous guidez Lapinou vers son ami lapin,
+    notamment toutes les interactions que vous avez avec la carte (zoom avant et arrière, déplacements
     latéraux, clics), le temps passé sur chaque niveau, le score et le chemin emprunté. Nous enregistrons 
     également le type d'appareil (téléphone mobile, tablette, ordinateur), le système d'exploitation
     (Android, iOS, etc.), la taille et l'orientation de l'écran.
 - type: paragraph
+  content: <b>Les données collectées resteront strictement anonymes.</b>
+- type: paragraph
   title: Nous contacter
-  content: Si vous souhaitez nous contacter, vous pouvez nous 
-    <a href="mailto:justin.berli@ign.fr?subject=MAPINOU%20-%20Contact">envoyer un courriel.</a>
+  content: En cas de bugs ou si vous avez des questions, vous pouvez nous contacter par 
+    <a href="mailto:justin.berli@ign.fr?subject=MAPINOU%20-%20Contact">courriel.</a>
     <br>
-    Si vous constatez des bugs dans le jeu, n'hésitez pas à les reporter sur le dépôt GitHub
-    du projet ci-dessous.
+    Vous pouvez également accéder au code source du jeu sur le dépôt officiel (ci-dessous).
 - type: vectors
   content:
     - src: github
