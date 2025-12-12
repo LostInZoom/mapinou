@@ -43,8 +43,8 @@
   content: <b>Les données collectées resteront strictement anonymes.</b>
 - type: paragraph
   title: Nous contacter
-  content: En cas de bugs ou si vous avez des questions, vous pouvez nous contacter par 
-    <a href="mailto:justin.berli@ign.fr?subject=MAPINOU%20-%20Contact">courriel.</a>
+  content: En cas de bugs ou si vous avez des questions, vous pouvez nous contacter par courriel à 
+    <a href="mailto:mapinou@ign.fr?subject=MAPINOU%20-%20Contact">mapinou@ign.fr</a>
     <br>
     Vous pouvez également accéder au code source du jeu sur le dépôt officiel (ci-dessous).
 - type: vectors
