@@ -19,6 +19,9 @@ async function clearDB() {
     await db.query(query);
 }
 
+/**
+ * Initialize the tables inside the database.
+ */
 async function createTables() {
     const TABLES = `
         CREATE TABLE IF NOT EXISTS data.sessions (
@@ -258,6 +261,9 @@ async function createTables() {
     await db.query(TABLES);
 }
 
+/**
+ * Insert levels inside the database tables using the configuration YAML files.
+ */
 async function insertLevels() {
     const parametersFile = fs.readFileSync('./server/parameters.yml', { encoding: 'utf-8' });
     const parameters = load(parametersFile);
@@ -340,6 +346,11 @@ async function insertLevels() {
     }
 }
 
+/**
+ * Retrieve the current version or create a new one if it doesn't exist.
+ * @param {int} game 
+ * @returns {int} index of the version
+ */
 async function checkVersion(game) {
     let query = `
         SELECT *
@@ -387,6 +398,10 @@ async function checkVersion(game) {
     }
 }
 
+/**
+ * Generate fake results by creating new sessions and games to have a working leaderboard.
+ * @param {int} amount 
+ */
 async function populateResults(amount) {
     let query = `
         SELECT *
@@ -439,6 +454,9 @@ async function populateResults(amount) {
     }
 }
 
+/**
+ * Add a name with adjective animal if it is missing.
+ */
 async function nameMissingSessions() {
     let query = `
         SELECT id, name
@@ -471,6 +489,10 @@ async function nameMissingSessions() {
     }
 }
 
+/**
+ * Retrieve database information to be sent to a zulip post.
+ * @param {string} type 
+ */
 async function retrieveDatabaseInfos(type) {
     let content = '';
 

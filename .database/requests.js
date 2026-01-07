@@ -3,6 +3,11 @@ import { checkVersion } from "./tools.js";
 import translate from "translate";
 import { generateId } from "zoo-ids";
 
+/**
+ * Create a new session inside the database.
+ * @param {Object} options 
+ * @returns -1 if there was an issue, an Object if everything went smoothly
+ */
 async function createSession(options) {
     let creation = `
         INSERT INTO data.sessions (name, user_agent, device, orientation, os, width, height, time)
@@ -10,6 +15,7 @@ async function createSession(options) {
         RETURNING id, name;
     `
     try {
+        // Generate a new animal adjective pair and translate it in french.
         const animal = generateId(null, {
             numAdjectives: 1,
             caseStyle: 'titlecase',
@@ -29,6 +35,11 @@ async function createSession(options) {
     }
 }
 
+/**
+ * This function checks if the index session already exists inside the database.
+ * @param {int} index 
+ * @returns {Object} Check if the session is present
+ */
 async function verifySession(index) {
     let verification = `
         SELECT id, name, consent, form
@@ -52,6 +63,11 @@ async function verifySession(index) {
     }
 }
 
+/**
+ * Update the given session and set the consent to true.
+ * @param {int} index 
+ * @returns {boolean}
+ */
 async function giveConsent(index) {
     let verification = `
         UPDATE data.sessions
@@ -66,6 +82,11 @@ async function giveConsent(index) {
     }
 }
 
+/**
+ * Update the given session and set the form to true. (the form has been answered)
+ * @param {int} data 
+ * @returns {boolean}
+ */
 async function insertForm(data) {
     let answers = [];
     for (let q = 0; q < data.form.length; q++) {
@@ -89,6 +110,11 @@ async function insertForm(data) {
     }
 }
 
+/**
+ * Rename the current session. Provide a pair adjective animal.
+ * @param {Object} data 
+ * @returns {boolean}
+ */
 async function renameSession(data) {
     let rename = `
         UPDATE data.sessions
@@ -103,6 +129,11 @@ async function renameSession(data) {
     }
 }
 
+/**
+ * Insert the results of the Piaget Experience
+ * @param {Object} data 
+ * @returns {boolean}
+ */
 async function insertPiaget(data) {
     let query = '';
     let values = [];
@@ -129,6 +160,11 @@ async function insertPiaget(data) {
     }
 }
 
+/**
+ * Insert the results of the Santa Barbara's Sense Of Direction results (SBSOD).
+ * @param {Object} data 
+ * @returns {boolean}
+ */
 async function insertSBSOD(data) {
     let query = '';
     let values = [];
@@ -155,6 +191,11 @@ async function insertSBSOD(data) {
     }
 }
 
+/**
+ * Insert the results of the Perspective Taking/Spatial Orientation Test results (PTSOT).
+ * @param {Object} data 
+ * @returns {boolean}
+ */
 async function insertPTSOT(data) {
     let query = '';
     let values = [];
@@ -192,6 +233,11 @@ async function insertPTSOT(data) {
     }
 }
 
+/**
+ * Insert the results of the Purdue results.
+ * @param {Object} data 
+ * @returns {boolean}
+ */
 async function insertPurdue(data) {
     let query = '';
     let values = [];
@@ -231,6 +277,12 @@ async function insertPurdue(data) {
     }
 }
 
+
+/**
+ * Insert the results of a game.
+ * @param {Object} data 
+ * @returns {boolean} the leaderboard
+ */
 async function insertResults(data) {
     let query = '';
     let values = [];
@@ -249,12 +301,15 @@ async function insertResults(data) {
         returning = await db.query(query, values);
 
         if (returning.rows.length > 0) {
+
+            // First, remove data if the game has already been completed by the session (should be impossible outside of a debug session)
             let level = returning.rows[0].id;
             await db.query(
                 `DELETE FROM data.games WHERE session = $1 AND level = $2 AND version = $3`,
                 [data.session, level, version]
             );
 
+            // Insert results in the games table
             query = `
                 INSERT INTO data.games (session, level, version, score, enemies, helpers, distance, journey)
                 VALUES ($1, $2, $3, $4, $5, $6, $7, ST_SetSRID(ST_GeomFromText($8), 4326))
@@ -386,6 +441,7 @@ async function insertResults(data) {
             `;
             await db.query(query, values);
 
+            // Retrieve the leaderboard
             let highscoresQuery = `
                 SELECT s.id as session, s.name, g.enemies, g.helpers, g.score
                 FROM data.games g
@@ -396,6 +452,7 @@ async function insertResults(data) {
             let hs = await db.query(highscoresQuery, [level]);
             highscores.leaderboard = hs.rows;
 
+            // Retrieve the journey that has the best score
             query = `
                 SELECT ST_AsGeoJSON(journey) AS journey
                 FROM data.games
@@ -414,6 +471,10 @@ async function insertResults(data) {
     }
 }
 
+/**
+ * Get global statistics to display on the end screen.
+ * @returns {Object}
+ */
 async function getEnding() {
     let query = `
         SELECT
@@ -487,6 +548,13 @@ async function getEnding() {
     }
 }
 
+/**
+ * Insert one of the 4 experience (Piaget, SBSOD, PTSOT, Purdue) into the experience table.
+ * @param {Object} data 
+ * @param {string} name 
+ * @param {string} version 
+ * @returns 
+ */
 async function insertExperience(data, name, version) {
     await db.query(
         `DELETE FROM data.experiences WHERE session = $1 AND name = $2`,
