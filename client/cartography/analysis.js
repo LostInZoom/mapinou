@@ -80,6 +80,11 @@ function project(epsg1, epsg2, coordinates) {
     return proj4(proj4.defs('EPSG:' + epsg1), proj4.defs('EPSG:' + epsg2), coordinates);
 }
 
+/**
+ * Project and convert coordinates from 3857 to 4326 LngLat Object format.
+ * @param {Array} coordinates 
+ * @returns {LngLat}
+ */
 function toLongLat(coordinates) {
     let c = proj4(proj4.defs('EPSG:3857'), proj4.defs('EPSG:4326'), coordinates);
     return new LngLat(c[0], c[1]);
@@ -101,6 +106,11 @@ function randomPointInCircle(center, radius) {
     return project('3857', '4326', point);
 }
 
+/**
+ * Flatten a nested array of coordinates to a simple array of coordinates
+ * @param {Array} coordinates 
+ * @returns {Array}
+ */
 function flatten(coordinates) {
     const coords = [];
     function rec(c) {
@@ -114,6 +124,11 @@ function flatten(coordinates) {
     return coords;
 }
 
+/**
+ * Generate an extent given an Array of extents.
+ * @param {Array} extents 
+ * @returns {Array}
+ */
 function mergeExtents(extents) {
     if (!extents || extents.length === 0) {
         return null;
@@ -130,6 +145,12 @@ function mergeExtents(extents) {
     return [[minX, minY], [maxX, maxY]];
 }
 
+/**
+ * Generate an extent given a single point and a radius.
+ * @param {Array} coordinates 
+ * @param {Number} radius 
+ * @returns {Array}
+ */
 function pointExtent(coordinates, radius) {
     const options = { units: 'meters' };
     const point = turf.point(coordinates);
@@ -144,6 +165,11 @@ function pointExtent(coordinates, radius) {
     return [minX, minY, maxX, maxY];
 }
 
+/**
+ * Calculate the centroid of an array of coordinates.
+ * @param {Array} array 
+ * @returns {Array} coordinates
+ */
 function centroid(array) {
     let points = [];
     array.forEach(c => { points.push(turf.point(c)); })
@@ -151,6 +177,11 @@ function centroid(array) {
     return turf.centroid(fc).geometry.coordinates;
 }
 
+/**
+ * Calculate the extent of one or multiple lines.
+ * @param  {...any} lines - Array of coordinates representing a line
+ * @returns 
+ */
 function bboxFromLines(...lines) {
     let minLon = Infinity;
     let minLat = Infinity;
@@ -160,9 +191,7 @@ function bboxFromLines(...lines) {
         if (!Array.isArray(line)) continue;
         for (let point of line) {
             if (!Array.isArray(point) || point.length !== 2) continue;
-
             const [lon, lat] = point;
-
             if (
                 typeof lon !== "number" ||
                 typeof lat !== "number" ||
