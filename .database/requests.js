@@ -535,7 +535,7 @@ async function getEnding() {
             r.zoom_in,
             r.zoom_out,
             r.pan
-        -- HAVING COUNT(g.id) >= 16
+        HAVING COUNT(g.id) >= 16
         ORDER BY score;
     `
 
