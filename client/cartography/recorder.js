@@ -12,6 +12,7 @@ class Recorder {
         this.active = false;
 
         this.zooming = false;
+        this.panning = false;
         this.currentZoom = this.basemap.getZoom();
         this.isSet = false;
 
@@ -31,7 +32,7 @@ class Recorder {
                 this.resetInteraction();
             } else {
                 // Insert the interaction
-                this.insert('pan', undefined);
+                this.insert('pan', 'touch');
             }
         }
 
@@ -60,6 +61,31 @@ class Recorder {
                 this.basemap.map.off('touchend', this.touchendOne);
                 this.basemap.map.off('touchend', this.touchendTwo);
             }
+        }
+
+        this.mousedown = (e) => {
+            if (!this.zooming) {
+                // Start the interaction and add the listener for one point touch
+                this.panning = true;
+                this.startInteraction();
+                this.basemap.map.once('mouseup', this.mouseup);
+            }
+        }
+
+        this.mouseup = (e) => {
+            if (!this.zooming) {
+                // Get former and new center
+                const [x1, y1] = this.center.toArray();
+                const [x2, y2] = this.basemap.getCenter().toArray();
+                if (x1 === x2 || y1 === y2) {
+                    // Reset interaction if center has not changed
+                    this.resetInteraction();
+                } else {
+                    // Insert the interaction
+                    this.insert('pan', 'mouse');
+                }
+            }
+            this.panning = false;
         }
 
         // Listener to insert mouse wheel interaction
@@ -118,6 +144,7 @@ class Recorder {
     on() {
         this.basemap.map.on('touchstart', this.touchstart);
         this.basemap.map.on('wheel', this.wheel);
+        this.basemap.map.on('mousedown', this.mousedown);
         this.active = true;
     }
 
@@ -127,6 +154,7 @@ class Recorder {
     off() {
         this.basemap.map.off('touchstart', this.touchstart);
         this.basemap.map.off('wheel', this.wheel);
+        this.basemap.map.off('mousedown', this.mousedown);
         // Removes all other listener in case they are active
         this.basemap.map.off('zoomend', this.wheelinsert);
         this.basemap.map.off('touchend', this.touchendOne);
@@ -206,6 +234,7 @@ class Recorder {
             extent2: this.basemap.getExtentAsWKT()
         };
 
+        console.log(r)
         this.interactions.push(r);
         this.resetInteraction();
     }
