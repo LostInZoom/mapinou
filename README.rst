@@ -17,7 +17,7 @@ The collected data are anonymous.
 **Français**
 
 Découvrez Mapinou, un jeu mobile gratuit qui permet de s’amuser tout en aidant la recherche scientifique, incroyable non ?
-Téléchargez le jeu sur votre téléphone et parcourez les chemins de France pour aider Lapinou a retrouver son ami.
+Téléchargez le jeu sur votre téléphone et parcourez les chemins de France pour aider Lapinou à retrouver son ami.
 Mais attention ! Les chemins fourmillent de prédateurs qui n’hésiteront pas à vous croquer si vous vous égarez.
 
 Mapinou est développé par l’équipe du projet européen LostInZoom, dirigé par Guillaume Touya.
