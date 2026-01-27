@@ -2,6 +2,11 @@ import { addClass, makeDiv, removeClass, wait, waitPromise } from "../utils/dom"
 import { generateRandomInteger, weightedRandom } from "../utils/math";
 
 class Hint {
+    /**
+     * Constructor for the Hint class. This object is used to display hints for the player during the phase 1 of a level.
+     *
+     * @param {Object} options - Options passed to the constructor.
+     */
     constructor(options) {
         this.options = options;
         this.level = this.options.level;

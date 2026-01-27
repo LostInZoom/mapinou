@@ -1,6 +1,10 @@
 import { addClass, makeDiv, removeClass, wait, waitPromise } from "../utils/dom";
 
 class Paloma {
+    /**
+     * 
+     * @param {*} options 
+     */
     constructor(options) {
         // TODO: DESTROY WOODPIGEON !! 
         this.options = options;
