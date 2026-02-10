@@ -28,10 +28,16 @@ class Form extends Page {
         let multiple = this.question.multiple;
 
         this.label = makeDiv(null, 'form-question', this.question.question);
+        this.text.append(this.label);
+
         this.answerscontainer = makeDiv(null, 'form-answers');
 
-        this.text.append(this.label, this.answerscontainer);
+        if (this.question.subtext) {
+            let subtext = makeDiv(null, 'form-subtext', this.question.subtext);
+            this.text.append(subtext);
+        }
 
+        this.text.append(this.answerscontainer);
         this.content.append(this.back, this.text, this.continue);
         this.container.append(this.content);
 

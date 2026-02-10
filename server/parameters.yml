@@ -93,18 +93,20 @@ interface:
 #### FORM DEFINITION ######
 ###########################
 form:
-  - question: 'Genre<br>(Choix multiple possible)'
+  - question: 'Genre'
+    subtext: 'La question relative à l’identité de genre est recueillie à titre de variable
+      descriptive secondaire. Les résultats seront analysés dans le cadre de notre domaine de compétence et,
+      le cas échéant, des différences entre genres pourront être mentionnées sans interprétation sociologique
+      approfondie, celles-ci pouvant relever de mécanismes sociaux plus larges tels que les effets d’une socialisation genrée.'
     mandatory: false
-    multiple: true
+    multiple: false
     answers:
       - text: Femme
-        unique: false
+        unique: true
       - text: Homme
-        unique: false
-      - text: Trans
-        unique: false
-      - text: Non-binaire
-        unique: false
+        unique: true
+      - text: Autre
+        unique: true
       - text: Ne se prononce pas
         unique: true
   - question: 'Catégorie d''âge'
@@ -151,12 +153,7 @@ consent:
   - type: list
     title: 'Les données suivantes sont collectées :'
     content:
-      - 'Les réponses aux formulaires sociologiques et cognitifs. La question relative à l’identité de genre
-        est recueillie à titre de variable descriptive secondaire. Elle permet d’identifier
-        d’éventuelles différences entre groupes, sans que celles-ci constituent l’objet principal de notre recherche.
-        Les résultats seront analysés dans le cadre de notre domaine de compétence et, le cas échéant,
-        des différences entre genres pourront être mentionnées sans interprétation sociologique approfondie,
-        celles-ci pouvant relever de mécanismes sociaux plus larges tels que les effets d’une socialisation genrée.'
+      - 'Les réponses aux formulaires sociologiques et cognitifs.'
       - 'Les métriques de jeux, à savoir le temps passé, le score et la distance parcourue par niveau.'
       - 'Les interactions avec la carte pendant un niveau, à savoir les déplacements latéraux,
         les zooms en avant et en arrière.'

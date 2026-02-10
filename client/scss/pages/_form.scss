@@ -26,6 +26,12 @@
     padding: sizes.$gap1rem;
 }
 
+.form-subtext {
+    font-size: sizes.$font-size-small;
+    font-style: italic;
+    padding: 0 sizes.$gap1rem sizes.$gap1rem sizes.$gap1rem;
+}
+
 .form-answers {
     padding: 0 sizes.$gap1rem sizes.$gap1rem sizes.$gap1rem;
     display: flex;
