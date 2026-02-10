@@ -2,6 +2,8 @@ import * as fs from 'fs';
 import { load } from "js-yaml";
 import express from 'express';
 import bodyParser from 'body-parser';
+
+import router from '../.database/routes.js';
 import {
 	createSession, getEnding, giveConsent,
 	insertForm, insertPiaget, insertPTSOT, insertPurdue, insertResults, insertSBSOD,
@@ -40,6 +42,7 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // app.use('/mapinou', express.static(path.join(__dirname, 'dist/mapinou')));
 app.use('/', express.static('dist'));
+app.use(router);
 
 app.get('/mapinou/configuration', (req, res) => {
 	res.json(parameters);
