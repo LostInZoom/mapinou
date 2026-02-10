@@ -94,10 +94,10 @@ interface:
 ###########################
 form:
   - question: 'Genre'
-    subtext: 'La question relative à l’identité de genre est recueillie à titre de variable
-      descriptive secondaire. Les résultats seront analysés dans le cadre de notre domaine de compétence et,
-      le cas échéant, des différences entre genres pourront être mentionnées sans interprétation sociologique
-      approfondie, celles-ci pouvant relever de mécanismes sociaux plus larges tels que les effets d’une socialisation genrée.'
+    subtext: 'Cette réponse est recueillie à titre de variable descriptive secondaire.
+      Les résultats seront analysés dans le cadre de notre domaine de compétence et, le cas échéant, des différences
+      entre genres pourront être mentionnées sans interprétation sociologique approfondie,
+      celles-ci pouvant relever de mécanismes sociaux plus larges tels que les effets d’une socialisation genrée.'
     mandatory: false
     multiple: false
     answers:
