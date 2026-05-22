@@ -5,6 +5,7 @@ import Title from "./title";
 import { ajaxPost } from "../utils/ajax";
 import { addClass, makeDiv, hasClass, addClass, removeClass, wait } from "../utils/dom";
 import Custom from "./custom";
+import { remap } from "../utils/math";
 
 class Form extends Page {
     constructor(options, callback) {
@@ -28,46 +29,114 @@ class Form extends Page {
         let multiple = this.question.multiple;
 
         this.label = makeDiv(null, 'form-question', this.question.question);
-        this.text.append(this.label);
 
-        this.answerscontainer = makeDiv(null, 'form-answers');
+        this.text.append(this.label);
 
         if (this.question.subtext) {
             let subtext = makeDiv(null, 'form-subtext', this.question.subtext);
             this.text.append(subtext);
         }
 
+        this.answerscontainer = makeDiv(null, 'form-answers');
         this.text.append(this.answerscontainer);
+
         this.content.append(this.back, this.text, this.continue);
         this.container.append(this.content);
 
         for (let i = 0; i < this.question.answers.length; i++) {
             let a = this.question.answers[i];
-            let answer = makeDiv(null, 'form-answer', a.text);
 
-            if (this.question.answer) {
-                if (this.question.answer.includes(i)) {
-                    addClass(answer, 'selected');
+            if ('range' in a) {
+                addClass(this.answerscontainer, 'range');
+                let element = makeDiv(null, 'form-answer range');
+                element.setAttribute('unique', a.unique);
+                let answers = makeDiv(null, 'form-range-answers');
+
+                // Create the answers
+                let choice = makeDiv(null, 'form-range-choice');
+                choice.style.width = `calc(100% / ${a.range.max - a.range.min + 1})`;
+
+                let points = makeDiv(null, 'form-range-points');
+                let numbers = makeDiv(null, 'form-range-numbers');
+
+                // Create a slider depending on the range
+                for (let j = a.range.min; j <= a.range.max; j++) {
+                    let p = makeDiv(null, 'form-range-point');
+                    let n = makeDiv(null, 'form-range-number', j);
+                    n.setAttribute('value', j);
+                    points.append(p);
+                    numbers.append(n);
+
+                    // Click listener for the answer
+                    p.addEventListener('click', () => {
+                        this.playButtonSound();
+
+                        if (hasClass(n, 'selected')) {
+                            removeClass(n, 'selected');
+                            removeClass(choice, 'pop');
+                        } else {
+                            if (!multiple || a.unique) { this.unselectAnswers(false); }
+                            else { this.unselectAnswers(true); }
+
+                            // Deactivate all answers
+                            numbers.childNodes.forEach(child => { removeClass(child, 'selected'); });
+                            // Activate the selected answer
+                            addClass(numbers.querySelector(`[value="${j}"]`), 'selected');
+                            addClass(choice, 'pop');
+                            // Calculate the percentage of the left position of the answer
+                            let perc = remap(j, a.range.min, a.range.max, 0, 100);
+                            const width = answers.getBoundingClientRect().width / (a.range.max - a.range.min + 1);
+                            // Move the slider to reach the selected answer
+                            choice.style.left = `calc(${perc}% - ${perc * width / 100}px)`;
+                        }
+
+                        if (this.isAnswered()) { addClass(this.continue, 'pop'); }
+                        else { removeClass(this.continue, 'pop'); }
+                    });
                 }
+
+                answers.append(points, choice, numbers);
+                element.append(answers);
+                this.answerscontainer.append(element);
+                this.answers.push(element);
+
+                if (this.question.answer) {
+                    let q = this.question.answer.find(obj => obj.position === i)
+                    if (q) {
+                        addClass(numbers.querySelector(`[value="${q.index}"]`), 'selected');
+                        addClass(choice, 'pop');
+                        let perc = remap(q.index, a.range.min, a.range.max, 0, 100);
+                        const width = answers.getBoundingClientRect().width / (a.range.max - a.range.min + 1);
+                        choice.style.left = `calc(${perc}% - ${perc * width / 100}px)`;
+                    }
+                }
+            } else {
+                let answer = makeDiv(null, 'form-answer', a.text);
+
+                if (this.question.answer) {
+                    if (this.question.answer.some(obj => obj.position === i)) {
+                        addClass(answer, 'selected');
+                    }
+                }
+
+                answer.setAttribute('unique', a.unique);
+                this.answers.push(answer);
+                this.answerscontainer.append(answer);
+
+                answer.addEventListener('click', () => {
+                    this.playButtonSound();
+                    if (hasClass(answer, 'selected')) {
+                        removeClass(answer, 'selected');
+                    } else {
+                        if (!multiple || a.unique) { this.unselectAnswers(false); }
+                        else { this.unselectAnswers(true); }
+                        addClass(answer, 'selected');
+                    }
+
+                    if (this.isAnswered()) { addClass(this.continue, 'pop'); }
+                    else { removeClass(this.continue, 'pop'); }
+                });
             }
-
-            answer.setAttribute('unique', a.unique);
-            this.answers.push(answer);
-            this.answerscontainer.append(answer);
-
-            answer.addEventListener('click', () => {
-                this.playButtonSound();
-                if (hasClass(answer, 'selected')) {
-                    removeClass(answer, 'selected');
-                } else {
-                    if (!multiple || a.unique) { this.unselectAnswers(false); }
-                    else { this.unselectAnswers(true); }
-                    addClass(answer, 'selected');
-                }
-
-                if (this.isAnswered()) { addClass(this.continue, 'pop'); }
-                else { removeClass(this.continue, 'pop'); }
-            });
         };
 
         wait(this.app.options.interface.transition.page, () => {
@@ -104,7 +173,14 @@ class Form extends Page {
                     for (let i = 0; i < this.options.app.options.form.length; i++) {
                         let q = this.options.app.options.form[i];
                         let answers = []
-                        q.answer.forEach((a) => { answers.push(q.answers[a].text); });
+                        q.answer.forEach((a) => { 
+                            let answer = q.answers[a.position];
+                            if ('range' in answer) {
+                                answers.push(a.index);
+                            } else {
+                                answers.push(answer.text);
+                            }
+                        });
                         data.push(answers);
                     }
 
@@ -128,7 +204,15 @@ class Form extends Page {
                     removeClass(a, 'selected')
                 }
             } else {
-                removeClass(a, 'selected')
+                if (hasClass(a, 'range')) {
+                    let children = a.querySelector('.form-range-numbers').children;
+                    removeClass(a.querySelector('.form-range-choice'), 'pop');
+                    for (let j = 0; j < children.length; j++) {
+                        removeClass(children[j], 'selected');
+                    }
+                } else {
+                    removeClass(a, 'selected');
+                }
             }
         });
     }
@@ -138,6 +222,12 @@ class Form extends Page {
         for (let i = 0; i < this.answers.length; i++) {
             let a = this.answers[i];
             if (hasClass(a, 'selected')) { result = true; break; }
+            if (hasClass(a, 'range')) {
+                let children = a.querySelector('.form-range-numbers').children;
+                for (let j = 0; j < children.length; j++) {
+                    if (hasClass(children[j], 'selected')) { result = true; break; }
+                }
+            }
         }
         return result;
     }
@@ -146,7 +236,22 @@ class Form extends Page {
         let result = [];
         for (let i = 0; i < this.answers.length; i++) {
             let a = this.answers[i];
-            if (hasClass(a, 'selected')) { result.push(i); }
+            if (hasClass(a, 'selected')) { 
+                result.push({
+                    type: 'button',
+                    position: i
+                });
+            }
+            if (hasClass(a, 'range')) {
+                let children = a.querySelector('.form-range-numbers').children;
+                for (let j = 0; j < children.length; j++) {
+                    if (hasClass(children[j], 'selected')) { result.push({
+                        type: 'range',
+                        position: i,
+                        index: parseInt(children[j].getAttribute('value'))
+                    });}
+                }
+            }
         }
         this.question.answer = result;
     }

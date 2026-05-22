@@ -1,7 +1,7 @@
 @use '../colors';
 @use '../sizes';
 
-$point-size: 2rem;
+$point-size: min(2rem, 8vw, 8vh);
 
 .sbsod-element {
     pointer-events: none;

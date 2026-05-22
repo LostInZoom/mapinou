@@ -141,6 +141,53 @@ form:
         unique: true
       - text: Ne se prononce pas
         unique: true
+  - question: 'En moyenne, combien d''heures par semaine passez-vous à jouer à des jeux vidéo ?'
+    mandatory: false
+    multiple: false
+    answers:
+      - text: Moins d'une heure par semaine
+        unique: true
+      - text: Entre 1h et 5h par semaine
+        unique: true
+      - text: Entre 6h et 10h par semaine
+        unique: true
+      - text: Entre 11h et 20h par semaine
+        unique: true
+      - text: Plus de 20h par semaine
+        unique: true
+      - text: Ne se prononce pas
+        unique: true
+  - question: 'Quel est votre niveau d''études le plus élevé validé ?'
+    mandatory: false
+    multiple: false
+    answers:
+      - text: Aucun diplôme / Brevet des collèges
+        unique: true
+      - text: CAP / BEP
+        unique: true
+      - text: Baccalauréat (général, technologique ou professionnel)
+        unique: true
+      - text: Enseignement supérieur court (Bac+2 / BTS / DUT)
+        unique: true
+      - text: Licence ou équivalent (Bac+3)
+        unique: true
+      - text: Master, école d'ingénieur, doctorat ou équivalent (Bac+5 et plus)
+        unique: true
+      - text: Ne se prononce pas
+        unique: true
+  - question: 'Où vous placeriez-vous sur cette échelle ?'
+    subtext: 'Imaginez que l''échelle ci-dessous représente la place qu''occupent les personnes dans la société.
+      A droite (10) se trouvent ceux qui ont le plus d''argent, d''éducation et les emplois les plus valorisés.
+      A gauche (1) se trouvent ceux qui ont le moins d''argent, d''éducation et les emplois les moins valorisés.'
+    mandatory: false
+    multiple: false
+    answers:
+      - range:
+          min: 1
+          max: 10
+        unique: true
+      - text: Ne se prononce pas
+        unique: true
 consent:
   - type: paragraph
     content: 'J''accepte que mes données de jeux

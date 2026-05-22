@@ -234,7 +234,7 @@ class Recorder {
             extent2: this.basemap.getExtentAsWKT()
         };
 
-        console.log(r)
+        // console.log(r)
         this.interactions.push(r);
         this.resetInteraction();
     }

@@ -39,11 +39,16 @@
     align-items: center;
     gap: calc(sizes.$gap1rem/2);
     flex-wrap: wrap;
+
+    &.range {
+        width: calc(100% - 2 * sizes.$gap1rem);
+    }
 }
 
 .form-answer {
     padding: .3rem .5rem;
     border-radius: sizes.$border-radius;
+    text-align: center;
 
     background-color: colors.$main-color-light;
     color: colors.$main-color-dark;
@@ -53,5 +58,89 @@
     &.selected {
         background-color: colors.$main-color-dark;
         color: colors.$main-color-light;
+    }
+
+    &.range {
+        width: 100%;
+        pointer-events: none;
+        padding: 0;
+    }
+}
+
+$point-size: min(2rem, 8vw, 8vh);
+
+.form-range-answers {
+    position: relative;
+    height: $point-size;
+    border-radius: sizes.$border-radius;
+    overflow: hidden;
+}
+
+.form-range-points {
+    position: absolute;
+    z-index: 5;
+    top: 0;
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.form-range-point {
+    pointer-events: all;
+    flex: 1;
+    height: $point-size;
+    background-color: colors.$main-color-light;
+}
+
+.form-range-numbers {
+    position: absolute;
+    z-index: 10;
+    top: 0;
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.form-range-number {
+    flex: 1;
+    height: $point-size;
+    color: colors.$main-color-dark;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: sizes.$font-size-regular;
+
+    transition: color .2s ease-in-out;
+
+    &.selected {
+        color: colors.$main-color-light;
+    }
+}
+
+.form-range-choice {
+    position: absolute;
+    z-index: 8;
+    top: 0;
+
+    background-color: colors.$main-color-dark;
+    height: $point-size;
+
+    transform: scale(0);
+    transition:
+        left .2s ease-in-out,
+        transform .3s cubic-bezier(0.36, 0, 0.66, -0.56);
+
+    &.pop {
+        transform: scale(1);
+        transition:
+            left .2s ease-in-out,
+            transform .3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 }
