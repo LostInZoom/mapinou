@@ -21,10 +21,11 @@ async function createSession(options) {
             caseStyle: 'titlecase',
             delimiter: ' '
         });
-        translate.engine = "google";
-        const translation = await translate(animal, "fr");
 
-        let values = [translation, options.userAgent, options.device, options.orientation, options.os, options.width, options.height, new Date().toISOString()];
+        // translate.engine = "google";
+        // const translation = await translate(animal, "fr");
+
+        let values = [animal, options.userAgent, options.device, options.orientation, options.os, options.width, options.height, new Date().toISOString()];
         let result = await db.query(creation, values);
         return {
             id: result.rows[0].id,

@@ -102,16 +102,18 @@ class Selection {
                 listen = false;
                 this.page.playButtonSound();
                 addClass(pseudoname, 'right');
-                let translation;
+                let animal;
                 const tasks = [];
                 tasks.push(async (c) => {
-                    const animal = generateId(null, {
+                    animal = generateId(null, {
                         numAdjectives: 1,
                         caseStyle: 'titlecase',
                         delimiter: ' '
                     });
-                    translate.engine = "google";
-                    translation = await translate(animal, "fr");
+
+                    // translate.engine = "google";
+                    // translation = await translate(animal, "fr");
+
                     c();
                 });
                 tasks.push((c) => { wait(200, c); });
@@ -120,15 +122,15 @@ class Selection {
                 let cleared = 0;
                 const rename = async () => {
                     if (++cleared === clearing) {
-                        let height = getHeight('custom-pseudo-label', translation, pseudoback.offsetWidth - remToPx(2) + 'px');
+                        let height = getHeight('custom-pseudo-label', animal, pseudoback.offsetWidth - remToPx(2) + 'px');
                         if (height !== nameheight) {
                             nameheight = height;
                             pseudoback.style.height = pxToRem(nameheight) + 1 + 'rem';
                             await waitPromise(100);
                         }
                         pseudoname.remove();
-                        pseudoname = makeDiv(null, 'custom-pseudo-label left', translation);
-                        this.selectedName = translation;
+                        pseudoname = makeDiv(null, 'custom-pseudo-label left', animal);
+                        this.selectedName = animal;
                         pseudoback.append(pseudoname);
                         pseudoback.offsetWidth;
                         removeClass(pseudoname, 'left');

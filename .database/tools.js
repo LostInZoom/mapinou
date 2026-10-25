@@ -417,15 +417,16 @@ async function populateResults(amount) {
             caseStyle: 'titlecase',
             delimiter: ' '
         });
-        translate.engine = "google";
-        const translation = await translate(animal, "fr");
+
+        // translate.engine = "google";
+        // const translation = await translate(animal, "fr");
 
         let session = `
             INSERT INTO data.sessions(name)
             VALUES($1)
             RETURNING id;
         `
-        let s = await db.query(session, [translation]);
+        let s = await db.query(session, [animal]);
         indexes.push(s.rows[0].id);
     }
 
@@ -476,14 +477,16 @@ async function nameMissingSessions() {
                     caseStyle: 'titlecase',
                     delimiter: ' '
                 });
-                translate.engine = "google";
-                const translation = await translate(animal, "fr");
+
+                // translate.engine = "google";
+                // const translation = await translate(animal, "fr");
+
                 let rename = `
                     UPDATE data.sessions
                     SET name = $1
                     WHERE id = $2;
                 `
-                await db.query(rename, [translation, id]);
+                await db.query(rename, [animal, id]);
             }
         }
     }
