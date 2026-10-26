@@ -1,6 +1,5 @@
 import { db } from "./credentials.js";
 import { checkVersion } from "./tools.js";
-import translate from "translate";
 import { generateId } from "zoo-ids";
 
 /**

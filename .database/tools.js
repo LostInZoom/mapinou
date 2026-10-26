@@ -4,7 +4,6 @@ import { load } from "js-yaml";
 import * as d3 from "d3";
 import zulipInit from "zulip-js";
 
-import translate from "translate";
 import { generateId } from "zoo-ids";
 import { configLapinou, configPaloma, configPip } from './credentials.js';
 

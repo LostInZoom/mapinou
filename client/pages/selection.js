@@ -1,4 +1,3 @@
-import translate from "translate";
 import { generateId } from "zoo-ids";
 
 import { addClass, hasClass, makeDiv, removeClass, wait, waitPromise } from "../utils/dom";
