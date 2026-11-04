@@ -4,6 +4,15 @@
 .. |logosub| image:: doc/lapinou.png
     :height: 25px
 
+.. important::
+
+   **ATTENTION :** Les serveurs de calcul d'itinéraires de l'IGN sont actuellement indisponibles.
+   Par conséquent, les déplacements sur la carte ne sont plus possibles,
+   rendant le jeu temporairement injouable.
+
+   **WARNING:** The IGN route calculation servers are currently unavailable.
+   As a result, movement across the map is no longer possible, making the game temporarily unplayable.
+
 **English**
 
 Discover Mapinou, a free mobile game where you have fun while helping science, crazy right?
