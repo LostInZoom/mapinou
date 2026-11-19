@@ -150,7 +150,8 @@ class Title extends Page {
                     }
                     else if (device.os === 'ios') {
                         createValidation(document.body, `
-                            Pour créer un raccourci sur votre écran d'accueil, sélectionnez :
+                            Pour créer un raccourci sur votre écran d'accueil, 
+                            assurez-vous d'avoir ouvert ce lien avec Safari et sélectionnez :
                             <br><i>Partager</i> ▸ <i>Sur l’écran d’accueil</i>`,
                             ["D'accord"]
                         );
